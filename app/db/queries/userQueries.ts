@@ -1,7 +1,7 @@
 import { User } from "~/models/User";
 import { db } from "../db.server";
 import { InsertUser, users } from "../schema/user";
-import { eq } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { toInsertUser, toUser } from "../mappers/userMapper";
 
 
@@ -17,6 +17,15 @@ export async function findOneUserByEmail(email: string): Promise<User | null> {
     }
 
     return toUser(userData[0])
+}
+
+export async function findUsers(search: string): Promise<User[]> {
+    const userData = await db
+        .select()
+        .from(users)
+        .where(like(users.email, `%${search}%`));
+
+    return userData.map(user => toUser(user))
 }
 
 export async function createUser(user: User): Promise<User> {

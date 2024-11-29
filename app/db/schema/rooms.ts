@@ -3,6 +3,9 @@ import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core"
 import { usersToRooms } from "./usersToRooms";
 import { rounds } from "./rounds";
 
+export type InsertRoom = typeof rooms.$inferInsert;
+export type SelectRoom = typeof rooms.$inferSelect;
+
 export const rooms = sqliteTable('rooms', {
     id: text().primaryKey(),
     name: text().notNull(),
