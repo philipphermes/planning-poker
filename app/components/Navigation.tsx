@@ -49,7 +49,7 @@ export default function Navigation({ title, links, blackList }: NavigationConfig
                 </div>
             </div>
             <div className="navbar-center">
-                <a className="btn btn-ghost text-xl">{title}</a>
+                <Link prefetch="intent" to="/" className="btn btn-ghost text-xl">{title}</Link>
             </div>
             <div className="navbar-end">
             </div>

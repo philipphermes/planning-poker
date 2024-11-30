@@ -19,6 +19,20 @@ export async function findOneUserByEmail(email: string): Promise<User | null> {
     return toUser(userData[0])
 }
 
+export async function findOneUserById(id: string): Promise<User | null> {
+    const userData = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, id))
+        .limit(1);
+
+    if (!userData[0]) {
+        return null
+    }
+
+    return toUser(userData[0])
+}
+
 export async function findUsers(search: string, excludeUserId: string[]): Promise<User[]> {
     const userData = await db
         .select()

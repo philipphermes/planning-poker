@@ -63,7 +63,7 @@ export async function action({ request }: ActionFunctionArgs) {
       "Set-Cookie": await sessionStorage.commitSession(session)
     }
   })
-};
+}
 
 export default function Index() {
   const { rooms } = useLoaderData<typeof loader>()
@@ -76,7 +76,7 @@ export default function Index() {
             <div key={room.id} className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center gap-4">
               <h3 className="col-span-2 text-lg">{room.name}</h3>
               <Link to={`/room/${room.id}/edit`} prefetch="intent" className="btn btn-outline w-full btn-secondary">Edit</Link>
-              <Link to="" className="btn w-full btn-primary">Open</Link>
+              <Link to={`/room/${room.id}`} prefetch="intent" className="btn w-full btn-primary">Open</Link>
             </div>
             <div className="divider"></div>
           </>

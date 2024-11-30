@@ -1,6 +1,6 @@
 import { MagnifyingGlassIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { data, Form, Params, redirect, useFetcher, useLoaderData } from "@remix-run/react";
+import { data, Form, redirect, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { getCurrentUser } from "~/.server/auth";
 import { sessionStorage } from "~/.server/session";
@@ -51,7 +51,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
             "Set-Cookie": await sessionStorage.commitSession(session)
         }
     } : undefined)
-};
+}
 
 async function deleteRoomAction(roomId: string, request: Request) {
     const changes = await deleteRoom(roomId)
@@ -130,13 +130,13 @@ export default function Index() {
 
     return (
         <div className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <Form method="POST" className="w-full flex items-center justify-between">
-                <label className="input input-ghost flex items-center gap-2">
-                    <input type="text" name="name" value={roomName} onChange={e => setRoomName(e.target.value)} className="grow" placeholder="Name" />
+            <Form method="POST" className="w-full flex justify-between gap-2">
+                <label className="w-full input input-ghost flex items-center">
+                    <input type="text" name="name" value={roomName} onChange={e => setRoomName(e.target.value)} className="w-full" placeholder="Name" />
                     <PencilIcon className="h-4 opacity-70" />
                 </label>
-                <button name="save" type="submit" className="btn btn-outline btn-primary">Save</button>
-                <button name="delete" type="submit" className="btn btn-outline btn-ghost">Delete</button>
+                <button name="save" type="submit" className="w-fit btn btn-outline btn-primary">Save</button>
+                <button name="delete" type="submit" className="w-fit btn btn-outline btn-ghost">Delete</button>
             </Form>
 
             <label className="w-full input input-bordered flex items-center gap-2">
