@@ -38,7 +38,7 @@ authenticator.use(
             throw new Error(MESSAGE_ERROR_INVALID_CREDENTIALS)
         }
 
-        return user.toSaveUser();
+        return user.toSafeUser();
     }),
     STRATEGY_FORM_EMAIL_PASSWORD
 );

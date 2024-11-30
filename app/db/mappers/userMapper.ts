@@ -12,7 +12,6 @@ export async function toInsertUser(user: User): Promise<InsertUser> {
         id: uuidV4(),
         email: user.email,
         password: await argon2.hash(user.password),
-        createdAt: null,
     }
 }
 

@@ -13,7 +13,7 @@ export class User {
         this.rooms = rooms ?? [];
     }
 
-    toSaveUser(): this {
+    toSafeUser(): this {
         this.password = undefined
         return this
     }

@@ -1,6 +1,9 @@
 import { Round } from "./Round";
 import { User } from "./User";
 
+export const ROLE_MEMBER = 'member'
+export const ROLE_OWNER = 'owner'
+
 export class Room {
     id?: string;
     name: string;
