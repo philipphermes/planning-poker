@@ -1,48 +1,35 @@
 import { User } from "~/models/User";
 import { db } from "../db.server";
-import { InsertUser, users } from "../schema/user";
 import { and, eq, like, notInArray } from "drizzle-orm";
 import { toInsertUser, toUser } from "../mappers/userMapper";
+import { InsertUser, users } from "../schema/schema";
 
 
 export async function findOneUserByEmail(email: string): Promise<User | null> {
-    const userData = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
+    const user = await db.query.users.findFirst({
+        where: eq(users.email, email)
+    })
 
-    if (!userData[0]) {
-        return null
-    }
-
-    return toUser(userData[0])
+    return user ? toUser(user) : null
 }
 
 export async function findOneUserById(id: string): Promise<User | null> {
-    const userData = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, id))
-        .limit(1);
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, id)
+    })
 
-    if (!userData[0]) {
-        return null
-    }
-
-    return toUser(userData[0])
+    return user ? toUser(user) : null
 }
 
 export async function findUsers(search: string, excludeUserId: string[]): Promise<User[]> {
-    const userData = await db
-        .select()
-        .from(users)
-        .where(and(
+    const usersData = await db.query.users.findMany({
+        where: and(
             like(users.email, `%${search}%`),
             notInArray(users.id, excludeUserId)
-        ));
+        )
+    })
 
-    return userData.map(user => toUser(user))
+    return usersData.map(user => toUser(user))
 }
 
 export async function createUser(user: User): Promise<User> {

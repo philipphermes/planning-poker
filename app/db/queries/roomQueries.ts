@@ -1,38 +1,39 @@
 import { ROLE_OWNER, Room } from "~/models/Room";
 import { db } from "../db.server";
-import { rooms } from "../schema/rooms";
-import { usersToRooms } from "../schema/usersToRooms";
 import { and, eq } from "drizzle-orm";
 import { toInsertRoom, toRoom } from "../mappers/roomMapper";
-import { users } from "../schema/user";
+import { rooms, usersToRooms } from "../schema/schema";
+import { toUser } from "../mappers/userMapper";
 
 export async function findRoomsByUserId(userId: string): Promise<Room[]> {
-    const roomsData = await db
-        .select()
-        .from(rooms)
-        .innerJoin(usersToRooms, and(eq(rooms.id, usersToRooms.roomId), eq(usersToRooms.userId, userId)));
+    const userToRooms = await db.query.usersToRooms.findMany({
+        with: {
+            room: true,
+        },
+        where: eq(usersToRooms.userId, userId)
+    })
 
-    return roomsData.map(room => toRoom(room.rooms))
+    return userToRooms.map(userToRoom => toRoom(userToRoom.room))
 }
 
 export async function findRoomById(id: string): Promise<Room | null> {
-    const roomsData = await db
-        .select()
-        .from(rooms)
-        .where(eq(rooms.id, id))
-        .innerJoin(usersToRooms, eq(rooms.id, usersToRooms.roomId))
-        .innerJoin(users, eq(usersToRooms.userId, users.id))
+    const roomDataNew = await db.query.rooms.findFirst({
+        with: {
+            usersToRooms: {
+                with: {
+                    user: true
+                }
+            }
+        },
+        where: eq(rooms.id, id)
+    })
 
-    //TODO refactor
-    const roomTransfers = roomsData.map(roomData => toRoom(roomData.rooms, roomData.users))
-    const room = new Room(
-        roomTransfers[0]?.name,
-        roomTransfers[0]?.visible,
-        roomTransfers[0]?.id,
-        roomTransfers.map(room => { return room.users[0] ?? null })
-    )
-
-    return room
+    return roomDataNew ? new Room(
+        roomDataNew.name,
+        roomDataNew.visible,
+        roomDataNew.id,
+        roomDataNew.usersToRooms.map(usersToRoom => toUser(usersToRoom.user)),
+    ) : null
 }
 
 export async function createRoom(room: Room): Promise<Room> {

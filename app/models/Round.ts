@@ -2,12 +2,12 @@ import { Estimation } from "./Estimation";
 import { Room } from "./Room";
 
 export class Round {
-    id: string;
+    id?: string;
     name: string;
-    room: Room[];
+    room?: Room;
     estimations: Estimation[];
 
-    constructor(id: string, name: string, room: Room[], estimations?: Estimation[]) {
+    constructor(name: string, id?: string, room?: Room, estimations?: Estimation[]) {
         this.id = id;
         this.name = name;
         this.room = room;

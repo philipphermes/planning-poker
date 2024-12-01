@@ -1,5 +1,5 @@
 import { data, LoaderFunctionArgs } from "@remix-run/node";
-import {addClient, removeClient} from "~/.server/estimations";
+import {addClient, broadcastToRoom, removeClient} from "~/.server/roomSSE";
 import {getCurrentUser} from "~/.server/auth";
 import {findRoomById} from "~/db/queries/roomQueries";
 
@@ -21,6 +21,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         new ReadableStream({
             start(controller) {
                 addClient(room, user, controller);
+                //broadcastToRoom()
+                broadcastToRoom(roomId)
 
                 const abort = () => {
                     removeClient(room, user);
