@@ -1,7 +1,7 @@
-import { Room } from "~/models/Room";
-import { v4 as uuidV4 } from "uuid";
-import { toUser } from "./userMapper";
-import { InsertRoom, SelectRoom, SelectUser } from "../schema/schema";
+import {Room} from "~/models/Room";
+import {v4 as uuidV4} from "uuid";
+import {toUser} from "./userMapper";
+import {InsertRoom, SelectRoom, SelectUser} from "../schema/schema";
 
 export function toRoom(room: SelectRoom, user?: SelectUser): Room {
     const roomTransfer = new Room(

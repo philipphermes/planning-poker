@@ -1,6 +1,6 @@
-import { SelectEstimation, SelectUser } from "../schema/schema";
-import { Estimation } from "~/models/Estimation";
-import { toUser } from "./userMapper";
+import {SelectEstimation, SelectUser} from "../schema/schema";
+import {Estimation} from "~/models/Estimation";
+import {toUser} from "./userMapper";
 
 export function toEstimation(estimation: SelectEstimation, user?: SelectUser): Estimation {
     const roundTransfer = new Estimation(

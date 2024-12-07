@@ -17,3 +17,13 @@ export class SSEEstimation {
         this.estimation = estimation;
     }
 }
+
+export interface SSEMessageInterface {
+    round: string;
+    estimations: SSEEstimationInterface[];
+}
+
+export interface SSEEstimationInterface {
+    user: string;
+    estimation?: number;
+}

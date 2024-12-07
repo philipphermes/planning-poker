@@ -1,12 +1,12 @@
-import { ActionFunctionArgs, data } from "@remix-run/node";
-import { getCurrentUser } from "~/.server/auth";
-import { sessionStorage } from "~/.server/session";
-import { addToastMessages } from "~/.server/toasts";
-import { addUserToRoom } from "~/db/queries/roomQueries";
-import { Toast } from "~/models/Toast";
-import { userRoomSchema } from "~/validators/userRoomSchema";
+import {ActionFunctionArgs, data} from "@remix-run/node";
+import {getCurrentUser} from "~/.server/auth";
+import {sessionStorage} from "~/.server/session";
+import {addToastMessages} from "~/.server/toasts";
+import {addUserToRoom} from "~/db/queries/roomQueries";
+import {Toast} from "~/models/Toast";
+import {userRoomSchema} from "~/validators/userRoomSchema";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({request}: ActionFunctionArgs) {
     await getCurrentUser(request);
 
     const formData = Object.fromEntries(await request.formData())

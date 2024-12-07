@@ -2,18 +2,21 @@ import { ROLE_OWNER, Room } from "~/models/Room";
 import { db } from "../db.server";
 import { and, eq } from "drizzle-orm";
 import { toInsertRoom, toRoom } from "../mappers/roomMapper";
-import { rooms, usersToRooms } from "../schema/schema";
+import {estimations, rooms, rounds, usersToRooms} from "../schema/schema";
 import { toUser } from "../mappers/userMapper";
+import {toUserToRoom} from "~/db/mappers/userToRoomMapper";
+import {UserToRoom} from "~/models/UserToRoom";
 
-export async function findRoomsByUserId(userId: string): Promise<Room[]> {
+export async function findRoomsByUserId(userId: string): Promise<UserToRoom[]> {
     const userToRooms = await db.query.usersToRooms.findMany({
         with: {
             room: true,
+            user: true,
         },
         where: eq(usersToRooms.userId, userId)
     })
 
-    return userToRooms.map(userToRoom => toRoom(userToRoom.room))
+    return userToRooms.map(userToRoom => toUserToRoom(userToRoom))
 }
 
 export async function findRoomById(id: string): Promise<Room | null> {
@@ -98,17 +101,21 @@ export async function deleteUserToRoom(roomId: string, userId: string) {
 }
 
 export async function deleteRoom(roomId: string) {
-    const resultDeleteUsersToRooms = await db
-        .delete(usersToRooms)
-        .where(eq(usersToRooms.roomId, roomId))
+    try {
+        const roundList = await db.query.rounds.findMany({
+            where: eq(rounds.roomId, roomId)
+        })
 
-    if (resultDeleteUsersToRooms.changes > 0) {
-        const result = await db
-            .delete(rooms)
-            .where(eq(rooms.id, roomId))
+        for (const round of roundList) {
+            await db.delete(estimations).where(eq(estimations.roundId, round.id))
+            await db.delete(rounds).where(eq(rounds.id, round.id))
+        }
+
+        await db.delete(usersToRooms).where(eq(usersToRooms.roomId, roomId))
+        const result = await db.delete(rooms).where(eq(rooms.id, roomId))
 
         return result.changes
+    } catch (e) {
+        return 0
     }
-
-    return 0
 }
