@@ -28,4 +28,4 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: 🔬 Vitest
-        run: vitest run
+        run: yarn vitest run
