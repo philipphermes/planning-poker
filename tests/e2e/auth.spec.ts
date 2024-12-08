@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import {test, expect} from '@playwright/test';
 import {db} from "../../app/db/db.server";
 import {users} from "../../app/db/schema/schema";

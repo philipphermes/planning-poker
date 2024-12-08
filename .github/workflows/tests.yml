@@ -1,4 +1,4 @@
-name: ⚡️ Tests
+name: 🧑‍🔬 ️Tests
 
 on:
   push:
@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   vitest:
-    name: ⚡️ Vitest
+    name: ⚡️Vitest
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -30,7 +30,7 @@ jobs:
       - name: 🔬 Vitest
         run: yarn vitest run
   playwright:
-    name: ⚡️ Playwright
+    name: 🎭 Playwright
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
