@@ -6,6 +6,11 @@ import {users} from "../../app/db/schema/schema";
 import * as argon2 from "argon2";
 import {v4 as uuidV4} from "uuid";
 import {eq} from "drizzle-orm";
+import {migrate} from "drizzle-orm/better-sqlite3/migrator";
+
+test.beforeAll(async () => {
+    migrate(db, {migrationsFolder: "./app/db/migrations/"});
+})
 
 test.beforeEach(async () => {
     await db

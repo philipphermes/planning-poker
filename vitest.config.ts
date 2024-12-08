@@ -13,7 +13,8 @@ export default defineConfig({
     test: {
         exclude: [
             ...configDefaults.exclude,
-            './tests/setup/*'
+            './tests/setup/*',
+            './tests/e2e/*',
         ],
         setupFiles: [
             './tests/setup/data.ts',
