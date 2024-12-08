@@ -36,3 +36,11 @@ export async function createUser(user: User) {
 
     return userData[0] ?? user;
 }
+
+export async function deleteUser(user: User) {
+    const result = await db
+        .delete(users)
+        .where(eq(users.id, user.id))
+
+    return result.changes
+}

@@ -1,5 +1,5 @@
-import {UsersToRooms, usersToRooms} from "~/db/schema/schema";
-import {db} from "~/db/db.server";
+import {UsersToRooms, usersToRooms} from "../schema/schema";
+import {db} from "../db.server";
 import {and, eq} from "drizzle-orm";
 
 export async function addUserToRoom(userToRoom: UsersToRooms) {

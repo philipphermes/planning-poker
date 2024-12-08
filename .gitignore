@@ -4,7 +4,7 @@ node_modules
 /build
 .env
 
-app/db/migrations
 local.db
+test.db
 
 .idea

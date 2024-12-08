@@ -32,7 +32,7 @@ authenticator.use(
             throw new Error(MESSAGE_ERROR_INVALID_CREDENTIALS)
         }
 
-        const isPasswordValid = await argon2.verify(user.password ?? '', result.data.password);
+        const isPasswordValid = await argon2.verify(user.password, result.data.password);
 
         if (!isPasswordValid) {
             throw new Error(MESSAGE_ERROR_INVALID_CREDENTIALS)

@@ -1,9 +1,9 @@
 import {db} from "../db.server";
 import {eq} from "drizzle-orm";
 import {ROLE_OWNER, Room, rooms} from "../schema/schema";
-import {deleteRound, findRoundsByRoomId} from "~/db/queries/roundQueries";
-import {deleteEstimations} from "~/db/queries/estimationQueries";
-import {addUserToRoom, deleteUsersToRooms} from "~/db/queries/userToRoomQueries";
+import {deleteRound, findRoundsByRoomId} from "./roundQueries";
+import {deleteEstimations} from "./estimationQueries";
+import {addUserToRoom, deleteUsersToRooms} from "./userToRoomQueries";
 import {v4 as uuidV4} from "uuid";
 
 export async function findRoomById(id: string) {

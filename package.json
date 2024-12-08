@@ -29,6 +29,7 @@
     "remix-auth": "^4.0.0",
     "remix-auth-form": "^3.0.0",
     "remix-validated-form": "^5.1.5",
+    "tsx": "^4.19.2",
     "uuid": "^11.0.3",
     "zod": "^3.23.8"
   },
@@ -52,7 +53,8 @@
     "tailwindcss": "^3.4.4",
     "typescript": "^5.1.6",
     "vite": "^5.1.0",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^2.1.8"
   },
   "engines": {
     "node": ">=20.0.0"
