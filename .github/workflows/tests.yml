@@ -43,7 +43,7 @@ jobs:
           cache: "yarn"
 
       - name: 📥 Install deps
-        run: npm ci
+        run: yarn --frozen-lockfile
 
       - name: 📥 Install Playwright Browsers
         run: npx playwright install --with-deps
