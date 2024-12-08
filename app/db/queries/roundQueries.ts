@@ -1,31 +1,23 @@
-import { Round } from "~/models/Round";
-import { db } from "../db.server";
-import { toInsertRound, toRound } from "../mappers/roundMapper";
-import { desc, eq } from "drizzle-orm";
-import { estimations, rounds } from "../schema/schema";
-import { toRoom } from "../mappers/roomMapper";
-import { toEstimation } from "../mappers/estimationMapper";
+import {db} from "../db.server";
+import {desc, eq} from "drizzle-orm";
+import {Round, rounds} from "../schema/schema";
+import {v4 as uuidV4} from "uuid";
 
-export async function createRound(round: Round): Promise<Round> {
-    if (!round.name || !round.room?.id) {
-        throw Error('Round name and roomId required')
-    }
+export async function createRound(round: Round) {
+    round.id = uuidV4();
+    round.createdAt = new Date().valueOf()
 
     const roundData = await db
         .insert(rounds)
-        .values(toInsertRound(round))
+        .values(round)
         .returning()
         .onConflictDoNothing();
 
-    if (!roundData[0]) {
-        return round;
-    }
-
-    return toRound(roundData[0])
+    return roundData[0] ?? round;
 }
 
 export async function findNewestRoundByRoomIdWithEstimations(roomId: string) {
-    const round = await db.query.rounds.findFirst({
+    return await db.query.rounds.findFirst({
         with: {
             estimations: {
                 with: {
@@ -37,11 +29,18 @@ export async function findNewestRoundByRoomIdWithEstimations(roomId: string) {
         where: eq(rounds.roomId, roomId),
         orderBy: [desc(rounds.createdAt)],
     });
+}
 
-    return round ? new Round(
-        round.name,
-        round.id,
-        toRoom(round.room),
-        round.estimations.map(estimation => toEstimation(estimation, estimation.user))
-    ) : null
+export async function findRoundsByRoomId(roomId: string) {
+    return await db.query.rounds.findMany({
+        where: eq(rounds.roomId, roomId)
+    })
+}
+
+export async function deleteRound(roundId: string) {
+    const result = await db
+        .delete(rounds)
+        .where(eq(rounds.id, roundId));
+
+    return result.changes;
 }

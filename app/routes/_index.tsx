@@ -3,10 +3,11 @@ import {Form, Link, redirect, useLoaderData} from "@remix-run/react";
 import {getCurrentUser} from "~/.server/auth";
 import {sessionStorage} from "~/.server/session";
 import {addToastMessages} from "~/.server/toasts";
-import {createRoom, findRoomsByUserId} from "~/db/queries/roomQueries";
-import {Room} from "~/models/Room";
+import {createRoom} from "~/db/queries/roomQueries";
 import {Toast} from "~/models/Toast";
 import {roomSchema} from "~/validators/roomSchema";
+import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
+import {v4 as uuidV4} from "uuid";
 
 export const meta: MetaFunction = () => {
     return [
@@ -17,7 +18,7 @@ export const meta: MetaFunction = () => {
 
 export async function loader({request}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
-    const userToRooms = await findRoomsByUserId(user.id)
+    const userToRooms = await findUsersToRoomsByUserId(user.id)
 
     return data({user, userToRooms});
 }
@@ -46,7 +47,10 @@ export async function action({request}: ActionFunctionArgs) {
         })
     }
 
-    const room = await createRoom(new Room(result.data.name, null, undefined, [user]))
+    const room = await createRoom({
+        id: uuidV4(),
+        name: result.data.name,
+    }, user.id)
 
     if (!room.id) {
         const session = await addToastMessages(request, [new Toast('Failed to create new room!', false)])
@@ -90,6 +94,7 @@ export default function Index() {
                 <div className="card bg-base-300 rounded-box p-4">
                     <Form method="post" className="space-y-6">
                         <label className="form-control w-full">
+                            <span className="sr-only">Room name</span>
                             <div className="label">
                                 <span className="label-text">Room name</span>
                             </div>

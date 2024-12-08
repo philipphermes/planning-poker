@@ -5,20 +5,19 @@ import {sessionStorage} from "~/.server/session";
 import {addToastMessages} from "~/.server/toasts";
 import {createUser} from "~/db/queries/userQueries";
 import {Toast} from "~/models/Toast";
-import {User} from "~/models/User";
 import {userSchema} from "~/validators/userSchema";
+import {v4 as uuidV4} from "uuid";
+import * as argon2 from "argon2";
 
 export async function loader({request}: LoaderFunctionArgs) {
-    let user: User
-
     try {
-        user = await getCurrentUser(request, false)
+        await getCurrentUser(request, false)
     } catch (error) {
         return data(null)
     }
 
     throw redirect("/")
-};
+}
 
 export async function action({request}: ActionFunctionArgs) {
     const formData = Object.fromEntries(await request.formData())
@@ -38,7 +37,11 @@ export async function action({request}: ActionFunctionArgs) {
         })
     }
 
-    const user = await createUser(new User(result.data.email, undefined, result.data.password))
+    const user = await createUser({
+        id: uuidV4(),
+        email: result.data.email,
+        password: await argon2.hash(result.data.password),
+    })
 
     if (!user.id) {
         const session = await addToastMessages(request, [new Toast('Failed to create your account!', false)])
@@ -55,7 +58,7 @@ export async function action({request}: ActionFunctionArgs) {
             "Set-Cookie": await sessionStorage.commitSession(session)
         }
     });
-};
+}
 
 export default function Register() {
     return (
@@ -68,6 +71,7 @@ export default function Register() {
             <div className="mt-10 w-full">
                 <Form method="post" className="space-y-6">
                     <label className="form-control w-full">
+                        <span className="sr-only">Email</span>
                         <div className="label">
                             <span className="label-text">Email</span>
                         </div>
@@ -75,6 +79,7 @@ export default function Register() {
                                className="input input-bordered w-full"/>
                     </label>
                     <label className="form-control w-full">
+                        <span className="sr-only">Password</span>
                         <div className="label">
                             <span className="label-text">Password</span>
                         </div>

@@ -1,13 +1,8 @@
-import { User } from "~/models/User";
-import { Room } from "~/models/Room";
-import { findOneUserById } from "~/db/queries/userQueries";
-import { Round } from "~/models/Round";
-import { findNewestRoundByRoomIdWithEstimations } from "~/db/queries/roundQueries";
-import { estimations } from "~/db/schema/schema";
-import { SSEEstimation, SSEMessage } from "~/models/SSEMessage";
+import {findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries";
+import {Room, User} from "~/db/schema/schema";
+import {SSEMessageInterface} from "~/models/SSEMessage";
 
 const controllers = new Map<string, Map<string, ReadableStreamDefaultController>>();
-const users = new Map<string, User>();
 
 export async function addClient(room: Room, user: User, controller: ReadableStreamDefaultController) {
     if (!room.id || !user.id) {
@@ -52,15 +47,15 @@ export async function broadcastToRoom(roomId: string) {
         return
     }
 
-    const message = new SSEMessage(
-        round?.name,
-        round?.estimations.map(estimation => {
-            return new SSEEstimation(
-                estimation.user?.email,
-                estimation.time
-            )
+    const message: SSEMessageInterface = {
+        round: round.name,
+        estimations: round?.estimations.map(estimation => {
+            return {
+                user: estimation.user.email,
+                estimation: estimation.time,
+            }
         })
-    )
+    }
 
     controllers.get(roomId)?.forEach(controller => {
         controller.enqueue(`data: ${JSON.stringify(message)}\n\n`);

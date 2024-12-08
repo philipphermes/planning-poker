@@ -1,17 +1,14 @@
 import type {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
 import {data, Form, Link, redirect} from "@remix-run/react";
 import {getCurrentUser, loginUser} from "~/.server/auth";
-import {User} from "~/models/User";
 
 export async function action({request}: ActionFunctionArgs) {
     await loginUser(request)
 }
 
 export async function loader({request}: LoaderFunctionArgs) {
-    let user: User
-
     try {
-        user = await getCurrentUser(request, false)
+        await getCurrentUser(request, false)
     } catch (error) {
         return data(null)
     }
@@ -30,6 +27,7 @@ export default function Login() {
             <div className="mt-10 w-full">
                 <Form method="post" className="space-y-6">
                     <label className="form-control w-full">
+                        <span className="sr-only">Email</span>
                         <div className="label">
                             <span className="label-text">Email</span>
                         </div>
@@ -37,6 +35,7 @@ export default function Login() {
                                className="input input-bordered w-full"/>
                     </label>
                     <label className="form-control w-full">
+                        <span className="sr-only">Password</span>
                         <div className="label">
                             <span className="label-text">Password</span>
                         </div>

@@ -3,22 +3,18 @@ import {ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/n
 import {getCurrentUser} from "~/.server/auth";
 import {findRoomById} from "~/db/queries/roomQueries";
 import {useEffect, useState} from "react";
-import {Estimation} from "~/models/Estimation";
 import {ClockIcon, PencilIcon} from "@heroicons/react/24/outline";
 import {roundSchema} from "~/validators/roundSchema";
 import {Toast} from "~/models/Toast";
 import {addToastMessages} from "~/.server/toasts";
 import {sessionStorage} from "~/.server/session";
 import {createRound, findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries";
-import {Round} from "~/models/Round";
-import {Room} from "~/models/Room";
 import {SSEMessageInterface} from "~/models/SSEMessage";
 import {broadcastToRoom} from "~/.server/roomSSE";
 import {estimationSchema} from "~/validators/estimationSchema";
 import {createEstimation, updateEstimation} from "~/db/queries/estimationQueries";
-import {User} from "~/models/User";
-
-//TODO the pages need refactoring :D
+import {v4 as uuidV4} from "uuid";
+import {ROLE_OWNER, User} from "~/db/schema/schema";
 
 export const meta: MetaFunction = () => {
     return [
@@ -35,6 +31,10 @@ export async function loader({request, params}: LoaderFunctionArgs) {
     }
 
     const room = await findRoomById(params.roomId)
+
+    if (!room) {
+        throw redirect('/')
+    }
 
     return data({user, room});
 }
@@ -69,6 +69,10 @@ export async function action({request, params}: ActionFunctionArgs) {
 }
 
 async function newRoundAction(request: Request, formData: FormData, params: Params<string>) {
+    if (!params.roomId) {
+        return await addToastMessages(request, [new Toast('Failed start new round!', false)])
+    }
+
     const fromEntries = Object.fromEntries(formData)
     const result = roundSchema.safeParse(fromEntries);
 
@@ -80,10 +84,11 @@ async function newRoundAction(request: Request, formData: FormData, params: Para
         return await addToastMessages(request, errors)
     }
 
-    const round = new Round(result.data.name)
-    round.room = new Room('', null, params.roomId)
-
-    const room = await createRound(round)
+    const room = await createRound({
+        id: uuidV4(),
+        name: result.data.name,
+        roomId: params.roomId,
+    })
 
     if (!room.id) {
         return await addToastMessages(request, [new Toast('Failed start new round!', false)])
@@ -116,7 +121,6 @@ async function addEstimationAction(request: Request, formData: FormData, params:
     }
 
     const estimation = round.estimations.filter(estimation => estimation?.user?.id === user.id)
-    console.log('estimation', estimation)
 
     if (estimation[0]) {
         estimation[0].time = Number.parseInt(result.data.time)
@@ -130,12 +134,12 @@ async function addEstimationAction(request: Request, formData: FormData, params:
         return await addToastMessages(request, [new Toast('Updated estimate successfully!', true)])
     }
 
-    const newEstimation = await createEstimation(new Estimation(
-        Number.parseInt(result.data.time),
-        undefined,
-        user,
-        round
-    ))
+    const newEstimation = await createEstimation({
+        id: uuidV4(),
+        time: Number.parseInt(result.data.time),
+        userId: user.id,
+        roundId: round.id,
+    });
 
     if (!newEstimation.id) {
         return await addToastMessages(request, [new Toast('Failed to add estimate!', false)])
@@ -177,13 +181,16 @@ export default function Index() {
             className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
             <h1 className="text-2xl">Room: {room?.name}, Round: {sseMessage?.round}</h1>
 
-            <Form method="POST" className="w-full flex justify-between gap-2">
-                <label className="w-full input input-bordered flex items-center">
-                    <input type="text" name="name" className="w-full" placeholder="New Round"/>
-                    <PencilIcon className="h-4 opacity-70"/>
-                </label>
-                <button name="round" type="submit" className="w-fit btn btn-outline btn-primary">Start</button>
-            </Form>
+            { room.usersToRooms.filter(userToRoom => userToRoom.user.id === user.id && userToRoom.role === ROLE_OWNER).length === 1 &&
+                <Form method="POST" className="w-full flex justify-between gap-2">
+                    <label className="w-full input input-bordered flex items-center">
+                        <input type="text" name="name" className="w-full" placeholder="New Round"/>
+                        <PencilIcon className="h-4 opacity-70"/>
+                    </label>
+                    <button name="round" type="submit" className="w-fit btn btn-outline btn-primary">Start</button>
+                </Form>
+            }
+
 
             <div className="w-full grid grid-cols-3 gap-2">
                 {sseMessage?.estimations.filter(estimation => estimation.user === user.email).length === 0 &&

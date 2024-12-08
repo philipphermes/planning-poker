@@ -2,9 +2,9 @@ import {ActionFunctionArgs, data} from "@remix-run/node";
 import {getCurrentUser} from "~/.server/auth";
 import {sessionStorage} from "~/.server/session";
 import {addToastMessages} from "~/.server/toasts";
-import {deleteUserToRoom} from "~/db/queries/roomQueries";
 import {Toast} from "~/models/Toast";
 import {userRoomSchema} from "~/validators/userRoomSchema";
+import {deleteUserToRoom} from "~/db/queries/userToRoomQueries";
 
 export async function action({request}: ActionFunctionArgs) {
     await getCurrentUser(request);
@@ -26,7 +26,10 @@ export async function action({request}: ActionFunctionArgs) {
         })
     }
 
-    const changes = await deleteUserToRoom(result.data.roomId, result.data.userId)
+    const changes = await deleteUserToRoom({
+        roomId: result.data.roomId,
+        userId: result.data.userId
+    });
 
     if (!changes) {
         return data(null)

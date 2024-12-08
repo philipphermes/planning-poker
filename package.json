@@ -1,5 +1,9 @@
 {
   "name": "planning-poker",
+  "author": {
+    "name": "Philipp Hermes",
+    "url": "https://github.com/philipphermes"
+  },
   "private": true,
   "sideEffects": false,
   "type": "module",

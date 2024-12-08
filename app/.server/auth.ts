@@ -1,13 +1,13 @@
-import { FormStrategy } from "remix-auth-form";
+import {FormStrategy} from "remix-auth-form";
 import * as argon2 from "argon2";
-import { Authenticator } from "remix-auth";
-import { redirect } from "@remix-run/node";
-import { SESSION_KEY_USER, sessionStorage } from "./session";
-import { User } from "~/models/User";
-import { userSchema } from "~/validators/userSchema";
-import { findOneUserByEmail } from "~/db/queries/userQueries";
-import { addToastMessages } from "./toasts";
-import { Toast } from "~/models/Toast";
+import {Authenticator} from "remix-auth";
+import {redirect} from "@remix-run/node";
+import {SESSION_KEY_USER, sessionStorage} from "./session";
+import {userSchema} from "~/validators/userSchema";
+import {findOneUserByEmail} from "~/db/queries/userQueries";
+import {addToastMessages} from "./toasts";
+import {User} from "~/db/schema/schema";
+import {Toast} from "~/models/Toast";
 
 export const authenticator = new Authenticator<User>();
 export const STRATEGY_FORM_EMAIL_PASSWORD = "STRATEGY_FORM_EMAIL_PASSWORD"
@@ -18,7 +18,7 @@ const MESSAGE_LOGGED_IN = "Logged in successfully!"
 const MESSAGE_LOGGED_OUT = "Logged out successfully!"
 
 authenticator.use(
-    new FormStrategy(async ({ form }) => {
+    new FormStrategy(async ({form}) => {
         const data = Object.fromEntries(form)
         const result = userSchema.safeParse(data);
 
@@ -38,7 +38,9 @@ authenticator.use(
             throw new Error(MESSAGE_ERROR_INVALID_CREDENTIALS)
         }
 
-        return user.toSafeUser();
+        user.password = '';
+
+        return user
     }),
     STRATEGY_FORM_EMAIL_PASSWORD
 );

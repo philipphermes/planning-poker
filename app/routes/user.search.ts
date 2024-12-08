@@ -17,7 +17,7 @@ export async function loader({request}: LoaderFunctionArgs) {
 
     if (roomId) {
         const room = await findRoomById(roomId)
-        if (room) room.users.map(user => excludeUserId.push(user.id))
+        if (room) room.usersToRooms.map(userToRoom => excludeUserId.push(userToRoom.user.id))
     }
 
     const users = await findUsers(query, excludeUserId)

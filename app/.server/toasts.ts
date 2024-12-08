@@ -1,6 +1,6 @@
-import { Session } from "@remix-run/node";
-import { SESSION_KEY_TOASTS, sessionStorage } from "./session";
-import { Toast } from "~/models/Toast";
+import {Session} from "@remix-run/node";
+import {SESSION_KEY_TOASTS, sessionStorage} from "./session";
+import {Toast} from "~/models/Toast";
 
 export async function addToastMessages(request: Request, messages: Toast[]) {
     const session = await sessionStorage.getSession(request.headers.get("cookie"))

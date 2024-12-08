@@ -7,8 +7,8 @@ import {sessionStorage} from "~/.server/session";
 import {addToastMessages} from "~/.server/toasts";
 import {deleteRoom, findRoomById, updateRoom} from "~/db/queries/roomQueries";
 import {Toast} from "~/models/Toast";
-import {User} from "~/models/User";
 import {roomSchema} from "~/validators/roomSchema";
+import {User} from "~/db/schema/schema";
 
 export const meta: MetaFunction = () => {
     return [
@@ -81,7 +81,10 @@ async function saveRoomAction(roomId: string, request: Request, formData: FormDa
         return await addToastMessages(request, errors)
     }
 
-    const changes = await updateRoom(roomId, result.data.name)
+    const changes = await updateRoom({
+        id: roomId,
+        name: result.data.name
+    })
 
     if (!changes) {
         return await addToastMessages(request, [new Toast('Failed update room!', false)])
@@ -106,7 +109,7 @@ export default function Index() {
         if (query) {
             userFetcher.load(`/user/search?q=${query}&r=${room?.id}`);
         }
-    }, [query]);
+    }, [query, room?.id, userFetcher]);
 
     function addUserToRoom(userId: string) {
         addUserFetcher.submit({
@@ -148,14 +151,14 @@ export default function Index() {
             </label>
 
             <div className="flex w-full flex-col border-opacity-50">
-                {room?.users.map((roomUser) => (
-                    <div key={roomUser.id}>
+                {room?.usersToRooms.map((usersToRooms) => (
+                    <div key={usersToRooms.user.id}>
                         <div className="divider"></div>
                         <div
                             className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center justify-items-end gap-4">
-                            <h3 className="text-lg w-full">{roomUser.email}</h3>
-                            {roomUser.id !== user.id
-                                ? <button onClick={() => removeUserFromRoom(roomUser.id)}
+                            <h3 className="text-lg w-full">{usersToRooms.user.email}</h3>
+                            {usersToRooms.user.id !== user.id
+                                ? <button onClick={() => removeUserFromRoom(usersToRooms.user.id)}
                                           className="btn btn-outline btn-secondary">Remove</button>
                                 : <span>Owner</span>
                             }
