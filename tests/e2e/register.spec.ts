@@ -4,6 +4,7 @@ import {users} from "../../app/db/schema/schema";
 import * as argon2 from "argon2";
 import {v4 as uuidV4} from "uuid";
 import {migrate} from "drizzle-orm/better-sqlite3/migrator";
+import {eq} from "drizzle-orm";
 
 test.beforeAll(async () => {
     migrate(db, {migrationsFolder: "./app/db/migrations/"});
@@ -13,13 +14,30 @@ test.afterEach(async () => {
     await db.delete(users)
 })
 
-test('redirected to login when not authenticated', async ({page}) => {
-    await page.goto('/');
+test('can register', async ({page}) => {
+    await page.goto('/register');
+
+    await page.getByPlaceholder('Type here').click();
+    await page.getByPlaceholder('Type here').fill('test2@email.com');
+
+    await page.getByPlaceholder('********').click();
+    await page.getByPlaceholder('********').fill('password1');
+
+    await page.getByRole('button', { name: 'Sign up' }).click();
 
     await expect(page).toHaveURL('/login');
+
+    const user = await db
+        .query
+        .users
+        .findFirst({
+            where: eq(users.email, 'test2@email.com'),
+        })
+
+    await expect(user.email).toBe('test2@email.com')
 });
 
-test('redirected to / authenticated successfully and can logout', async ({page}) => {
+test('cant register email already used', async ({page}) => {
     await db
         .insert(users)
         .values({
@@ -30,7 +48,7 @@ test('redirected to / authenticated successfully and can logout', async ({page})
         })
         .onConflictDoNothing()
 
-    await page.goto('/login');
+    await page.goto('/register');
 
     await page.getByPlaceholder('Type here').click();
     await page.getByPlaceholder('Type here').fill('test1@email.com');
@@ -38,12 +56,8 @@ test('redirected to / authenticated successfully and can logout', async ({page})
     await page.getByPlaceholder('********').click();
     await page.getByPlaceholder('********').fill('password1');
 
-    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('button', { name: 'Sign up' }).click();
 
-    await expect(page).toHaveURL('/');
-
-    await page.goto('/logout');
-
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL('/register');
 });
 
