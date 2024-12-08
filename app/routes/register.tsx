@@ -1,13 +1,12 @@
 import type {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
 import {data, Form, Link, redirect} from "@remix-run/react";
 import {getCurrentUser} from "~/.server/auth";
-import {sessionStorage} from "~/.server/session";
-import {addToastMessages} from "~/.server/toasts";
 import {createUser} from "~/db/queries/userQueries";
-import {Toast} from "~/models/Toast";
 import {userSchema} from "~/validators/userSchema";
 import {v4 as uuidV4} from "uuid";
 import * as argon2 from "argon2";
+import {getAndValidateFormData} from "~/utils/formData";
+import {getDataWithToast, redirectWithToast} from "~/utils/toast";
 
 export async function loader({request}: LoaderFunctionArgs) {
     try {
@@ -20,44 +19,18 @@ export async function loader({request}: LoaderFunctionArgs) {
 }
 
 export async function action({request}: ActionFunctionArgs) {
-    const formData = Object.fromEntries(await request.formData())
-    const result = userSchema.safeParse(formData);
-
-    if (!result.success) {
-        const errors: Toast[] = result.error?.errors.map(error => {
-            return new Toast(error.message, false)
-        })
-
-        const session = await addToastMessages(request, errors)
-
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        })
-    }
+    const result = await getAndValidateFormData(await request.formData(), request, userSchema)
+    if (result.init) return result
 
     const user = await createUser({
         id: uuidV4(),
-        email: result.data.email,
-        password: await argon2.hash(result.data.password),
+        email: result.email,
+        password: await argon2.hash(result.password),
     })
 
-    if (!user.id) {
-        const session = await addToastMessages(request, [new Toast('Failed to create your account!', false)])
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        })
-    }
+    if (!user.id) return await getDataWithToast(request, 'Failed to create your account!', false, null)
 
-    const session = await addToastMessages(request, [new Toast('Your account was created successfully!', true)])
-    return redirect("/login", {
-        headers: {
-            "Set-Cookie": await sessionStorage.commitSession(session)
-        }
-    });
+    await redirectWithToast(request, 'Your account was created successfully!', true, '/login')
 }
 
 export default function Register() {

@@ -3,7 +3,7 @@ import {data, Form, Link, redirect} from "@remix-run/react";
 import {getCurrentUser, loginUser} from "~/.server/auth";
 
 export async function action({request}: ActionFunctionArgs) {
-    await loginUser(request)
+    return await loginUser(request)
 }
 
 export async function loader({request}: LoaderFunctionArgs) {

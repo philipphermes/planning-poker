@@ -8,6 +8,7 @@ import {findOneUserByEmail} from "~/db/queries/userQueries";
 import {addToastMessages} from "./toasts";
 import {User} from "~/db/schema/schema";
 import {Toast} from "~/models/Toast";
+import {getDataWithToast, redirectWithToast} from "~/utils/toast";
 
 export const authenticator = new Authenticator<User>();
 export const STRATEGY_FORM_EMAIL_PASSWORD = "STRATEGY_FORM_EMAIL_PASSWORD"
@@ -65,12 +66,7 @@ export async function loginUser(request: Request) {
     try {
         user = await authenticator.authenticate(STRATEGY_FORM_EMAIL_PASSWORD, request)
     } catch (error) {
-        const session = await addToastMessages(request, [new Toast(MESSAGE_ERROR_INVALID_CREDENTIALS, false)])
-        throw redirect("/login", {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        });
+        return await getDataWithToast(request, MESSAGE_ERROR_INVALID_CREDENTIALS, false, null)
     }
 
     const session = await addToastMessages(request, [new Toast(MESSAGE_LOGGED_IN, true)])

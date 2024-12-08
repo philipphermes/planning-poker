@@ -1,13 +1,13 @@
 import {ActionFunctionArgs, data, LoaderFunctionArgs, type MetaFunction} from "@remix-run/node";
-import {Form, Link, redirect, useLoaderData} from "@remix-run/react";
+import {redirect, useLoaderData} from "@remix-run/react";
 import {getCurrentUser} from "~/.server/auth";
-import {sessionStorage} from "~/.server/session";
-import {addToastMessages} from "~/.server/toasts";
 import {createRoom} from "~/db/queries/roomQueries";
-import {Toast} from "~/models/Toast";
 import {roomSchema} from "~/validators/roomSchema";
 import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 import {v4 as uuidV4} from "uuid";
+import RoomList from "~/components/room/RoomList";
+import {getAndValidateFormData} from "~/utils/formData";
+import {getDataWithToast} from "~/utils/toast";
 
 export const meta: MetaFunction = () => {
     return [
@@ -25,48 +25,15 @@ export async function loader({request}: LoaderFunctionArgs) {
 
 export async function action({request}: ActionFunctionArgs) {
     const user = await getCurrentUser(request);
+    if (!user) throw redirect('/login')
 
-    if (!user) {
-        throw redirect('/login')
-    }
+    const result = await getAndValidateFormData(await request.formData(), request, roomSchema)
+    if (result.init) return result
 
-    const formData = Object.fromEntries(await request.formData())
-    const result = roomSchema.safeParse(formData);
+    const room = await createRoom({id: uuidV4(), name: result.name}, user.id)
+    if (!room.id) return await getDataWithToast(request, 'Failed to create new room!', false, null)
 
-    if (!result.success) {
-        const errors: Toast[] = result.error?.errors.map(error => {
-            return new Toast(error.message, false)
-        })
-
-        const session = await addToastMessages(request, errors)
-
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        })
-    }
-
-    const room = await createRoom({
-        id: uuidV4(),
-        name: result.data.name,
-    }, user.id)
-
-    if (!room.id) {
-        const session = await addToastMessages(request, [new Toast('Failed to create new room!', false)])
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        })
-    }
-
-    const session = await addToastMessages(request, [new Toast('Room was created successfully!', true)])
-    return data(null, {
-        headers: {
-            "Set-Cookie": await sessionStorage.commitSession(session)
-        }
-    })
+    return await getDataWithToast(request, 'Room was created successfully!', true, null)
 }
 
 export default function Index() {
@@ -75,36 +42,7 @@ export default function Index() {
     return (
         <div
             className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <div className="flex w-full flex-col border-opacity-50">
-                {userToRooms.map(userToRoom => (
-                    <div key={userToRoom.room.id}>
-                        <div className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center gap-4">
-                            <h3 className="col-span-2 text-lg">{userToRoom.room.name}</h3>
-                            {
-                                userToRoom.role === 'owner'
-                                && <Link to={`/room/${userToRoom.room.id}/edit`} prefetch="intent"
-                                         className="btn btn-outline w-full btn-secondary">Edit</Link>
-                            }
-                            <Link to={`/room/${userToRoom.room.id}`} prefetch="intent"
-                                  className="btn w-full btn-primary">Open</Link>
-                        </div>
-                        <div className="divider"></div>
-                    </div>
-                ))}
-                <div className="card bg-base-300 rounded-box p-4">
-                    <Form method="post" className="space-y-6">
-                        <label className="form-control w-full">
-                            <span className="sr-only">Room name</span>
-                            <div className="label">
-                                <span className="label-text">Room name</span>
-                            </div>
-                            <input type="text" name="name" placeholder="Type here"
-                                   className="input input-bordered w-full"/>
-                        </label>
-                        <button type="submit" className="btn btn-outline btn-accent w-full">Create new room</button>
-                    </Form>
-                </div>
-            </div>
+            <RoomList usersToRooms={userToRooms}/>
         </div>
     );
 }
