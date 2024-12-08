@@ -20,6 +20,9 @@ module.exports = {
     es6: true,
   },
   ignorePatterns: ["!**/.server", "!**/.client"],
+  ignore: [
+      "tests/**/*"
+  ],
 
   // Base config
   extends: ["eslint:recommended"],

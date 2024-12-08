@@ -8,3 +8,7 @@ local.db
 test.db
 
 .idea
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

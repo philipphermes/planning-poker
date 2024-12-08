@@ -34,12 +34,15 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@remix-run/dev": "^2.15.0",
     "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.1",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
+    "@vitest/coverage-v8": "^2.1.8",
     "autoprefixer": "^10.4.19",
     "daisyui": "^4.12.14",
     "drizzle-kit": "^0.28.1",

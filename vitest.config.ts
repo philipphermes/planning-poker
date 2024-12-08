@@ -13,9 +13,13 @@ export default defineConfig({
     test: {
         exclude: [
             ...configDefaults.exclude,
+            './tests/setup/*'
         ],
         setupFiles: [
             './tests/setup/data.ts',
         ],
+        coverage: {
+            provider: 'v8'
+        },
     },
 })
