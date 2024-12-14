@@ -8,6 +8,8 @@ import {roomSchema} from "~/validators/roomSchema";
 import {User} from "~/db/schema/schema";
 import {getAndValidateFormData} from "~/utils/formData";
 import {getDataWithToast, redirectWithToast} from "~/utils/toast";
+import {InputWithIcon, InputWithLabel} from "~/components/Input";
+import {Button} from "~/components/Button";
 
 const DEBOUNCE_DELAY = 500;
 
@@ -120,20 +122,28 @@ export default function Index() {
         <div
             className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
             <Form method="POST" className="w-full flex justify-between gap-2">
-                <label className="w-full input input-ghost flex items-center">
-                    <input type="text" name="name" value={roomName} onChange={e => setRoomName(e.target.value)}
-                           className="w-full" placeholder="Name"/>
-                    <PencilIcon className="h-4 opacity-70"/>
-                </label>
-                <button name="save" type="submit" className="w-fit btn btn-outline btn-primary">Save</button>
-                <button name="delete" type="submit" className="w-fit btn btn-outline btn-ghost">Delete</button>
+                <InputWithIcon
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    icon={<PencilIcon className="h-4 opacity-70"/>}
+                    value={roomName}
+                    className="input-ghost"
+                    onChange={e => setRoomName(e.target.value)}
+                />
+                <Button text="Save" name="save" type="submit" className="w-fit btn-primary btn-outline" />
+                <Button text="Delete" name="delete" type="submit" className="w-fit btn-ghost btn-outline" />
             </Form>
 
-            <label className="w-full input input-bordered flex items-center gap-2">
-                <input type="text" className="grow" placeholder="Search Users..."
-                       onChange={(e) => setQuery(e.target.value)} value={query}/>
-                <MagnifyingGlassIcon className="h-4 opacity-70"/>
-            </label>
+            <InputWithIcon
+                type="text"
+                name="search"
+                placeholder="Search Users..."
+                value={query}
+                className="input-bordered"
+                onChange={(e) => setQuery(e.target.value)}
+                icon={<MagnifyingGlassIcon className="h-4 opacity-70"/>}
+            />
 
             <div className="flex w-full flex-col border-opacity-50">
                 {room?.usersToRooms.map((usersToRooms) => (

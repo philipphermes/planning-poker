@@ -15,6 +15,8 @@ import {estimationSchema} from "~/validators/estimationSchema";
 import {createEstimation, updateEstimation} from "~/db/queries/estimationQueries";
 import {v4 as uuidV4} from "uuid";
 import {ROLE_OWNER, User} from "~/db/schema/schema";
+import {InputWithIcon} from "~/components/Input";
+import {Button} from "~/components/Button";
 
 export const meta: MetaFunction = () => {
     return [
@@ -182,26 +184,29 @@ export default function Index() {
 
             { room.usersToRooms.filter(userToRoom => userToRoom.user.id === user.id && userToRoom.role === ROLE_OWNER).length === 1 &&
                 <Form method="POST" className="w-full flex justify-between gap-2">
-                    <label className="w-full input input-bordered flex items-center">
-                        <input type="text" name="name" className="w-full" placeholder="New Round"/>
-                        <PencilIcon className="h-4 opacity-70"/>
-                    </label>
-                    <button name="round" type="submit" className="w-fit btn btn-outline btn-primary">Start</button>
+                    <InputWithIcon
+                        type="text"
+                        name="name"
+                        placeholder="New Round"
+                        className="input-bordered"
+                        icon={<PencilIcon className="h-4 opacity-70"/>}
+                    />
+                    <Button name="round" type="submit" text="Start" className="btn-outline btn-primary" />
                 </Form>
             }
-
 
             <div className="w-full grid grid-cols-3 gap-2">
                 {sseMessage?.estimations.filter(estimation => estimation.user === user.email).length === 0 &&
                     <Form method="POST" className="card bg-base-300 flex items-center justify-center">
                         <div className="card-body flex flex-col gap-2">
-                            <label className="w-full input input-bordered flex items-center">
-                                <input type="text" name="time" className="w-full" placeholder="0"/>
-                                <ClockIcon className="h-4 opacity-70"/>
-                            </label>
-                            <button name="estimate" type="submit"
-                                    className="w-full btn btn-outline btn-primary">Submit
-                            </button>
+                            <InputWithIcon
+                                type="text"
+                                name="time"
+                                placeholder="0"
+                                className="input-bordered"
+                                icon={<ClockIcon className="h-4 opacity-70"/>}
+                            />
+                            <Button name="estimate" type="submit" text="Submit" className="btn-outline btn-primary" />
                         </div>
                     </Form>
                 }
@@ -211,14 +216,16 @@ export default function Index() {
                         {estimation.user === user.email ?
                             <Form method="POST">
                                 <div className="card-body flex flex-col gap-2">
-                                    <label className="w-full input input-bordered flex items-center">
-                                        <input type="text" name="time" className="w-full" placeholder="0"
-                                               onChange={e => setTime(e.target.value)} value={time}/>
-                                        <ClockIcon className="h-4 opacity-70"/>
-                                    </label>
-                                    <button name="estimate" type="submit"
-                                            className="w-full btn btn-outline btn-primary">Submit
-                                    </button>
+                                    <InputWithIcon
+                                        type="text"
+                                        name="time"
+                                        placeholder="0"
+                                        className="input-bordered"
+                                        icon={<ClockIcon className="h-4 opacity-70"/>}
+                                        onChange={e => setTime(e.target.value)}
+                                        value={time}
+                                    />
+                                    <Button name="estimate" type="submit" text="Submit" className="btn-outline btn-primary" />
                                 </div>
                             </Form>
                             : <div className="card-body">

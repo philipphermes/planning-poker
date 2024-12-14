@@ -4,11 +4,11 @@ import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 
 type FindUsersToRoomsByUserIdType = Awaited<ReturnType<typeof findUsersToRoomsByUserId>>;
 
-interface RoomListProps {
+export type RoomList = {
     usersToRooms: FindUsersToRoomsByUserIdType;
 }
 
-export default function RoomList({usersToRooms}: RoomListProps) {
+export default function RoomList({usersToRooms}: RoomList) {
     return (
         <div className="flex w-full flex-col border-opacity-50">
             {usersToRooms.map(userToRoom => (
@@ -17,11 +17,9 @@ export default function RoomList({usersToRooms}: RoomListProps) {
                         <h3 className="col-span-2 text-lg">{userToRoom.room.name}</h3>
                         {
                             userToRoom.role === 'owner'
-                            && <Link to={`/room/${userToRoom.room.id}/edit`} prefetch="intent"
-                                     className="btn btn-outline w-full btn-secondary">Edit</Link>
+                            && <Link to={`/room/${userToRoom.room.id}/edit`} prefetch="intent" className="btn btn-outline w-full btn-secondary">Edit</Link>
                         }
-                        <Link to={`/room/${userToRoom.room.id}`} prefetch="intent"
-                              className="btn w-full btn-primary">Open</Link>
+                        <Link to={`/room/${userToRoom.room.id}`} prefetch="intent" className="btn w-full btn-primary">Open</Link>
                     </div>
                     <div className="divider"></div>
                 </div>
