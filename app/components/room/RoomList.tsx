@@ -8,7 +8,7 @@ export type RoomList = {
     usersToRooms: FindUsersToRoomsByUserIdType;
 }
 
-export default function RoomList({usersToRooms}: RoomList) {
+export function RoomList({usersToRooms}: RoomList) {
     return (
         <div className="flex w-full flex-col border-opacity-50">
             {usersToRooms.map(userToRoom => (

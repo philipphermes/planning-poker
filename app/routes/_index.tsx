@@ -5,7 +5,7 @@ import {createRoom} from "~/db/queries/roomQueries";
 import {roomSchema} from "~/validators/roomSchema";
 import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 import {v4 as uuidV4} from "uuid";
-import RoomList from "~/components/room/RoomList";
+import {RoomList} from "~/components/room/RoomList";
 import {getAndValidateFormData} from "~/utils/formData";
 import {getDataWithToast} from "~/utils/toast";
 

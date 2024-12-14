@@ -8,7 +8,7 @@ import {roomSchema} from "~/validators/roomSchema";
 import {User} from "~/db/schema/schema";
 import {getAndValidateFormData} from "~/utils/formData";
 import {getDataWithToast, redirectWithToast} from "~/utils/toast";
-import {InputWithIcon, InputWithLabel} from "~/components/Input";
+import {InputWithIcon} from "~/components/Input";
 import {Button} from "~/components/Button";
 
 const DEBOUNCE_DELAY = 500;
