@@ -1,6 +1,5 @@
 # Planning Poker
-![lint](https://github.com/philipphermes/planning-poker/actions/workflows/lint.yml/badge.svg)
-![lint](https://github.com/philipphermes/planning-poker/actions/workflows/tests.yml/badge.svg)
+![CI](https://github.com/philipphermes/planning-poker/actions/workflows/ci.yml/badge.svg)
 
 ## Development
 

@@ -8,7 +8,7 @@ import {findOneUserByEmail} from "~/db/queries/userQueries";
 import {addToastMessages} from "./toasts";
 import {User} from "~/db/schema/schema";
 import {Toast} from "~/models/Toast";
-import {getDataWithToast, redirectWithToast} from "~/utils/toast";
+import {getDataWithToast} from "~/utils/toast";
 
 export const authenticator = new Authenticator<User>();
 export const STRATEGY_FORM_EMAIL_PASSWORD = "STRATEGY_FORM_EMAIL_PASSWORD"

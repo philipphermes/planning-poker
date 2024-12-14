@@ -1,4 +1,4 @@
-name: 🧑‍🔬 ️Tests
+name: Planning Poker CI
 
 on:
   push:
@@ -11,8 +11,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: ⬣ Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
+
+      - name: 📥 Install deps
+        run: yarn --frozen-lockfile
+
+      - name: 🔬 Lint
+        run: yarn lint
   vitest:
     name: ⚡️Vitest
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
@@ -31,6 +50,7 @@ jobs:
         run: yarn vitest run
   playwright:
     name: 🎭 Playwright
+    needs: lint
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
