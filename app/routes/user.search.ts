@@ -11,9 +11,7 @@ export async function loader({request}: LoaderFunctionArgs) {
     const roomId = url.searchParams.get("r");
     const excludeUserId: string[] = []
 
-    if (!query) {
-        return data({results: []});
-    }
+    if (!query) return data({results: []});
 
     if (roomId) {
         const room = await findRoomById(roomId)
@@ -22,5 +20,8 @@ export async function loader({request}: LoaderFunctionArgs) {
 
     const users = await findUsers(query, excludeUserId)
 
-    return data(users)
+    return data(users.map(function (user) {
+        user.password = ''
+        return user
+    }))
 }

@@ -160,7 +160,6 @@ export default function Index() {
         connectedUsersEventSource.onmessage = (event) => {
             const data: SSEMessageInterface = JSON.parse(event.data);
             setSSEMessage(data)
-            console.log(data)
 
             data?.estimations.forEach(message => {
                 if (message.user === user.email) {

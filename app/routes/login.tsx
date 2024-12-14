@@ -46,8 +46,9 @@ export default function Login() {
                 </Form>
             </div>
 
-            <span className="">No account? Sign up <Link prefetch="intent" to="/register"
-                                                         className="link link-secondary">here</Link></span>
+            <span>
+                No account? Sign up <Link prefetch="intent" to="/register" className="link link-secondary">here</Link>
+            </span>
         </div>
     );
 }

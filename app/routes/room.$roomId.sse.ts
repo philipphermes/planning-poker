@@ -6,16 +6,12 @@ import {findRoomById} from "~/db/queries/roomQueries";
 export async function loader({request, params}: LoaderFunctionArgs) {
     const roomId = params.roomId
 
-    if (!roomId) {
-        return data({}, {status: 500})
-    }
+    if (!roomId) return data({}, {status: 500})
 
     const user = await getCurrentUser(request);
     const room = await findRoomById(roomId)
 
-    if (!room) {
-        return data({}, {status: 500})
-    }
+    if (!room) return data({}, {status: 500})
 
     return new Response(
         new ReadableStream({

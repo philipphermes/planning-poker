@@ -4,8 +4,8 @@
 ## Development
 
 Run the dev server:
-```shellscript
-npm run dev
+```sh
+yarn dev
 ```
 
 ## Drizzle
@@ -22,5 +22,5 @@ npx drizzle-kit migrate
 
 Studio:
 ```sh
-npm run drizzle-kit studio --port=3000
+yarn drizzle-kit studio --port=3000
 ```

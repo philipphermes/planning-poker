@@ -40,8 +40,7 @@ export default function Index() {
     const {userToRooms} = useLoaderData<typeof loader>()
 
     return (
-        <div
-            className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
             <RoomList usersToRooms={userToRooms}/>
         </div>
     );

@@ -3,12 +3,13 @@ import {ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/n
 import {data, Form, redirect, useFetcher, useLoaderData} from "@remix-run/react";
 import {useEffect, useState} from "react";
 import {getCurrentUser} from "~/.server/auth";
-import {sessionStorage} from "~/.server/session";
-import {addToastMessages} from "~/.server/toasts";
 import {deleteRoom, findRoomById, updateRoom} from "~/db/queries/roomQueries";
-import {Toast} from "~/models/Toast";
 import {roomSchema} from "~/validators/roomSchema";
 import {User} from "~/db/schema/schema";
+import {getAndValidateFormData} from "~/utils/formData";
+import {getDataWithToast, redirectWithToast} from "~/utils/toast";
+
+const DEBOUNCE_DELAY = 500;
 
 export const meta: MetaFunction = () => {
     return [
@@ -31,66 +32,44 @@ export async function loader({request, params}: LoaderFunctionArgs) {
 
 export async function action({request, params}: ActionFunctionArgs) {
     await getCurrentUser(request)
+
     if (!params.roomId) {
         throw redirect('/')
     }
 
     const formData = await request.formData()
-    let session
 
     if (formData.has('delete')) {
-        session = await deleteRoomAction(params.roomId, request)
+        return await deleteRoomAction(params.roomId, request)
     }
 
     if (formData.has('save')) {
-        session = await saveRoomAction(params.roomId, request, formData)
+        return await saveRoomAction(params.roomId, request, formData)
     }
 
-    return data(null, session ? {
-        headers: {
-            "Set-Cookie": await sessionStorage.commitSession(session)
-        }
-    } : undefined)
+    return await getDataWithToast(request, 'Invalid action', false, null)
 }
 
 async function deleteRoomAction(roomId: string, request: Request) {
     const changes = await deleteRoom(roomId)
 
-    if (!changes) {
-        return await addToastMessages(request, [new Toast('Failed deleting room!', false)])
-    }
+    if (!changes) return await getDataWithToast(request, 'Failed deleting room!', false, null)
 
-    const session = await addToastMessages(request, [new Toast('Deleted room successfully!', true)])
-
-    throw redirect('/', {
-        headers: {
-            "Set-Cookie": await sessionStorage.commitSession(session)
-        }
-    })
+    await redirectWithToast(request, 'Deleted room successfully!', true, '/')
 }
 
 async function saveRoomAction(roomId: string, request: Request, formData: FormData) {
-    const fromEntries = Object.fromEntries(formData)
-    const result = roomSchema.safeParse(fromEntries);
-
-    if (!result.success) {
-        const errors: Toast[] = result.error?.errors.map(error => {
-            return new Toast(error.message, false)
-        })
-
-        return await addToastMessages(request, errors)
-    }
+    const result = await getAndValidateFormData(formData, request, roomSchema)
+    if (result.init) return result
 
     const changes = await updateRoom({
         id: roomId,
-        name: result.data.name
+        name: result.name
     })
 
-    if (!changes) {
-        return await addToastMessages(request, [new Toast('Failed update room!', false)])
-    }
+    if (!changes) return await getDataWithToast(request, 'Failed update room!', false, null)
 
-    return await addToastMessages(request, [new Toast('Updated room successfully!', true)])
+    return await getDataWithToast(request, 'Updated room successfully!', true, null)
 }
 
 export default function Index() {
@@ -106,10 +85,16 @@ export default function Index() {
     const users = userFetcher.data || []
 
     useEffect(() => {
-        if (query) {
-            userFetcher.load(`/user/search?q=${query}&r=${room?.id}`);
-        }
-    }, [query, room?.id, userFetcher]);
+        const trimmedQuery = query.trim();
+        if (!trimmedQuery) return;
+
+        const handler = setTimeout(() => {
+            userFetcher.load(`/user/search?q=${trimmedQuery}&r=${room?.id}`);
+        }, DEBOUNCE_DELAY);
+
+        return () => clearTimeout(handler);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query, room?.id]);
 
     function addUserToRoom(userId: string) {
         addUserFetcher.submit({

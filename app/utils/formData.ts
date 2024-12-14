@@ -13,8 +13,6 @@ export async function getAndValidateFormData<T extends ZodRawShape>(
     const formDataEntries = Object.fromEntries(formData);
     const result = validator.safeParse(formDataEntries);
 
-    console.log(result);
-
     if (!result.success) {
         const errors: Toast[] = result.error.errors.map((error) => {
             return new Toast(error.message, false);
