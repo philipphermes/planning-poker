@@ -3,7 +3,7 @@ import {getCurrentUser} from "~/.server/auth";
 import {userRoomSchema} from "~/validators/userRoomSchema";
 import {deleteUserToRoom} from "~/db/queries/userToRoomQueries";
 import {getAndValidateFormData} from "~/utils/formData";
-import {getDataWithToast} from "~/utils/toast";
+import {toast} from "~/.server/toast";
 
 export async function action({request}: ActionFunctionArgs) {
     await getCurrentUser(request);
@@ -16,7 +16,7 @@ export async function action({request}: ActionFunctionArgs) {
         userId: result.data.userId
     });
 
-    if (!changes) return await getDataWithToast(request, 'Failed to remove user!', false, null)
+    if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed to remove user!', status: 'error'}, null)
 
-    return await getDataWithToast(request, 'Removed user successfully!', true, null)
+    return await toast.getDataWithToasts(request, {message: 'Removed user successfully!', status: 'success'}, null)
 }

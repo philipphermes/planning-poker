@@ -28,8 +28,8 @@ export default function Login() {
 
             <div className="mt-10 w-full">
                 <Form method="post" className="space-y-6">
-                    <InputWithLabel type="email" name="email" placeholder="Type here" label="Email" />
-                    <InputWithLabel type="password" name="password" placeholder="********" label="Password" />
+                    <InputWithLabel type="email" name="email" placeholder="Type here" label="Email" className='input-bordered' />
+                    <InputWithLabel type="password" name="password" placeholder="********" label="Password" className='input-bordered' />
                     <Button text="Sign In" type="submit" className="w-full btn-primary btn-outline" />
                 </Form>
             </div>

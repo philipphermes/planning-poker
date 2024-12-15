@@ -6,9 +6,9 @@ import {userSchema} from "~/validators/userSchema";
 import {v4 as uuidV4} from "uuid";
 import * as argon2 from "argon2";
 import {getAndValidateFormData} from "~/utils/formData";
-import {getDataWithToast, redirectWithToast} from "~/utils/toast";
 import {InputWithLabel} from "~/components/Input";
 import {Button} from "~/components/Button";
+import {toast} from "~/.server/toast";
 
 export async function loader({request}: LoaderFunctionArgs) {
     try {
@@ -30,9 +30,9 @@ export async function action({request}: ActionFunctionArgs) {
         password: await argon2.hash(result.password),
     })
 
-    if (!user.id) return await getDataWithToast(request, 'Failed to create your account!', false, null)
+    if (!user.id) return await toast.getDataWithToasts(request, {message: 'Failed to create your account!', status: 'error'}, null)
 
-    await redirectWithToast(request, 'Your account was created successfully!', true, '/login')
+    await toast.throwRedirectWithToasts(request, {message: 'Your account was created successfully!', status: 'success'}, '/login')
 }
 
 export default function Register() {
@@ -45,8 +45,8 @@ export default function Register() {
 
             <div className="mt-10 w-full">
                 <Form method="post" className="space-y-6">
-                    <InputWithLabel type="email" name="email" placeholder="Type here" label="Email" />
-                    <InputWithLabel type="password" name="password" placeholder="********" label="Password" />
+                    <InputWithLabel type="email" name="email" placeholder="Type here" label="Email" className='input-bordered' />
+                    <InputWithLabel type="password" name="password" placeholder="********" label="Password" className='input-bordered' />
                     <Button text="Sign Up" type="submit" className="w-full btn-primary btn-outline" />
                 </Form>
             </div>

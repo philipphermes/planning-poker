@@ -5,8 +5,6 @@ import {findRoomById} from "~/db/queries/roomQueries";
 import {useEffect, useState} from "react";
 import {ClockIcon, PencilIcon} from "@heroicons/react/24/outline";
 import {roundSchema} from "~/validators/roundSchema";
-import {Toast} from "~/models/Toast";
-import {addToastMessages} from "~/.server/toasts";
 import {sessionStorage} from "~/.server/session";
 import {createRound, findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries";
 import {SSEMessageInterface} from "~/models/SSEMessage";
@@ -17,6 +15,8 @@ import {v4 as uuidV4} from "uuid";
 import {ROLE_OWNER, User} from "~/db/schema/schema";
 import {InputWithIcon} from "~/components/Input";
 import {Button} from "~/components/Button";
+import {toast} from "~/.server/toast";
+import {getAndValidateFormData} from "~/utils/formData";
 
 export const meta: MetaFunction = () => {
     return [
@@ -49,106 +49,68 @@ export async function action({request, params}: ActionFunctionArgs) {
 
     const formData = await request.formData();
 
-    if (formData.has('round')) {
-        const session = await newRoundAction(request, formData, params)
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        })
-    }
-
-    if (formData.has('estimate')) {
-        const session = await addEstimationAction(request, formData, params, user)
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session)
-            }
-        })
-    }
+    if (formData.has('round')) return await newRoundAction(request, formData, params)
+    if (formData.has('estimate')) return await addEstimationAction(request, formData, params, user)
 
     return data(null)
 }
 
 async function newRoundAction(request: Request, formData: FormData, params: Params<string>) {
-    if (!params.roomId) {
-        return await addToastMessages(request, [new Toast('Failed start new round!', false)])
-    }
+    if (!params.roomId) return await toast.getDataWithToasts(request, {message: 'Failed start new round!', status: 'error'}, null)
 
-    const fromEntries = Object.fromEntries(formData)
-    const result = roundSchema.safeParse(fromEntries);
-
-    if (!result.success) {
-        const errors: Toast[] = result.error?.errors.map(error => {
-            return new Toast(error.message, false)
-        })
-
-        return await addToastMessages(request, errors)
-    }
+    const result = await getAndValidateFormData(formData, request, roundSchema)
+    if (result.init) return result
 
     const room = await createRound({
         id: uuidV4(),
-        name: result.data.name,
+        name: result.name,
         roomId: params.roomId,
     })
 
-    if (!room.id) {
-        return await addToastMessages(request, [new Toast('Failed start new round!', false)])
-    }
+    if (room.id) await broadcastToRoom(params.roomId)
 
-    await broadcastToRoom(params.roomId)
-    return await addToastMessages(request, [new Toast('Started new round successfully!', true)])
+    return await toast.getDataWithToasts(request, {
+        message: room.id ? 'Started new round successfully!' : 'Failed start new round!',
+        status: room.id ? 'success' : 'error',
+    }, null)
 }
 
 async function addEstimationAction(request: Request, formData: FormData, params: Params<string>, user: User) {
-    const fromEntries = Object.fromEntries(formData)
-    const result = estimationSchema.safeParse(fromEntries);
-
-    if (!params.roomId) {
-        return await addToastMessages(request, [new Toast('Failed to add estimate!', false)])
-    }
+    if (!params.roomId) return await toast.getDataWithToasts(request, {message: 'Failed to add estimate!', status: 'error'}, null)
 
     const round = await findNewestRoundByRoomIdWithEstimations(params.roomId)
+    if (!round) return await toast.getDataWithToasts(request, {message: 'Failed to add estimate!', status: 'error'}, null)
 
-    if (!round) {
-        return await addToastMessages(request, [new Toast('Failed to add estimate!', false)])
-    }
-
-    if (!result.success) {
-        const errors: Toast[] = result.error?.errors.map(error => {
-            return new Toast(error.message, false)
-        })
-
-        return await addToastMessages(request, errors)
-    }
+    const result = await getAndValidateFormData(formData, request, estimationSchema)
+    if (result.init) return result
 
     const estimation = round.estimations.filter(estimation => estimation?.user?.id === user.id)
 
     if (estimation[0]) {
-        estimation[0].time = Number.parseInt(result.data.time)
+        estimation[0].time = Number.parseInt(result.time)
         const changes = await updateEstimation(estimation[0])
 
-        if (changes === 0) {
-            return await addToastMessages(request, [new Toast('Failed to update estimate!', false)])
-        }
+        if (changes > 0)  await broadcastToRoom(params.roomId)
 
-        await broadcastToRoom(params.roomId)
-        return await addToastMessages(request, [new Toast('Updated estimate successfully!', true)])
+        return await toast.getDataWithToasts(request, {
+            message: changes > 0 ? 'Updated estimate successfully!' : 'Failed to update estimate!',
+            status: changes > 0 ? 'success' : 'error',
+        }, null)
     }
 
     const newEstimation = await createEstimation({
         id: uuidV4(),
-        time: Number.parseInt(result.data.time),
+        time: Number.parseInt(result.time),
         userId: user.id,
         roundId: round.id,
     });
 
-    if (!newEstimation.id) {
-        return await addToastMessages(request, [new Toast('Failed to add estimate!', false)])
-    }
+    if (newEstimation.id) await broadcastToRoom(params.roomId)
 
-    await broadcastToRoom(params.roomId)
-    return await addToastMessages(request, [new Toast('Added estimate successfully!', true)])
+    return await toast.getDataWithToasts(request, {
+        message: newEstimation.id ? 'Added estimate successfully!' : 'Failed to add estimate!',
+        status: newEstimation.id ? 'success' : 'error',
+    }, null)
 }
 
 export default function Index() {

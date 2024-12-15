@@ -5865,6 +5865,9 @@ remix-auth@^4.0.0:
   resolved "https://registry.yarnpkg.com/remix-auth/-/remix-auth-4.0.0.tgz#287c497a713f94a9d687faf839f728cd65d9b50c"
   integrity sha512-9rLzT5PORCQFd8pdgHn6n2McH4OlDROlkmZ27r2aaNc99SLMNS7Q/VMgtW6HoLsEaxU050k1f2g6tG7ysFpZtA==
 
+"remix-toast-notifications@file:../remix-toast":
+  version "0.0.1"
+
 remix-validated-form@^5.1.5:
   version "5.1.5"
   resolved "https://registry.yarnpkg.com/remix-validated-form/-/remix-validated-form-5.1.5.tgz#705a06486eadb980e67ed3d532b2714774d714f3"

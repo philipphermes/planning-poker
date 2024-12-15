@@ -5,10 +5,8 @@ import {redirect} from "@remix-run/node";
 import {SESSION_KEY_USER, sessionStorage} from "./session";
 import {userSchema} from "~/validators/userSchema";
 import {findOneUserByEmail} from "~/db/queries/userQueries";
-import {addToastMessages} from "./toasts";
 import {User} from "~/db/schema/schema";
-import {Toast} from "~/models/Toast";
-import {getDataWithToast} from "~/utils/toast";
+import {toast} from "~/.server/toast";
 
 export const authenticator = new Authenticator<User>();
 export const STRATEGY_FORM_EMAIL_PASSWORD = "STRATEGY_FORM_EMAIL_PASSWORD"
@@ -66,10 +64,13 @@ export async function loginUser(request: Request) {
     try {
         user = await authenticator.authenticate(STRATEGY_FORM_EMAIL_PASSWORD, request)
     } catch (error) {
-        return await getDataWithToast(request, MESSAGE_ERROR_INVALID_CREDENTIALS, false, null)
+        return await toast.getDataWithToasts(request, {
+            message: MESSAGE_ERROR_INVALID_CREDENTIALS,
+            status: 'error',
+        }, null)
     }
 
-    const session = await addToastMessages(request, [new Toast(MESSAGE_LOGGED_IN, true)])
+    const session = await toast.persist(request, [{message: MESSAGE_LOGGED_IN, status: 'success'}])
     session.set(SESSION_KEY_USER, user);
 
     throw redirect("/", {
@@ -81,7 +82,7 @@ export async function loginUser(request: Request) {
 
 
 export async function logoutUser(request: Request, redirectUrl: string = '/') {
-    const session = await addToastMessages(request, [new Toast(MESSAGE_LOGGED_OUT, true)])
+    const session = await toast.persist(request, [{message: MESSAGE_LOGGED_OUT, status: 'success'}])
     session.set(SESSION_KEY_USER, null);
 
     throw redirect(redirectUrl, {

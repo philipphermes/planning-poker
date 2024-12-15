@@ -1,18 +1,9 @@
-import {
-    data,
-    Links,
-    Meta,
-    Outlet,
-    Scripts,
-    ScrollRestoration,
-} from "@remix-run/react";
+import {Links, Meta, Outlet, Scripts, ScrollRestoration} from "@remix-run/react";
 import type {LinksFunction, LoaderFunctionArgs} from "@remix-run/node";
-
 import "./tailwind.css";
-import {getToastMessages} from "./.server/toasts";
 import Toasts from "./components/Toasts";
-import {sessionStorage} from "./.server/session";
 import Navigation, {NavigationLink} from "./components/Navigation";
+import {toast} from "~/.server/toast";
 
 export const links: LinksFunction = () => [];
 
@@ -21,13 +12,9 @@ export default function App() {
 }
 
 export async function loader({request}: LoaderFunctionArgs) {
-    const {session, toasts} = (await getToastMessages(request))
+    const {toasts} = (await toast.retrieve(request))
 
-    return data(toasts, {
-        headers: {
-            "Set-Cookie": await sessionStorage.commitSession(session),
-        },
-    })
+    return toast.getDataWithToasts(request, [], toasts)
 }
 
 export function Layout({children}: { children: React.ReactNode }) {

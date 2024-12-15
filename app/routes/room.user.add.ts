@@ -2,8 +2,8 @@ import {ActionFunctionArgs} from "@remix-run/node";
 import {getCurrentUser} from "~/.server/auth";
 import {addUserToRoom} from "~/db/queries/userToRoomQueries";
 import {getAndValidateFormData} from "~/utils/formData";
-import {getDataWithToast} from "~/utils/toast";
 import {userRoomSchema} from "~/validators/userRoomSchema";
+import {toast} from "~/.server/toast";
 
 export async function action({request}: ActionFunctionArgs) {
     await getCurrentUser(request);
@@ -16,7 +16,7 @@ export async function action({request}: ActionFunctionArgs) {
         userId: result.data.userId,
     });
 
-    if (!changes) return await getDataWithToast(request, 'Failed to add user!', false, null)
+    if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed to add user!', status: 'error'}, null)
 
-    return await getDataWithToast(request, 'Added user successfully!', true, null)
+    return await toast.getDataWithToasts(request, {message: 'Added user successfully!', status: 'success'}, null)
 }

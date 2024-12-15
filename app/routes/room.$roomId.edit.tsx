@@ -7,9 +7,9 @@ import {deleteRoom, findRoomById, updateRoom} from "~/db/queries/roomQueries";
 import {roomSchema} from "~/validators/roomSchema";
 import {User} from "~/db/schema/schema";
 import {getAndValidateFormData} from "~/utils/formData";
-import {getDataWithToast, redirectWithToast} from "~/utils/toast";
 import {InputWithIcon} from "~/components/Input";
 import {Button} from "~/components/Button";
+import {toast} from "~/.server/toast";
 
 const DEBOUNCE_DELAY = 500;
 
@@ -49,15 +49,15 @@ export async function action({request, params}: ActionFunctionArgs) {
         return await saveRoomAction(params.roomId, request, formData)
     }
 
-    return await getDataWithToast(request, 'Invalid action', false, null)
+    return await toast.getDataWithToasts(request, {message: 'Invalid action', status: 'error'}, null)
 }
 
 async function deleteRoomAction(roomId: string, request: Request) {
     const changes = await deleteRoom(roomId)
 
-    if (!changes) return await getDataWithToast(request, 'Failed deleting room!', false, null)
+    if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed deleting room!', status: 'error'}, null)
 
-    await redirectWithToast(request, 'Deleted room successfully!', true, '/')
+    await toast.throwRedirectWithToasts(request, {message: 'Deleted room successfully!', status: 'success'}, '/')
 }
 
 async function saveRoomAction(roomId: string, request: Request, formData: FormData) {
@@ -69,9 +69,9 @@ async function saveRoomAction(roomId: string, request: Request, formData: FormDa
         name: result.name
     })
 
-    if (!changes) return await getDataWithToast(request, 'Failed update room!', false, null)
+    if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed update room!', status: 'error'}, null)
 
-    return await getDataWithToast(request, 'Updated room successfully!', true, null)
+    return await toast.getDataWithToasts(request, {message: 'Updated room successfully!', status: 'success'}, null)
 }
 
 export default function Index() {

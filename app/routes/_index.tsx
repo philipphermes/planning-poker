@@ -7,7 +7,7 @@ import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 import {v4 as uuidV4} from "uuid";
 import {RoomList} from "~/components/room/RoomList";
 import {getAndValidateFormData} from "~/utils/formData";
-import {getDataWithToast} from "~/utils/toast";
+import {toast} from "~/.server/toast";
 
 export const meta: MetaFunction = () => {
     return [
@@ -31,9 +31,11 @@ export async function action({request}: ActionFunctionArgs) {
     if (result.init) return result
 
     const room = await createRoom({id: uuidV4(), name: result.name}, user.id)
-    if (!room.id) return await getDataWithToast(request, 'Failed to create new room!', false, null)
 
-    return await getDataWithToast(request, 'Room was created successfully!', true, null)
+    return await toast.getDataWithToasts(request, {
+        message: room.id ? 'Room was created successfully!' : 'Failed to create new room!',
+        status: room.id ? 'success' : 'error',
+    }, null)
 }
 
 export default function Index() {

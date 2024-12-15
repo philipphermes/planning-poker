@@ -1,8 +1,7 @@
-import {Toast} from "~/models/Toast";
-import {addToastMessages} from "~/.server/toasts";
-import {sessionStorage} from "~/.server/session";
 import {ZodObject, ZodRawShape, SafeParseReturnType} from "zod";
 import {data} from "@remix-run/react";
+import {ToastMessage} from "remix-toast-notifications";
+import {toast} from "~/.server/toast";
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export async function getAndValidateFormData<T extends ZodRawShape>(
@@ -14,17 +13,11 @@ export async function getAndValidateFormData<T extends ZodRawShape>(
     const result = validator.safeParse(formDataEntries);
 
     if (!result.success) {
-        const errors: Toast[] = result.error.errors.map((error) => {
-            return new Toast(error.message, false);
+        const errors: ToastMessage[] = result.error.errors.map((error) => {
+            return {message: error.message, status: 'error'};
         });
 
-        const session = await addToastMessages(request, errors);
-
-        return data(null, {
-            headers: {
-                "Set-Cookie": await sessionStorage.commitSession(session),
-            },
-        });
+        return await toast.getDataWithToasts(request, errors, null)
     }
 
     return result.data;
