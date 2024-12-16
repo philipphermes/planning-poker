@@ -1,49 +1,69 @@
-import {CheckCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
+import {CheckCircleIcon, ExclamationCircleIcon, InformationCircleIcon, XCircleIcon} from "@heroicons/react/24/outline";
 import {useRouteLoaderData} from "@remix-run/react";
-import {useEffect, useState} from "react";
+import {ReactElement, useEffect, useState} from "react";
 import {loader} from "~/root";
-import {ToastMessage} from "remix-toast-notifications";
+import type {ToastMessage} from "remix-toast-notifications";
 
-export interface ToastConfig {
+export type ToastConfig = {
     time: number;
     fps: number;
 }
 
-export default function Toasts({time, fps}: ToastConfig) {
+type ToastsProp = {
+    key: number;
+    message: ToastMessage;
+    config: ToastConfig;
+    offset: number;
+}
+
+const ToastIcons: Record<ToastMessage['status'], ReactElement> = {
+    success: <CheckCircleIcon className="h-12" />,
+    error: <XCircleIcon className="h-12" />,
+    info: <InformationCircleIcon className="h-12" />,
+    warning: <ExclamationCircleIcon className="h-12" />,
+};
+
+export default function Toasts(config: ToastConfig) {
     const toasts: ToastMessage[] = useRouteLoaderData<typeof loader>("root");
-    const [progress, setProgress] = useState(100);
-
-    useEffect(() => {
-        setProgress(100);
-
-        const progress = setInterval(() => {
-            setProgress((prevProgress) => {
-                if (prevProgress <= 0) {
-                    return 0;
-                }
-                return prevProgress - (fps / 100);
-            });
-        }, time / 100 * (fps / 100));
-
-        return () => {
-            clearInterval(progress);
-        };
-    }, [fps, time, toasts]);
 
     return (
         <div className="fixed bottom-20 left-0 w-full flex flex-col items-center gap-2">
             {toasts && toasts.map((message, key) =>
-                <div role="alert" className={
-                    `alert shadow-lg overflow-hidden w-96 transform transition-all duration-300 ease-out alert-${message.status}`
-                    + (progress > 0 ? " translate-y-0 opacity-100" : " translate-y-10 opacity-0")
-                } key={key}>
-                    {message.status ? (<CheckCircleIcon className="h-12"/>) : (<XCircleIcon className="h-12"/>)}
-                    <div className="w-full">
-                        <span>{message.message}</span>
-                        <progress className="progress progress-accent w-full" value={progress} max="100"></progress>
-                    </div>
-                </div>
+                <Toast key={key} message={message} config={config} offset={key * 1000} />
             )}
+        </div>
+    )
+}
+
+function Toast({key, message, config, offset}: ToastsProp) {
+    const [progress, setProgress] = useState(100);
+    const time = config.time + offset;
+
+    useEffect(() => {
+        setProgress(100);
+        const intervalDuration = 1000 / config.fps;
+        const decrement = 100 / (time / intervalDuration);
+
+        const progress = setInterval(() => {
+            setProgress((prevProgress) => {
+                if (prevProgress <= 0) return 0;
+                return prevProgress - decrement;
+            });
+        }, intervalDuration);
+
+        return () => clearInterval(progress);
+    }, [config, message, time]);
+
+    return (
+        <div role="alert" key={key} className={
+            `alert shadow-lg overflow-hidden w-96 transform transition-all duration-300 ease-out alert-${message.status}`
+            + (progress > 0 ? " translate-y-0 opacity-100" : " translate-y-10 opacity-0")
+        }>
+            {ToastIcons[message.status]}
+            <div className="w-full">
+                <span>{message.message}</span>
+                <progress className="progress progress-base-100 bg-base-100/25 w-full" value={progress} max="100"></progress>
+            </div>
         </div>
     )
 }
