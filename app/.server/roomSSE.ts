@@ -1,6 +1,6 @@
 import {findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries";
 import {Room, User} from "~/db/schema/schema";
-import {SSEMessageInterface} from "~/models/SSEMessage";
+import {SSEMessage} from "~/models/SSEMessage";
 
 const controllers = new Map<string, Map<string, ReadableStreamDefaultController>>();
 
@@ -47,7 +47,7 @@ export async function broadcastToRoom(roomId: string) {
         return
     }
 
-    const message: SSEMessageInterface = {
+    const message: SSEMessage = {
         round: round.name,
         estimations: round?.estimations.map(estimation => {
             return {

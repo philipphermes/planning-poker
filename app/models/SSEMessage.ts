@@ -1,9 +1,9 @@
-export interface SSEMessageInterface {
+export type SSEMessage = {
     round: string;
-    estimations: SSEEstimationInterface[];
+    estimations: SSEEstimation[];
 }
 
-export interface SSEEstimationInterface {
+export type SSEEstimation = {
     user: string;
     estimation: number | null;
 }
