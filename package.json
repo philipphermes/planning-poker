@@ -32,7 +32,7 @@
     "tsx": "^4.19.2",
     "uuid": "^11.0.3",
     "zod": "^3.23.8",
-    "remix-toast-notifications": "file:../remix-toast"
+    "remix-toast-notifications": "^1.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
