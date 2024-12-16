@@ -70,7 +70,7 @@ export async function loginUser(request: Request) {
         }, null)
     }
 
-    const session = await toast.persist(request, [{message: MESSAGE_LOGGED_IN, status: 'success'}])
+    const session = await toast.persist(request, {message: MESSAGE_LOGGED_IN, status: 'success'})
     session.set(SESSION_KEY_USER, user);
 
     throw redirect("/", {
@@ -82,7 +82,7 @@ export async function loginUser(request: Request) {
 
 
 export async function logoutUser(request: Request, redirectUrl: string = '/') {
-    const session = await toast.persist(request, [{message: MESSAGE_LOGGED_OUT, status: 'success'}])
+    const session = await toast.persist(request, {message: MESSAGE_LOGGED_OUT, status: 'success'})
     session.set(SESSION_KEY_USER, null);
 
     throw redirect(redirectUrl, {
