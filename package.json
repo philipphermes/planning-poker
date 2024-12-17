@@ -28,11 +28,11 @@
     "react-dom": "^18.2.0",
     "remix-auth": "^4.0.0",
     "remix-auth-form": "^3.0.0",
+    "remix-toast-notifications": "^1.0.0",
     "remix-validated-form": "^5.1.5",
     "tsx": "^4.19.2",
     "uuid": "^11.0.3",
-    "zod": "^3.23.8",
-    "remix-toast-notifications": "^1.0.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

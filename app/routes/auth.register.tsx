@@ -1,6 +1,5 @@
-import type {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
-import {data, Form, Link, redirect} from "@remix-run/react";
-import {getCurrentUser} from "~/.server/auth";
+import type {ActionFunctionArgs} from "@remix-run/node";
+import {Form, Link, useOutletContext} from "@remix-run/react";
 import {createUser} from "~/db/queries/userQueries";
 import {userSchema} from "~/validators/userSchema";
 import {v4 as uuidV4} from "uuid";
@@ -9,16 +8,7 @@ import {getAndValidateFormData} from "~/utils/formData";
 import {InputWithLabel} from "~/components/Input";
 import {Button} from "~/components/Button";
 import {toast} from "~/.server/toast";
-
-export async function loader({request}: LoaderFunctionArgs) {
-    try {
-        await getCurrentUser(request, false)
-    } catch (error) {
-        return data(null)
-    }
-
-    throw redirect("/")
-}
+import {authUrls} from "~/routes/auth";
 
 export async function action({request}: ActionFunctionArgs) {
     const result = await getAndValidateFormData(await request.formData(), request, userSchema)
@@ -35,7 +25,9 @@ export async function action({request}: ActionFunctionArgs) {
     await toast.throwRedirectWithToasts(request, {message: 'Your account was created successfully!', status: 'success'}, '/login')
 }
 
-export default function Register() {
+export default function AuthRegister() {
+    const urls = useOutletContext<typeof authUrls>();
+
     return (
         <div
             className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -52,7 +44,7 @@ export default function Register() {
             </div>
 
             <span>
-                Already got an account? Sign in <Link prefetch="intent" to="/login" className="link link-secondary">here</Link>
+                Already got an account? Sign in <Link prefetch="intent" to={urls.login} className="link link-secondary">here</Link>
             </span>
         </div>
     );

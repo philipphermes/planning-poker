@@ -1,35 +1,24 @@
-import {MagnifyingGlassIcon, PencilIcon} from "@heroicons/react/24/outline";
-import {ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/node";
-import {data, Form, redirect, useFetcher, useLoaderData} from "@remix-run/react";
-import {useEffect, useState} from "react";
+import {data, Form, redirect, useFetcher, useLoaderData, useOutletContext} from '@remix-run/react';
+import {RoomsContext} from "~/routes/rooms";
+import {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
 import {getCurrentUser} from "~/.server/auth";
-import {deleteRoom, findRoomById, updateRoom} from "~/db/queries/roomQueries";
-import {roomSchema} from "~/validators/roomSchema";
-import {User} from "~/db/schema/schema";
 import {getAndValidateFormData} from "~/utils/formData";
-import {InputWithIcon} from "~/components/Input";
-import {Button} from "~/components/Button";
+import {roomSchema} from "~/validators/roomSchema";
+import {deleteRoom, findRoomById, updateRoom} from "~/db/queries/roomQueries";
 import {toast} from "~/.server/toast";
+import {User} from "~/db/schema/schema";
+import {useEffect, useState} from "react";
+import {InputWithIcon} from "~/components/Input";
+import {MagnifyingGlassIcon, PencilIcon} from "@heroicons/react/24/outline";
+import {Button} from "~/components/Button";
 
-const DEBOUNCE_DELAY = 500;
-
-export const meta: MetaFunction = () => {
-    return [
-        {title: "Edit Room"},
-        {name: "description", content: "Welcome to Remix!"},
-    ];
-};
-
-export async function loader({request, params}: LoaderFunctionArgs) {
-    const user = await getCurrentUser(request);
-
-    if (!params.roomId) {
-        throw redirect('/')
-    }
+export async function loader({params}: LoaderFunctionArgs) {
+    if (!params.roomId) return redirect('/rooms/list');
 
     const room = await findRoomById(params.roomId)
+    if (!room) return redirect('/rooms/list');
 
-    return data({user, room});
+    return data(room);
 }
 
 export async function action({request, params}: ActionFunctionArgs) {
@@ -74,8 +63,9 @@ async function saveRoomAction(roomId: string, request: Request, formData: FormDa
     return await toast.getDataWithToasts(request, {message: 'Updated room successfully!', status: 'success'}, null)
 }
 
-export default function Index() {
-    const {user, room} = useLoaderData<typeof loader>()
+export default function RoomsRoomIdEdit() {
+    const {user} = useOutletContext<RoomsContext>();
+    const room = useLoaderData<typeof loader>()
 
     const userFetcher = useFetcher<User[]>();
     const addUserFetcher = useFetcher();
@@ -92,7 +82,7 @@ export default function Index() {
 
         const handler = setTimeout(() => {
             userFetcher.load(`/user/search?q=${trimmedQuery}&r=${room?.id}`);
-        }, DEBOUNCE_DELAY);
+        }, 500);
 
         return () => clearTimeout(handler);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +94,7 @@ export default function Index() {
             roomId: room?.id ?? null,
         }, {
             method: 'POST',
-            action: '/room/user/add'
+            action: '/rooms/user/add'
         })
     }
 
@@ -114,7 +104,7 @@ export default function Index() {
             roomId: room?.id ?? null,
         }, {
             method: 'POST',
-            action: '/room/user/remove'
+            action: '/rooms/user/remove'
         })
     }
 

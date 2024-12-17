@@ -35,7 +35,7 @@ export default function Toasts(config: ToastConfig) {
     )
 }
 
-function Toast({key, message, config, offset}: ToastsProp) {
+function Toast({message, config, offset}: ToastsProp) {
     const [progress, setProgress] = useState(100);
     const time = config.time + offset;
 
@@ -55,7 +55,7 @@ function Toast({key, message, config, offset}: ToastsProp) {
     }, [config, message, time]);
 
     return (
-        <div role="alert" key={key} className={
+        <div role="alert" className={
             `alert shadow-lg overflow-hidden w-96 transform transition-all duration-300 ease-out alert-${message.status}`
             + (progress > 0 ? " translate-y-0 opacity-100" : " translate-y-10 opacity-0")
         }>
