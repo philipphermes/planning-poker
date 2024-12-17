@@ -1,5 +1,5 @@
 import {redirect} from "@remix-run/react";
 
 export async function loader() {
-    return redirect('/rooms/list')
+    return redirect('/rooms')
 }

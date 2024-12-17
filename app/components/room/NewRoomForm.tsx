@@ -1,6 +1,6 @@
 import {Form} from "@remix-run/react";
-import {InputWithLabel} from "~/components/Input";
-import {Button} from "~/components/Button";
+import {InputWithLabel} from "~/components/form/Input";
+import {Button} from "~/components/form/Button";
 
 export default function NewRoomForm() {
     return (

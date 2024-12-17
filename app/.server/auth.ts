@@ -44,7 +44,7 @@ export async function getCurrentUser(request: Request, redirectOnFailure: boolea
     const user = session.get(SESSION_KEY_USER)
 
     if (user) return user
-    if (redirectOnFailure) throw redirect("/auth/login")
+    if (redirectOnFailure) throw redirect("/auth")
 
     throw Error(MESSAGE_ERROR_UNAUTHORIZED)
 }

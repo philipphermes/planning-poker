@@ -13,7 +13,7 @@ import {addEstimationAction} from "~/.server/estimation";
 
 export const meta: MetaFunction = () => {
     return [
-        {title: "Room"},
+        {title: "Play"},
         {name: "description", content: ""},
     ];
 };
@@ -21,15 +21,11 @@ export const meta: MetaFunction = () => {
 export async function loader({request, params}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
 
-    if (!params.roomId) {
-        throw redirect('/')
-    }
+    if (!params.roomId) return redirect('/')
 
     const room = await findRoomById(params.roomId)
 
-    if (!room) {
-        throw redirect('/')
-    }
+    if (!room) return redirect('/')
 
     return data({user, room});
 }
@@ -48,13 +44,13 @@ export async function action({request, params}: ActionFunctionArgs) {
     return data(null)
 }
 
-export default function Index() {
+export default function RoomsRoomIdPlay() {
     const {room, user} = useLoaderData<typeof loader>()
     const [sseMessage, setSSEMessage] = useState<SSEMessage>()
     const [time, setTime] = useState<string>("0")
 
     useEffect(() => {
-        const connectedUsersEventSource = new EventSource(`/room/${room?.id}/sse`);
+        const connectedUsersEventSource = new EventSource(`/rooms/${room?.id}/sse`);
 
         connectedUsersEventSource.onmessage = (event) => {
             const data: SSEMessage = JSON.parse(event.data);
@@ -89,7 +85,7 @@ export default function Index() {
                 onChange={e => setTime(e.target.value)}
             />
 
-           <PlacedEstimationList sseMessage={sseMessage} />
+            <PlacedEstimationList sseMessage={sseMessage} />
         </div>
     );
 }

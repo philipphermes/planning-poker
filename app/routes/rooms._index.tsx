@@ -1,17 +1,23 @@
-import {Link, redirect, useOutletContext} from '@remix-run/react';
-import {RoomsContext} from "~/routes/rooms";
+import {Link, useLoaderData} from '@remix-run/react';
 import NewRoomForm from "~/components/room/NewRoomForm";
-import {ActionFunctionArgs} from "@remix-run/node";
+import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
 import {getCurrentUser} from "~/.server/auth";
 import {getAndValidateFormData} from "~/utils/formData";
 import {roomSchema} from "~/validators/roomSchema";
 import {createRoom} from "~/db/queries/roomQueries";
 import {v4 as uuidV4} from "uuid";
 import {toast} from "~/.server/toast";
+import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
+
+export async function loader({request}: LoaderFunctionArgs) {
+    const user = await getCurrentUser(request);
+    const usersToRooms = await findUsersToRoomsByUserId(user.id)
+
+    return data({user, usersToRooms});
+}
 
 export async function action({request}: ActionFunctionArgs) {
     const user = await getCurrentUser(request);
-    if (!user) throw redirect('/login')
 
     const result = await getAndValidateFormData(await request.formData(), request, roomSchema)
     if (result.init) return result
@@ -24,12 +30,11 @@ export async function action({request}: ActionFunctionArgs) {
     }, null)
 }
 
-export default function RoomsList() {
-    const {usersToRooms} = useOutletContext<RoomsContext>();
+export default function Rooms_index() {
+    const {usersToRooms} = useLoaderData<typeof loader>()
 
     return (
         <div>
-            <div className="divider"></div>
             <div className="flex w-full max-h-[40dvh] flex-col border-opacity-50 overflow-y-auto gap-4 rounded-box">
                 {usersToRooms.map(userToRoom => (
                     <div key={userToRoom.room.id}>
@@ -40,7 +45,7 @@ export default function RoomsList() {
                                 && <Link to={`/rooms/${userToRoom.room.id}/edit`} prefetch="intent"
                                          className="btn btn-outline w-full btn-secondary">Edit</Link>
                             }
-                            <Link to={`/room/${userToRoom.room.id}`} prefetch="intent"
+                            <Link to={`/rooms/${userToRoom.room.id}/play`} prefetch="intent"
                                   className="btn w-full btn-primary">Open</Link>
                         </div>
                     </div>

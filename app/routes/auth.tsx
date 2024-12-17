@@ -1,6 +1,5 @@
-import {Outlet, redirect} from '@remix-run/react';
-import {data, LoaderFunctionArgs, MetaFunction} from "@remix-run/node";
-import {getCurrentUser} from "~/.server/auth";
+import {Outlet} from '@remix-run/react';
+import {MetaFunction} from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
     return [
@@ -10,18 +9,8 @@ export const meta: MetaFunction = () => {
 };
 
 export const authUrls = {
-    'login': '/auth/login',
+    'login': '/auth',
     'register': '/auth/register'
-}
-
-export async function loader({request}: LoaderFunctionArgs) {
-    try {
-        await getCurrentUser(request, false);
-    } catch (e) {
-        return data(null);
-    }
-
-    return redirect('/');
 }
 
 export default function Auth() {

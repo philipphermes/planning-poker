@@ -1,15 +1,25 @@
-import type {ActionFunctionArgs} from "@remix-run/node";
-import {Form, Link, useOutletContext} from "@remix-run/react";
-import {loginUser} from "~/.server/auth";
-import {InputWithLabel} from "~/components/Input";
-import {Button} from "~/components/Button";
+import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
+import {Form, Link, redirect, useOutletContext} from "@remix-run/react";
+import {getCurrentUser, loginUser} from "~/.server/auth";
+import {InputWithLabel} from "~/components/form/Input";
+import {Button} from "~/components/form/Button";
 import {authUrls} from "~/routes/auth";
+
+export async function loader({request}: LoaderFunctionArgs) {
+    try {
+        await getCurrentUser(request, false);
+    } catch (e) {
+        return data(null);
+    }
+
+    return redirect('/');
+}
 
 export async function action({request}: ActionFunctionArgs) {
     return await loginUser(request)
 }
 
-export default function AuthLogin() {
+export default function Auth_index() {
     const urls = useOutletContext<typeof authUrls>();
 
     return (

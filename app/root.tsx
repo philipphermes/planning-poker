@@ -2,24 +2,21 @@ import {Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration} from "@remi
 import type {LinksFunction, LoaderFunctionArgs} from "@remix-run/node";
 import "./tailwind.css";
 import Toasts from "./components/Toasts";
-import Navigation, {NavigationLink} from "./components/Navigation";
 import {toast} from "~/.server/toast";
+import {NavigationConfig} from "~/components/Navigation";
 
 export const links: LinksFunction = () => [];
 
-const navigationLinks: NavigationLink[] = [
-    {
-        url: "/logout",
-        title: "Logout",
-        prefetch: "none"
-    }
-]
-
-const navigationBlackList = [
-    'login',
-    'logout',
-    'register',
-]
+const navigationConfig: NavigationConfig = {
+    title: 'Planning Poker',
+    links: [
+        {
+            url: "/auth/logout",
+            title: "Logout",
+            prefetch: "none"
+        }
+    ]
+}
 
 export async function loader({request}: LoaderFunctionArgs) {
     const {toasts} = (await toast.retrieve(request))
@@ -38,7 +35,7 @@ export default function App() {
                 <Links/>
             </head>
             <body>
-                <Outlet/>
+                <Outlet context={navigationConfig}/>
                 <Toasts time={5000} fps={30}/>
                 <ScrollRestoration/>
                 <Scripts/>

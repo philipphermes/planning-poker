@@ -1,7 +1,7 @@
 import {Form} from "@remix-run/react";
-import {InputWithIcon} from "~/components/Input";
+import {InputWithIcon} from "~/components/form/Input";
 import {PencilIcon} from "@heroicons/react/24/outline";
-import {Button} from "~/components/Button";
+import {Button} from "~/components/form/Button";
 
 export function RoundForm() {
     return (<Form method="POST" className="w-full flex justify-between gap-2">

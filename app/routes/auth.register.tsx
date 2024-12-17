@@ -1,14 +1,25 @@
-import type {ActionFunctionArgs} from "@remix-run/node";
-import {Form, Link, useOutletContext} from "@remix-run/react";
+import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
+import {Form, Link, redirect, useOutletContext} from "@remix-run/react";
 import {createUser} from "~/db/queries/userQueries";
 import {userSchema} from "~/validators/userSchema";
 import {v4 as uuidV4} from "uuid";
 import * as argon2 from "argon2";
 import {getAndValidateFormData} from "~/utils/formData";
-import {InputWithLabel} from "~/components/Input";
-import {Button} from "~/components/Button";
+import {InputWithLabel} from "~/components/form/Input";
+import {Button} from "~/components/form/Button";
 import {toast} from "~/.server/toast";
 import {authUrls} from "~/routes/auth";
+import {getCurrentUser} from "~/.server/auth";
+
+export async function loader({request}: LoaderFunctionArgs) {
+    try {
+        await getCurrentUser(request, false);
+    } catch (e) {
+        return data(null);
+    }
+
+    return redirect('/');
+}
 
 export async function action({request}: ActionFunctionArgs) {
     const result = await getAndValidateFormData(await request.formData(), request, userSchema)

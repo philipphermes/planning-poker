@@ -1,7 +1,7 @@
 import {EstimationForm} from "~/components/estimation/EstimationForm";
 import {SSEMessage} from "~/models/SSEMessage";
 import {getCurrentUser} from "~/.server/auth";
-import {Input} from "~/components/Input";
+import {Input} from "~/components/form/Input";
 
 export type PlacedEstimationListProps = {
     sseMessage?: SSEMessage;

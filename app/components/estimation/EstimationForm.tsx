@@ -1,6 +1,6 @@
-import {Input, InputWithIcon} from "~/components/Input";
+import {Input, InputWithIcon} from "~/components/form/Input";
 import {ClockIcon} from "@heroicons/react/24/outline";
-import {Button} from "~/components/Button";
+import {Button} from "~/components/form/Button";
 import {Form} from "@remix-run/react";
 
 export type EstimationFormProps = {
