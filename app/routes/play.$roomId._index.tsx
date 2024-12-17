@@ -1,15 +1,16 @@
-import {data, redirect, useLoaderData} from "@remix-run/react";
+import {data, redirect, useLoaderData, useOutletContext} from "@remix-run/react";
 import {ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/node";
-import {getCurrentUser} from "~/.server/auth";
-import {findRoomById} from "~/db/queries/roomQueries";
 import {useEffect, useState} from "react";
 import {SSEMessage} from "~/models/SSEMessage";
-import {ROLE_OWNER} from "~/db/schema/schema";
 import {RoundForm} from "~/components/round/RoundForm";
 import {PlacedEstimationList} from "~/components/estimation/PlacedEstimationList";
 import {EstimationList} from "~/components/estimation/EstimationList";
 import {newRoundAction} from "~/.server/round";
 import {addEstimationAction} from "~/.server/estimation";
+import {getCurrentUser} from "~/.server/auth/user";
+import {CardList} from "~/components/estimation/CardList";
+import {findRoomById} from "~/db/queries/roomQueries";
+import {isOwnerOfRoom} from "~/utils/room";
 
 export const meta: MetaFunction = () => {
     return [
@@ -18,16 +19,9 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({request, params}: LoaderFunctionArgs) {
+export async function loader({request}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
-
-    if (!params.roomId) return redirect('/')
-
-    const room = await findRoomById(params.roomId)
-
-    if (!room) return redirect('/')
-
-    return data({user, room});
+    return data(user);
 }
 
 export async function action({request, params}: ActionFunctionArgs) {
@@ -45,9 +39,11 @@ export async function action({request, params}: ActionFunctionArgs) {
 }
 
 export default function RoomsRoomIdPlay() {
-    const {room, user} = useLoaderData<typeof loader>()
+    const user = useLoaderData<typeof loader>()
+    const room = useOutletContext<Awaited<ReturnType<typeof findRoomById>>>()
+
     const [sseMessage, setSSEMessage] = useState<SSEMessage>()
-    const [time, setTime] = useState<string>("0")
+    const [value, setValue] = useState<number>(0)
 
     useEffect(() => {
         const connectedUsersEventSource = new EventSource(`/rooms/${room?.id}/sse`);
@@ -58,7 +54,7 @@ export default function RoomsRoomIdPlay() {
 
             data?.estimations.forEach(message => {
                 if (message.user === user.email) {
-                    setTime(message.estimation?.toString() ?? '0')
+                    setValue(message.estimation ?? 0)
                 }
             })
         };
@@ -71,21 +67,18 @@ export default function RoomsRoomIdPlay() {
     }, [room?.id, user.email]);
 
     return (
-        <div className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-6 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <h1 className="text-2xl">Room: {room?.name}, Round: {sseMessage?.round}</h1>
+        <div className="flex flex-col items-center justify-center gap-4">
+            <div className="divider text-2xl">Round: {sseMessage?.round}</div>
 
-            { room.usersToRooms.filter(userToRoom => userToRoom.user.id === user.id && userToRoom.role === ROLE_OWNER).length === 1 &&
-                <RoundForm />
-            }
+            {isOwnerOfRoom(room, user) && <RoundForm/>}
 
-            <EstimationList
-                user={user}
-                sseMessage={sseMessage}
-                value={time}
-                onChange={e => setTime(e.target.value)}
-            />
+            <EstimationList sseMessage={sseMessage}/>
 
-            <PlacedEstimationList sseMessage={sseMessage} />
+            <div className="divider">Available Cards</div>
+
+            <CardList value={value} setValue={setValue}/>
+
+            <PlacedEstimationList sseMessage={sseMessage}/>
         </div>
     );
 }

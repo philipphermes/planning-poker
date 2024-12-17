@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {loginUser} from "~/.server/auth";
+import {loginUser} from "../../app/.server/auth/auth";
 
 describe('auth.ts', () => {
     it('redirects to /login with invalid credentials', async () => {

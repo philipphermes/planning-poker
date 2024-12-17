@@ -1,32 +1,22 @@
-import {EstimationForm} from "~/components/estimation/EstimationForm";
 import {SSEMessage} from "~/models/SSEMessage";
-import {getCurrentUser} from "~/.server/auth";
-import {Input} from "~/components/form/Input";
+import {getEmailInitials} from "~/utils/user";
 
 export type PlacedEstimationListProps = {
     sseMessage?: SSEMessage;
-    user: Awaited<ReturnType<typeof getCurrentUser>>;
-    value?: Input['value'];
-    onChange?: Input['onChange'];
 }
 
-export function EstimationList({sseMessage, user, value, onChange}: PlacedEstimationListProps) {
-    return (<div className="w-full grid grid-cols-3 gap-2">
-        {sseMessage?.estimations.filter(estimation => estimation.user === user.email).length === 0 &&
-            <div className="card bg-base-300 flex items-center justify-center">
-                <EstimationForm/>
-            </div>
-        }
-
+export function EstimationList({sseMessage}: PlacedEstimationListProps) {
+    return (<div className="w-full max-h-96 md:max-h-none overflow-y-auto md:overflow-y-hidden grid grid-cols-2 md:grid-cols-6 gap-4">
         {sseMessage?.estimations.map((estimation, key) =>
-            <div key={key} className="card bg-base-300 flex items-center justify-center">
-                {estimation.user === user.email ?
-                    <EstimationForm value={value} onChange={onChange}/>
-                    : <div className="card-body">
-                        {estimation.estimation}
+            <div key={key} className="card bg-base-300 justify-self-center flex items-center justify-center w-full aspect-square">
+                <div className="card-body flex justify-center items-center cursor-default">
+                    <span className="text-4xl">{estimation.estimation}</span>
+                    <div className="avatar placeholder absolute top-4 right-4">
+                        <div className="bg-emerald-100 text-base-100 w-10 rounded-full">
+                            <span className="text-xs">{getEmailInitials(estimation.user)}</span>
+                        </div>
                     </div>
-                }
-            </div>
-        )}
+                </div>
+            </div>)}
     </div>)
 }

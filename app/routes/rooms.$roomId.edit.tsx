@@ -1,12 +1,11 @@
 import {data, redirect, useFetcher, useLoaderData} from '@remix-run/react';
 import {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
-import {getCurrentUser} from "~/.server/auth";
-import {getAndValidateFormData} from "~/utils/formData";
-import {roomSchema} from "~/validators/roomSchema";
-import {deleteRoom, findRoomById, updateRoom} from "~/db/queries/roomQueries";
+import {findRoomById} from "~/db/queries/roomQueries";
 import {toast} from "~/.server/toast";
 import EditRoomForm from "~/components/room/EditRoomForm";
 import {UserSearch} from "~/components/room/UserSearch";
+import {deleteRoomAction, saveRoomAction} from "~/.server/room/roomAction";
+import {getCurrentUser} from "~/.server/auth/user";
 
 export async function loader({request, params}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
@@ -30,24 +29,6 @@ export async function action({request, params}: ActionFunctionArgs) {
     if (formData.has('save')) return await saveRoomAction(params.roomId, request, formData)
 
     return await toast.getDataWithToasts(request, {message: 'Invalid action', status: 'error'}, null)
-}
-
-async function deleteRoomAction(roomId: string, request: Request) {
-    const changes = await deleteRoom(roomId)
-
-    if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed deleting room!', status: 'error'}, null)
-
-    await toast.throwRedirectWithToasts(request, {message: 'Deleted room successfully!', status: 'success'}, '/')
-}
-
-async function saveRoomAction(roomId: string, request: Request, formData: FormData) {
-    const result = await getAndValidateFormData(formData, request, roomSchema)
-    if (result.init) return result
-
-    const changes = await updateRoom({id: roomId, name: result.name})
-    if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed update room!', status: 'error'}, null)
-
-    return await toast.getDataWithToasts(request, {message: 'Updated room successfully!', status: 'success'}, null)
 }
 
 export default function RoomsRoomIdEdit() {

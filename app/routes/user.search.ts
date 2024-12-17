@@ -1,7 +1,7 @@
 import {data, LoaderFunctionArgs} from "@remix-run/node";
 import {findRoomById} from "~/db/queries/roomQueries";
 import {findUsers} from "~/db/queries/userQueries";
-import {getCurrentUser} from "~/.server/auth";
+import {getCurrentUser} from "~/.server/auth/user";
 
 export async function loader({request}: LoaderFunctionArgs) {
     await getCurrentUser(request);

@@ -1,4 +1,4 @@
-import {Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration} from "@remix-run/react";
+import {Links, Meta, Outlet, Scripts, ScrollRestoration} from "@remix-run/react";
 import type {LinksFunction, LoaderFunctionArgs} from "@remix-run/node";
 import "./tailwind.css";
 import Toasts from "./components/Toasts";
@@ -39,7 +39,6 @@ export default function App() {
                 <Toasts time={5000} fps={30}/>
                 <ScrollRestoration/>
                 <Scripts/>
-                {process.env.NODE_ENV === 'development' && <LiveReload />}
             </body>
         </html>
     );

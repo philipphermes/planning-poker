@@ -1,13 +1,13 @@
 import {Link, useLoaderData} from '@remix-run/react';
 import NewRoomForm from "~/components/room/NewRoomForm";
 import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
-import {getCurrentUser} from "~/.server/auth";
 import {getAndValidateFormData} from "~/utils/formData";
 import {roomSchema} from "~/validators/roomSchema";
 import {createRoom} from "~/db/queries/roomQueries";
 import {v4 as uuidV4} from "uuid";
 import {toast} from "~/.server/toast";
 import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
+import {getCurrentUser} from "~/.server/auth/user";
 
 export async function loader({request}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
@@ -45,7 +45,7 @@ export default function Rooms_index() {
                                 && <Link to={`/rooms/${userToRoom.room.id}/edit`} prefetch="intent"
                                          className="btn btn-outline w-full btn-secondary">Edit</Link>
                             }
-                            <Link to={`/rooms/${userToRoom.room.id}/play`} prefetch="intent"
+                            <Link to={`/play/${userToRoom.room.id}`} prefetch="intent"
                                   className="btn w-full btn-primary">Open</Link>
                         </div>
                     </div>

@@ -9,7 +9,7 @@ import {InputWithLabel} from "~/components/form/Input";
 import {Button} from "~/components/form/Button";
 import {toast} from "~/.server/toast";
 import {authUrls} from "~/routes/auth";
-import {getCurrentUser} from "~/.server/auth";
+import {getCurrentUser} from "~/.server/auth/user";
 
 export async function loader({request}: LoaderFunctionArgs) {
     try {
@@ -33,7 +33,7 @@ export async function action({request}: ActionFunctionArgs) {
 
     if (!user.id) return await toast.getDataWithToasts(request, {message: 'Failed to create your account!', status: 'error'}, null)
 
-    await toast.throwRedirectWithToasts(request, {message: 'Your account was created successfully!', status: 'success'}, '/login')
+    await toast.throwRedirectWithToasts(request, {message: 'Your account was created successfully!', status: 'success'}, '/auth')
 }
 
 export default function AuthRegister() {

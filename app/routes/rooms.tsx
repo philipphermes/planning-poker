@@ -1,7 +1,5 @@
 import {Link, Outlet, useOutletContext} from '@remix-run/react';
 import {MetaFunction} from "@remix-run/node";
-import {getCurrentUser} from "~/.server/auth";
-import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 import Navigation, {NavigationConfig} from "~/components/Navigation";
 
 export const meta: MetaFunction = () => {
@@ -10,11 +8,6 @@ export const meta: MetaFunction = () => {
         {name: "description", content: "Welcome to Remix!"},
     ];
 };
-
-export type RoomsContext = {
-    user: Awaited<ReturnType<typeof getCurrentUser>>;
-    usersToRooms: Awaited<ReturnType<typeof findUsersToRoomsByUserId>>;
-}
 
 export default function Rooms() {
     const config = useOutletContext<NavigationConfig>()

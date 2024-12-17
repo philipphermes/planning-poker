@@ -1,10 +1,10 @@
 import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
-import {getCurrentUser} from "~/.server/auth";
 import {userRoomSchema} from "~/validators/userRoomSchema";
 import {deleteUserToRoom} from "~/db/queries/userToRoomQueries";
 import {getAndValidateFormData} from "~/utils/formData";
 import {toast} from "~/.server/toast";
 import {redirect} from "@remix-run/react";
+import {getCurrentUser} from "~/.server/auth/user";
 
 export async function loader({request}: LoaderFunctionArgs) {
     if (request.method !== "POST") {

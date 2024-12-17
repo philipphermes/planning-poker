@@ -4,7 +4,7 @@ import {PencilIcon} from "@heroicons/react/24/outline";
 import {Button} from "~/components/form/Button";
 
 export function RoundForm() {
-    return (<Form method="POST" className="w-full flex justify-between gap-2">
+    return (<Form method="POST" className="flex justify-between gap-2">
         <InputWithIcon
             type="text"
             name="name"
@@ -13,5 +13,6 @@ export function RoundForm() {
             icon={<PencilIcon className="h-4 opacity-70"/>}
         />
         <Button name="round" type="submit" text="Start" className="btn-outline btn-primary" />
+        <Button name="round" type="submit" text="Flip Cards" className="btn-disabled btn-secondary" /> {/* TODO */}
     </Form>)
 }

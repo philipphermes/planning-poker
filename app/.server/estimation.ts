@@ -5,7 +5,7 @@ import {findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries"
 import {getAndValidateFormData} from "~/utils/formData";
 import {estimationSchema} from "~/validators/estimationSchema";
 import {createEstimation, updateEstimation} from "~/db/queries/estimationQueries";
-import {broadcastToRoom} from "~/.server/roomSSE";
+import {broadcastToRoom} from "~/.server/room/roomSSE";
 import {v4 as uuidV4} from "uuid";
 
 export async function addEstimationAction(request: Request, formData: FormData, params: Params<string>, user: User) {
@@ -20,7 +20,7 @@ export async function addEstimationAction(request: Request, formData: FormData, 
     const estimation = round.estimations.filter(estimation => estimation?.user?.id === user.id)
 
     if (estimation[0]) {
-        estimation[0].time = Number.parseInt(result.time)
+        estimation[0].time = Number.parseInt(result.estimate)
         const changes = await updateEstimation(estimation[0])
 
         if (changes > 0)  await broadcastToRoom(params.roomId)

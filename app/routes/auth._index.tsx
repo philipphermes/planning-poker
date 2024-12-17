@@ -1,9 +1,10 @@
 import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
 import {Form, Link, redirect, useOutletContext} from "@remix-run/react";
-import {getCurrentUser, loginUser} from "~/.server/auth";
 import {InputWithLabel} from "~/components/form/Input";
 import {Button} from "~/components/form/Button";
 import {authUrls} from "~/routes/auth";
+import {getCurrentUser} from "~/.server/auth/user";
+import {loginUser} from "~/.server/auth/login";
 
 export async function loader({request}: LoaderFunctionArgs) {
     try {

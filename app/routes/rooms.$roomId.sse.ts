@@ -1,7 +1,7 @@
 import {data, LoaderFunctionArgs} from "@remix-run/node";
-import {addClient, broadcastToRoom, removeClient} from "~/.server/roomSSE";
-import {getCurrentUser} from "~/.server/auth";
+import {addClient, broadcastToRoom, removeClient} from "~/.server/room/roomSSE";
 import {findRoomById} from "~/db/queries/roomQueries";
+import {getCurrentUser} from "~/.server/auth/user";
 
 export async function loader({request, params}: LoaderFunctionArgs) {
     const roomId = params.roomId
