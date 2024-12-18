@@ -3,9 +3,9 @@ import * as argon2 from "argon2";
 import {Authenticator} from "remix-auth";
 import {userLoginSchema} from "~/validators/userLoginSchema";
 import {findOneUserByEmail} from "~/db/queries/userQueries";
-import {User} from "~/db/schema/schema";
+import {Users} from "~/types/Users";
 
-export const authenticator = new Authenticator<User>();
+export const authenticator = new Authenticator<Users>();
 
 export const STRATEGY_FORM_EMAIL_PASSWORD = "STRATEGY_FORM_EMAIL_PASSWORD"
 export const MESSAGE_ERROR_INVALID_CREDENTIALS = "Invalid credentials!"

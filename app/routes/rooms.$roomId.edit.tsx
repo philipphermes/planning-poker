@@ -1,13 +1,17 @@
-import {data, redirect, useFetcher, useLoaderData} from '@remix-run/react';
+import {data, Form, redirect, useFetcher, useLoaderData} from '@remix-run/react';
 import {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
 import {findRoomById} from "~/db/queries/roomQueries";
-import {toast} from "~/.server/toast";
-import EditRoomForm from "~/components/room/EditRoomForm";
-import {UserSearch} from "~/components/room/UserSearch";
+import {toast} from "~/.server/toast/toast";
+import {UserSearch} from "~/components/user/UserSearch";
 import {deleteRoomAction, saveRoomAction, saveRoomCardsAction} from "~/.server/room/roomAction";
 import {getCurrentUser} from "~/.server/auth/user";
-import {CardList} from "~/components/room/CardList";
 import {findCardsByRoomId} from "~/db/queries/cardsQueries";
+import {CardGridWrapper} from "~/components/card/CardGridWrapper";
+import {CardInput} from "~/components/card/CardInput";
+import {Button} from "~/components/form/Button";
+import {InputWithIcon} from "~/components/form/Input";
+import {PencilIcon} from "@heroicons/react/24/outline";
+import {useState} from "react";
 
 export async function loader({request, params}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
@@ -25,7 +29,7 @@ export async function loader({request, params}: LoaderFunctionArgs) {
 export async function action({request, params}: ActionFunctionArgs) {
     await getCurrentUser(request)
 
-    if (!params.roomId) return redirect('/')
+    if (!params.roomId) return redirect('/rooms')
 
     const formData = await request.formData()
 
@@ -39,6 +43,7 @@ export async function action({request, params}: ActionFunctionArgs) {
 export default function RoomsRoomIdEdit() {
     const {user, room, cards} = useLoaderData<typeof loader>()
     const removeUserFetcher = useFetcher();
+    const [roomName, setRoomName] = useState(room.name);
 
     function removeUserFromRoom(userId: string) {
         removeUserFetcher.submit(
@@ -49,7 +54,21 @@ export default function RoomsRoomIdEdit() {
 
     return (
         <div className="flex w-full flex-col border-opacity-50 gap-6">
-            <EditRoomForm room={room?.name}/>
+            <Form method="POST" className="w-full flex justify-between gap-2">
+                <InputWithIcon
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    icon={<PencilIcon className="h-4 opacity-70"/>}
+                    value={roomName}
+                    className="input-ghost"
+                    onChange={e => setRoomName(e.target.value)}
+                />
+                <Button text="Save" name="save" type="submit" className="w-fit btn-primary btn-outline"/>
+                <Button text="Delete" name="delete" type="submit" className="w-fit btn-ghost btn-outline"/>
+            </Form>
+
+
             <div className="flex w-full flex-col border-opacity-50 gap-2">
                 {room?.usersToRooms.map((usersToRooms) => (
                     <div key={usersToRooms.user.id}>
@@ -67,7 +86,12 @@ export default function RoomsRoomIdEdit() {
             </div>
 
             <div className="divider">Room Cards</div>
-            <CardList cards={cards} />
+
+            <CardGridWrapper cols={6} isForm={true}>
+                {cards.map(card => <CardInput key={card.id} name={`cards[${card.id}]`} value={card.time}/>)}
+                <CardInput key="new" name="cards[new]"/>
+                <Button text="Save" type="submit" name="updateCards" className="btn-accent col-span-6"/>
+            </CardGridWrapper>
 
             <div className="divider">Add Users</div>
             <UserSearch roomId={room?.id}/>

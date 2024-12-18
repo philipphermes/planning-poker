@@ -1,5 +1,5 @@
 import {deleteRoom, updateRoom} from "~/db/queries/roomQueries";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 import {getAndValidateFormData, getAndValidateParsedData, parseFormDataToNestedMap} from "~/utils/formData";
 import {roomSchema} from "~/validators/roomSchema";
 import {cardsSchema} from "~/validators/cardSchema";
@@ -11,7 +11,7 @@ export async function deleteRoomAction(roomId: string, request: Request) {
 
     if (!changes) return await toast.getDataWithToasts(request, {message: 'Failed deleting room!', status: 'error'}, null)
 
-    await toast.throwRedirectWithToasts(request, {message: 'Deleted room successfully!', status: 'success'}, '/')
+    await toast.throwRedirectWithToasts(request, {message: 'Deleted room successfully!', status: 'success'}, '/rooms')
 }
 
 export async function saveRoomAction(roomId: string, request: Request, formData: FormData) {

@@ -1,15 +1,6 @@
 import {relations} from "drizzle-orm"
 import {sqliteTable, integer, text, primaryKey} from "drizzle-orm/sqlite-core"
-
-export type User = typeof users.$inferInsert;
-export type Room = typeof rooms.$inferInsert;
-export type UsersToRooms = typeof usersToRooms.$inferInsert;
-export type Round = typeof rounds.$inferInsert;
-export type Estimation = typeof estimations.$inferInsert;
-export type Cards = typeof cards.$inferInsert;
-
-export const ROLE_OWNER = 'owner';
-export const ROLE_MEMBER = 'member';
+import {ROLE_MEMBER} from "~/types/Users";
 
 export const users = sqliteTable('users', {
     id: text().primaryKey(),

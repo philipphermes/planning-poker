@@ -1,7 +1,6 @@
 import {getAndValidateFormData} from "~/utils/formData";
 import {userLoginSchema} from "~/validators/userLoginSchema";
-import {User} from "~/db/schema/schema";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 import {SESSION_KEY_USER, sessionStorage} from "~/.server/session";
 import {redirect} from "@remix-run/node";
 import {
@@ -10,12 +9,13 @@ import {
     MESSAGE_LOGGED_IN,
     STRATEGY_FORM_EMAIL_PASSWORD
 } from "~/.server/auth/auth";
+import {Users} from "~/types/Users";
 
 export async function loginUser(request: Request) {
     const result = await getAndValidateFormData(await request.clone().formData(), request, userLoginSchema)
     if (result.init) return result
 
-    let user: User;
+    let user: Users;
 
     try {
         user = await authenticator.authenticate(STRATEGY_FORM_EMAIL_PASSWORD, request)

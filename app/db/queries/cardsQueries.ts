@@ -1,6 +1,7 @@
-import {Cards, cards} from "~/db/schema/schema";
+import {cards} from "~/db/schema/schema";
 import {db} from "~/db/db.server";
 import {eq} from "drizzle-orm";
+import {Cards} from "~/types/Cards";
 
 export async function findCardsByRoomId(roomId: string) {
     return await db.query.cards.findMany({

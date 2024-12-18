@@ -1,7 +1,7 @@
 import {ZodObject, ZodRawShape, SafeParseReturnType} from "zod";
 import {data} from "@remix-run/react";
 import {ToastMessage} from "remix-toast-notifications";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 
 export type ParsedFormData = Record<string, string | Map<string, string>>
 

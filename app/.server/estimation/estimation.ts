@@ -1,14 +1,14 @@
 import {Params} from "@remix-run/react";
-import {User} from "~/db/schema/schema";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 import {findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries";
 import {getAndValidateFormData} from "~/utils/formData";
 import {estimationSchema} from "~/validators/estimationSchema";
 import {createEstimation, updateEstimation} from "~/db/queries/estimationQueries";
 import {broadcastToRoom} from "~/.server/room/roomSSE";
 import {v4 as uuidV4} from "uuid";
+import {Users} from "~/types/Users";
 
-export async function addEstimationAction(request: Request, formData: FormData, params: Params<string>, user: User) {
+export async function addEstimationAction(request: Request, formData: FormData, params: Params<string>, user: Users) {
     if (!params.roomId) return await toast.getDataWithToasts(request, {message: 'Failed to add estimate!', status: 'error'}, null)
 
     const round = await findNewestRoundByRoomIdWithEstimations(params.roomId)

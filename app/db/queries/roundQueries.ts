@@ -1,9 +1,10 @@
 import {db} from "../db.server";
 import {desc, eq} from "drizzle-orm";
-import {Round, rounds} from "../schema/schema";
+import {rounds} from "../schema/schema";
 import {v4 as uuidV4} from "uuid";
+import {Rounds} from "~/types/Rounds";
 
-export async function createRound(round: Round) {
+export async function createRound(round: Rounds) {
     round.id = uuidV4();
     round.createdAt = new Date().valueOf()
 

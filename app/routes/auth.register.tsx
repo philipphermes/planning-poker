@@ -7,7 +7,7 @@ import * as argon2 from "argon2";
 import {getAndValidateFormData} from "~/utils/formData";
 import {InputWithLabel} from "~/components/form/Input";
 import {Button} from "~/components/form/Button";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 import {authUrls} from "~/routes/auth";
 import {getCurrentUser} from "~/.server/auth/user";
 
@@ -18,7 +18,7 @@ export async function loader({request}: LoaderFunctionArgs) {
         return data(null);
     }
 
-    return redirect('/');
+    return redirect('/rooms');
 }
 
 export async function action({request}: ActionFunctionArgs) {

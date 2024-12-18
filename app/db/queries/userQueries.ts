@@ -1,7 +1,8 @@
 import {db} from "../db.server";
 import {and, eq, like, notInArray} from "drizzle-orm";
-import {User, users} from "../schema/schema";
+import {users} from "../schema/schema";
 import {v4 as uuidV4} from "uuid";
+import {Users} from "~/types/Users";
 
 export async function findOneUserByEmail(email: string) {
     return await db.query.users.findFirst({
@@ -24,7 +25,7 @@ export async function findUsers(search: string, excludeUserId: string[]) {
     })
 }
 
-export async function createUser(user: User) {
+export async function createUser(user: Users) {
     user.id = uuidV4()
     user.createdAt = new Date().valueOf()
 
@@ -37,7 +38,7 @@ export async function createUser(user: User) {
     return userData[0] ?? user;
 }
 
-export async function deleteUser(user: User) {
+export async function deleteUser(user: Users) {
     const result = await db
         .delete(users)
         .where(eq(users.id, user.id))

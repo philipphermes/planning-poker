@@ -1,6 +1,7 @@
-import {UsersToRooms, usersToRooms} from "../schema/schema";
+import {usersToRooms} from "../schema/schema";
 import {db} from "../db.server";
 import {and, eq} from "drizzle-orm";
+import {UsersToRooms} from "~/types/UsersToRooms";
 
 export async function addUserToRoom(userToRoom: UsersToRooms) {
     const result = await db

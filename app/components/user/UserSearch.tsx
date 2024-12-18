@@ -2,12 +2,12 @@ import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import {InputWithIcon} from "~/components/form/Input";
 import {useEffect, useState} from "react";
 import {useFetcher} from "@remix-run/react";
-import {User} from "~/db/schema/schema";
+import {Users} from "~/types/Users";
 
 export function UserSearch({roomId}: { roomId?: string }) {
     const [query, setQuery] = useState("");
 
-    const userFetcher = useFetcher<User[]>();
+    const userFetcher = useFetcher<Users[]>();
     const addUserFetcher = useFetcher();
 
     const users = userFetcher.data || []

@@ -1,9 +1,10 @@
 import {db} from "../db.server";
-import {estimations, Estimation} from "../schema/schema";
+import {estimations} from "../schema/schema";
 import {v4 as uuidV4} from "uuid";
 import {eq} from "drizzle-orm";
+import {Estimations} from "~/types/Estimations";
 
-export async function createEstimation(estimation: Estimation) {
+export async function createEstimation(estimation: Estimations) {
     estimation.id = uuidV4()
     estimation.createdAt = new Date().valueOf()
 
@@ -16,7 +17,7 @@ export async function createEstimation(estimation: Estimation) {
     return estimationData[0] ?? estimation;
 }
 
-export async function updateEstimation(estimation: Estimation): Promise<number> {
+export async function updateEstimation(estimation: Estimations): Promise<number> {
     const result = await db
         .update(estimations)
         .set({time: estimation.time})

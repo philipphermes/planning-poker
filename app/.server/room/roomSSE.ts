@@ -1,10 +1,11 @@
 import {findNewestRoundByRoomIdWithEstimations} from "~/db/queries/roundQueries";
-import {Room, User} from "~/db/schema/schema";
-import {SSEMessage} from "~/models/SSEMessage";
+import {SSEMessage} from "~/types/SSEMessage";
+import {Users} from "~/types/Users";
+import {Rooms} from "~/types/Rooms";
 
 const controllers = new Map<string, Map<string, ReadableStreamDefaultController>>();
 
-export async function addClient(room: Room, user: User, controller: ReadableStreamDefaultController) {
+export async function addClient(room: Rooms, user: Users, controller: ReadableStreamDefaultController) {
     if (!room.id || !user.id) {
         throw new Error('roomId and userId are required')
     }
@@ -20,7 +21,7 @@ export async function addClient(room: Room, user: User, controller: ReadableStre
     controllers.get(room.id)?.set(user.id, controller)
 }
 
-export async function removeClient(room: Room, user: User) {
+export async function removeClient(room: Rooms, user: Users) {
     if (!room.id || !user.id) {
         throw new Error('roomId and userId are required')
     }

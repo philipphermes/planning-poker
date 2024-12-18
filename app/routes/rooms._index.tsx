@@ -1,13 +1,14 @@
-import {Link, useLoaderData} from '@remix-run/react';
-import NewRoomForm from "~/components/room/NewRoomForm";
+import {Form, Link, useLoaderData} from '@remix-run/react';
 import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
 import {getAndValidateFormData} from "~/utils/formData";
 import {roomSchema} from "~/validators/roomSchema";
 import {createRoom} from "~/db/queries/roomQueries";
 import {v4 as uuidV4} from "uuid";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 import {getCurrentUser} from "~/.server/auth/user";
+import {InputWithLabel} from "~/components/form/Input";
+import {Button} from "~/components/form/Button";
 
 export async function loader({request}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
@@ -51,8 +52,21 @@ export default function Rooms_index() {
                     </div>
                 ))}
             </div>
+
             <div className="divider"></div>
-            <NewRoomForm/>
+
+            <div className="card bg-base-300 rounded-box p-4">
+                <Form method="post" className="space-y-6">
+                    <InputWithLabel
+                        type="text"
+                        name="name"
+                        placeholder="Type here"
+                        label="Room name"
+                        className="input-bordered"
+                    />
+                    <Button type="submit" text="Create new room" className="btn-outline btn-accent w-full"/>
+                </Form>
+            </div>
         </div>
     )
 }

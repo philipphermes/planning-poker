@@ -1,5 +1,5 @@
 import {Params} from "@remix-run/react";
-import {toast} from "~/.server/toast";
+import {toast} from "~/.server/toast/toast";
 import {getAndValidateFormData} from "~/utils/formData";
 import {roundSchema} from "~/validators/roundSchema";
 import {createRound, findNewestRoundByRoomIdWithEstimations, setRoundVisible} from "~/db/queries/roundQueries";

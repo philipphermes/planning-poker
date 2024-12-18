@@ -1,8 +1,8 @@
 import {Links, Meta, Outlet, Scripts, ScrollRestoration} from "@remix-run/react";
 import type {LinksFunction, LoaderFunctionArgs} from "@remix-run/node";
 import "./tailwind.css";
-import Toasts from "./components/Toasts";
-import {toast} from "~/.server/toast";
+import Toasts from "./components/toast/Toasts";
+import {toast} from "~/.server/toast/toast";
 import {NavigationConfig} from "~/components/Navigation";
 
 export const links: LinksFunction = () => [];

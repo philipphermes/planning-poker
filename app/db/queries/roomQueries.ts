@@ -1,10 +1,12 @@
 import {db} from "../db.server";
 import {eq} from "drizzle-orm";
-import {ROLE_OWNER, Room, rooms} from "../schema/schema";
+import {rooms} from "../schema/schema";
 import {deleteRound, findRoundsByRoomId} from "./roundQueries";
 import {deleteEstimations} from "./estimationQueries";
 import {addUserToRoom, deleteUsersToRooms} from "./userToRoomQueries";
 import {v4 as uuidV4} from "uuid";
+import {Rooms} from "~/types/Rooms";
+import {ROLE_OWNER} from "~/types/Users";
 
 export async function findRoomById(id: string) {
     return await db.query.rooms.findFirst({
@@ -19,7 +21,7 @@ export async function findRoomById(id: string) {
     })
 }
 
-export async function createRoom(room: Room, ownerId: string) {
+export async function createRoom(room: Rooms, ownerId: string) {
     room.id = uuidV4()
     room.createdAt = new Date().valueOf()
 
@@ -42,7 +44,7 @@ export async function createRoom(room: Room, ownerId: string) {
     return roomData[0]
 }
 
-export async function updateRoom(room: Room) {
+export async function updateRoom(room: Rooms) {
     const result = await db
         .update(rooms)
         .set({
