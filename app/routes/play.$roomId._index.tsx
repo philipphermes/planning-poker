@@ -11,6 +11,7 @@ import {getCurrentUser} from "~/.server/auth/user";
 import {CardList} from "~/components/estimation/CardList";
 import {findRoomById} from "~/db/queries/roomQueries";
 import {isOwnerOfRoom} from "~/utils/room";
+import {findCardsByRoomId} from "~/db/queries/cardsQueries";
 
 export const meta: MetaFunction = () => {
     return [
@@ -19,9 +20,13 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({request}: LoaderFunctionArgs) {
+export async function loader({request, params}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
-    return data(user);
+
+    if (!params.roomId) return redirect('/rooms')
+    const cards = await findCardsByRoomId(params.roomId);
+
+    return data({user, cards});
 }
 
 export async function action({request, params}: ActionFunctionArgs) {
@@ -40,7 +45,7 @@ export async function action({request, params}: ActionFunctionArgs) {
 }
 
 export default function RoomsRoomIdPlay() {
-    const user = useLoaderData<typeof loader>()
+    const {user, cards} = useLoaderData<typeof loader>()
     const room = useOutletContext<Awaited<ReturnType<typeof findRoomById>>>()
 
     const [sseMessage, setSSEMessage] = useState<SSEMessage>()
@@ -77,7 +82,7 @@ export default function RoomsRoomIdPlay() {
 
             <div className="divider">Available Cards</div>
 
-            <CardList value={value} setValue={setValue}/>
+            <CardList value={value} setValue={setValue} cards={cards}/>
 
             <PlacedEstimationList sseMessage={sseMessage}/>
         </div>

@@ -15,7 +15,7 @@ test.afterEach(async () => {
 })
 
 test('can register', async ({page}) => {
-    await page.goto('/register');
+    await page.goto('/auth/register');
 
     await page.getByPlaceholder('Type here').click();
     await page.getByPlaceholder('Type here').fill('test2@email.com');
@@ -25,7 +25,7 @@ test('can register', async ({page}) => {
 
     await page.getByRole('button', { name: 'Sign up' }).click();
 
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL('/auth');
 
     const user = await db
         .query
@@ -48,7 +48,7 @@ test('cant register email already used', async ({page}) => {
         })
         .onConflictDoNothing()
 
-    await page.goto('/register');
+    await page.goto('/auth/register');
 
     await page.getByPlaceholder('Type here').click();
     await page.getByPlaceholder('Type here').fill('test1@email.com');
@@ -58,6 +58,6 @@ test('cant register email already used', async ({page}) => {
 
     await page.getByRole('button', { name: 'Sign up' }).click();
 
-    await expect(page).toHaveURL('/register');
+    await expect(page).toHaveURL('/auth/register');
 });
 

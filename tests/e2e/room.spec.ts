@@ -21,7 +21,7 @@ test.beforeEach(async ({page}) => {
         })
         .onConflictDoNothing()
 
-    await page.goto('/login');
+    await page.goto('/auth/login');
 
     await page.getByPlaceholder('Type here').click();
     await page.getByPlaceholder('Type here').fill('test1@email.com');

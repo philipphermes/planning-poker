@@ -13,7 +13,7 @@ export async function loader({request}: LoaderFunctionArgs) {
         return data(null);
     }
 
-    return redirect('/');
+    return redirect('/rooms');
 }
 
 export async function action({request}: ActionFunctionArgs) {

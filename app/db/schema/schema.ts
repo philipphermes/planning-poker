@@ -6,6 +6,7 @@ export type Room = typeof rooms.$inferInsert;
 export type UsersToRooms = typeof usersToRooms.$inferInsert;
 export type Round = typeof rounds.$inferInsert;
 export type Estimation = typeof estimations.$inferInsert;
+export type Cards = typeof cards.$inferInsert;
 
 export const ROLE_OWNER = 'owner';
 export const ROLE_MEMBER = 'member';
@@ -20,6 +21,13 @@ export const users = sqliteTable('users', {
 export const rooms = sqliteTable('rooms', {
     id: text().primaryKey(),
     name: text().notNull(),
+    createdAt: integer('created_at'),
+})
+
+export const cards = sqliteTable('cards', {
+    id: text().primaryKey(),
+    time: integer().notNull(),
+    roomId: text('room_id').notNull().references(() => rooms.id),
     createdAt: integer('created_at'),
 })
 
@@ -55,6 +63,7 @@ export const usersRelations = relations(users, ({many}) => ({
 export const roomsRelations = relations(rooms, ({many}) => ({
     usersToRooms: many(usersToRooms),
     rounds: many(rounds),
+    cards: many(cards),
 }));
 
 export const usersToRoomsRelations = relations(usersToRooms, ({one}) => ({

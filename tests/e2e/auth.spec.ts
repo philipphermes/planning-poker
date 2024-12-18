@@ -16,7 +16,7 @@ test.afterEach(async () => {
 test('redirected to login when not authenticated', async ({page}) => {
     await page.goto('/');
 
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL('/auth');
 });
 
 test('redirected to / authenticated successfully and can logout', async ({page}) => {
@@ -30,7 +30,7 @@ test('redirected to / authenticated successfully and can logout', async ({page})
         })
         .onConflictDoNothing()
 
-    await page.goto('/login');
+    await page.goto('/auth');
 
     await page.getByPlaceholder('Type here').click();
     await page.getByPlaceholder('Type here').fill('test1@email.com');
@@ -44,6 +44,6 @@ test('redirected to / authenticated successfully and can logout', async ({page})
 
     await page.goto('/logout');
 
-    await expect(page).toHaveURL('/login');
+    await expect(page).toHaveURL('/auth');
 });
 

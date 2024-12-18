@@ -4,8 +4,10 @@ import {findRoomById} from "~/db/queries/roomQueries";
 import {toast} from "~/.server/toast";
 import EditRoomForm from "~/components/room/EditRoomForm";
 import {UserSearch} from "~/components/room/UserSearch";
-import {deleteRoomAction, saveRoomAction} from "~/.server/room/roomAction";
+import {deleteRoomAction, saveRoomAction, saveRoomCardsAction} from "~/.server/room/roomAction";
 import {getCurrentUser} from "~/.server/auth/user";
+import {CardList} from "~/components/room/CardList";
+import {findCardsByRoomId} from "~/db/queries/cardsQueries";
 
 export async function loader({request, params}: LoaderFunctionArgs) {
     const user = await getCurrentUser(request);
@@ -15,7 +17,9 @@ export async function loader({request, params}: LoaderFunctionArgs) {
     const room = await findRoomById(params.roomId)
     if (!room) return redirect('/rooms/list');
 
-    return data({user, room});
+    const cards = await findCardsByRoomId(params.roomId);
+
+    return data({user, room, cards});
 }
 
 export async function action({request, params}: ActionFunctionArgs) {
@@ -27,12 +31,13 @@ export async function action({request, params}: ActionFunctionArgs) {
 
     if (formData.has('delete')) return await deleteRoomAction(params.roomId, request)
     if (formData.has('save')) return await saveRoomAction(params.roomId, request, formData)
+    if (formData.has('updateCards')) return await saveRoomCardsAction(params.roomId, request, formData)
 
     return await toast.getDataWithToasts(request, {message: 'Invalid action', status: 'error'}, null)
 }
 
 export default function RoomsRoomIdEdit() {
-    const {user, room} = useLoaderData<typeof loader>()
+    const {user, room, cards} = useLoaderData<typeof loader>()
     const removeUserFetcher = useFetcher();
 
     function removeUserFromRoom(userId: string) {
@@ -48,17 +53,23 @@ export default function RoomsRoomIdEdit() {
             <div className="flex w-full flex-col border-opacity-50 gap-2">
                 {room?.usersToRooms.map((usersToRooms) => (
                     <div key={usersToRooms.user.id}>
-                        <div className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center justify-items-end gap-2">
+                        <div
+                            className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center justify-items-end gap-2">
                             <h3 className="text-lg w-full">{usersToRooms.user.email}</h3>
                             {usersToRooms.user.id !== user.id
-                                ? <button onClick={() => removeUserFromRoom(usersToRooms.user.id)} className="btn btn-outline btn-secondary">Remove</button>
+                                ? <button onClick={() => removeUserFromRoom(usersToRooms.user.id)}
+                                          className="btn btn-outline btn-secondary">Remove</button>
                                 : <span className="btn btn-ghost cursor-default">You</span>
                             }
                         </div>
                     </div>
                 ))}
             </div>
-            <div className="divider"/>
+
+            <div className="divider">Room Cards</div>
+            <CardList cards={cards} />
+
+            <div className="divider">Add Users</div>
             <UserSearch roomId={room?.id}/>
         </div>
     );

@@ -11,10 +11,10 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({params}: LoaderFunctionArgs) {
-    if (!params.roomId) return redirect('/')
+    if (!params.roomId) return redirect('/rooms')
 
     const room = await findRoomById(params.roomId)
-    if (!room) return redirect('/')
+    if (!room) return redirect('/rooms')
 
     return data(room);
 }
