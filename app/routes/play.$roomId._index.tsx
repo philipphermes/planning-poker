@@ -52,24 +52,59 @@ export default function RoomsRoomIdPlay() {
     const [value, setValue] = useState<number>(0)
 
     useEffect(() => {
-        const connectedUsersEventSource = new EventSource(`/rooms/${room?.id}/sse`);
+        let retryTimeout: NodeJS.Timeout | null = null;
+        let retryCount = 0;
+        const maxRetries = 5;
+        const baseRetryDelay = 5000;
 
-        connectedUsersEventSource.onmessage = (event) => {
-            const data: SSEMessage = JSON.parse(event.data);
-            setSSEMessage(data)
+        const connectToSSE = () => {
+            const connectedUsersEventSource = new EventSource(`/rooms/${room?.id}/sse`);
 
-            data?.estimations.forEach(message => {
-                if (message.user === user.email) {
-                    setValue(message.estimation ?? 0)
+            connectedUsersEventSource.onopen = () => {
+                retryCount = 0;
+                if (retryTimeout !== null) {
+                    clearTimeout(retryTimeout);
+                    retryTimeout = null;
                 }
-            })
+            };
+
+            connectedUsersEventSource.onmessage = (event) => {
+                const data: SSEMessage = JSON.parse(event.data);
+                setSSEMessage(data);
+
+                data?.estimations.forEach(message => {
+                    if (message.user === user.email && message.estimation) {
+                        setValue(message.estimation);
+                    }
+                });
+            };
+
+            connectedUsersEventSource.onerror = () => {
+                connectedUsersEventSource.close();
+
+                if (retryCount < maxRetries) {
+                    retryCount += 1;
+
+                    const retryDelay = baseRetryDelay * Math.pow(2, retryCount - 1);
+                    retryTimeout = setTimeout(() => {
+                        connectToSSE();
+                    }, retryDelay);
+                } else {
+                    console.error("Maximum retry limit reached. Could not reconnect to SSE.");
+                }
+            };
+
+            return connectedUsersEventSource;
         };
 
-        connectedUsersEventSource.onerror = () => {
-            connectedUsersEventSource.close();
-        };
+        const eventSource = connectToSSE();
 
-        return () => connectedUsersEventSource.close();
+        return () => {
+            eventSource.close();
+            if (retryTimeout !== null) {
+                clearTimeout(retryTimeout);
+            }
+        };
     }, [room?.id, user.email]);
 
     return (
