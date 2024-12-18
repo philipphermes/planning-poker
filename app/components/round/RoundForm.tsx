@@ -13,6 +13,6 @@ export function RoundForm() {
             icon={<PencilIcon className="h-4 opacity-70"/>}
         />
         <Button name="round" type="submit" text="Start" className="btn-outline btn-primary" />
-        <Button name="round" type="submit" text="Flip Cards" className="btn-disabled btn-secondary" /> {/* TODO */}
+        <Button name="flip" type="submit" text="Flip Cards" className="btn-outline btn-secondary" />
     </Form>)
 }

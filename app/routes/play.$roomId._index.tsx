@@ -5,7 +5,7 @@ import {SSEMessage} from "~/models/SSEMessage";
 import {RoundForm} from "~/components/round/RoundForm";
 import {PlacedEstimationList} from "~/components/estimation/PlacedEstimationList";
 import {EstimationList} from "~/components/estimation/EstimationList";
-import {newRoundAction} from "~/.server/round";
+import {flipAction, newRoundAction} from "~/.server/round";
 import {addEstimationAction} from "~/.server/estimation";
 import {getCurrentUser} from "~/.server/auth/user";
 import {CardList} from "~/components/estimation/CardList";
@@ -34,6 +34,7 @@ export async function action({request, params}: ActionFunctionArgs) {
 
     if (formData.has('round')) return await newRoundAction(request, formData, params)
     if (formData.has('estimate')) return await addEstimationAction(request, formData, params, user)
+    if (formData.has('flip')) return await flipAction(request, params)
 
     return data(null)
 }

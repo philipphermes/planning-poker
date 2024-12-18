@@ -49,10 +49,11 @@ export async function broadcastToRoom(roomId: string) {
 
     const message: SSEMessage = {
         round: round.name,
+        visible: round.visible,
         estimations: round?.estimations.map(estimation => {
             return {
                 user: estimation.user.email,
-                estimation: estimation.time,
+                estimation: round.visible ? estimation.time : null,
             }
         })
     }

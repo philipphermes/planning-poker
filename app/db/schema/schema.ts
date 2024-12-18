@@ -20,7 +20,6 @@ export const users = sqliteTable('users', {
 export const rooms = sqliteTable('rooms', {
     id: text().primaryKey(),
     name: text().notNull(),
-    visible: integer({mode: 'boolean'}),
     createdAt: integer('created_at'),
 })
 
@@ -35,6 +34,7 @@ export const usersToRooms = sqliteTable('users_to_rooms', {
 export const rounds = sqliteTable('rounds', {
     id: text().primaryKey(),
     name: text().notNull(),
+    visible: integer({mode: 'boolean'}).notNull(),
     roomId: text('room_id').notNull().references(() => rooms.id),
     createdAt: integer('created_at'),
 })

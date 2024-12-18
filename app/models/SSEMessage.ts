@@ -1,5 +1,6 @@
 export type SSEMessage = {
     round: string;
+    visible: boolean;
     estimations: SSEEstimation[];
 }
 

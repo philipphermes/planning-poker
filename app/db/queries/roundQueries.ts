@@ -16,6 +16,17 @@ export async function createRound(round: Round) {
     return roundData[0] ?? round;
 }
 
+export async function setRoundVisible(roundId: string, visible: boolean) {
+    const result = await db
+        .update(rounds)
+        .set({
+            visible: visible,
+        })
+        .where(eq(rounds.id, roundId))
+
+    return result.changes
+}
+
 export async function findNewestRoundByRoomIdWithEstimations(roomId: string) {
     return await db.query.rounds.findFirst({
         with: {
