@@ -5,15 +5,15 @@ import {SSEMessage} from "~/types/SSEMessage";
 import {flipAction, newRoundAction} from "~/.server/round/round";
 import {addEstimationAction} from "~/.server/estimation/estimation";
 import {getCurrentUser} from "~/.server/auth/user";
-import {findRoomById} from "~/db/queries/roomQueries";
 import {isOwnerOfRoom} from "~/utils/room";
-import {findCardsByRoomId} from "~/db/queries/cardsQueries";
 import {CardGridWrapper} from "~/components/card/CardGridWrapper";
 import {CardTwoSided} from "~/components/card/CardTwoSided";
 import {CardForm} from "~/components/card/CardForm";
 import {InputWithIcon} from "~/components/form/Input";
 import {PencilIcon} from "@heroicons/react/24/outline";
 import {Button} from "~/components/form/Button";
+import {RoomRoomIdContext} from "~/routes/rooms.$roomId";
+import {findNewestRoundByRoomIdWithUserEstimation} from "~/db/queries/roundQueries";
 
 export const meta: MetaFunction = () => {
     return [
@@ -22,15 +22,13 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({params}: LoaderFunctionArgs) {
-    if (!params.roomId) return redirect('/rooms')
+export async function loader({request, params}: LoaderFunctionArgs) {
+    if (!params.roomId) return redirect('/rooms/list');
 
-    const room = await findRoomById(params.roomId)
-    if (!room) return redirect('/rooms/list');
+    const user = await getCurrentUser(request)
+    const lastEstimation = await findNewestRoundByRoomIdWithUserEstimation(params.roomId, user.id)
 
-    const cards = await findCardsByRoomId(params.roomId);
-
-    return data({cards, room});
+    return data(lastEstimation);
 }
 
 export async function action({request, params}: ActionFunctionArgs) {
@@ -49,11 +47,11 @@ export async function action({request, params}: ActionFunctionArgs) {
 }
 
 export default function RoomsRoomIdPlay() {
-    const {cards, room} = useLoaderData<typeof loader>()
-    const user = useOutletContext<Awaited<ReturnType<typeof getCurrentUser>>>()
+    const {user, room, cards} = useOutletContext<RoomRoomIdContext>()
+    const lastEstimation = useLoaderData<typeof loader>()
 
     const [sseMessage, setSSEMessage] = useState<SSEMessage>()
-    const [value, setValue] = useState<number>(0)
+    const [value, setValue] = useState<string>(lastEstimation?.estimations[0]?.value ?? "")
 
     useEffect(() => {
         const connectedUsersEventSource = new EventSource(`/rooms/${room?.id}/sse`);
@@ -99,7 +97,7 @@ export default function RoomsRoomIdPlay() {
                 <CardGridWrapper extraClasses="gap-4 grid-cols-4 md:grid-cols-6">
                     {sseMessage?.estimations.map((estimation, key) => <CardTwoSided
                         key={key}
-                        value={estimation.estimation ?? 0}
+                        value={estimation.estimation ?? ""}
                         email={estimation.user}
                         visible={sseMessage?.visible}
                         extraClasses="bg-base-300"
@@ -111,9 +109,10 @@ export default function RoomsRoomIdPlay() {
                 <CardGridWrapper extraClasses="gap-4 grid-cols-4 md:grid-cols-8">
                     {cards.map(card => <CardForm
                         key={card.id}
-                        value={card.time}
-                        active={value === card.time}
+                        value={card.value}
+                        active={value === card.value}
                         extraClasses="bg-base-300"
+                        setValue={setValue}
                     />)}
                 </CardGridWrapper>
         </div>

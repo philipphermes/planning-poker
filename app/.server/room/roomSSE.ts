@@ -54,7 +54,7 @@ export async function broadcastToRoom(roomId: string) {
         estimations: round?.estimations.map(estimation => {
             return {
                 user: estimation.user.email,
-                estimation: round.visible ? estimation.time : null,
+                estimation: round.visible ? estimation.value : null,
             }
         })
     }

@@ -23,7 +23,7 @@ export function CardSkeleton({extraClasses}: { extraClasses?: string }) {
     )
 }
 
-export function Card({value, extraClasses}: {value?: number, extraClasses?: string}) {
+export function Card({value, extraClasses}: {value?: string, extraClasses?: string}) {
     return (
         <CardWrapper extraClasses={`aspect-square w-full ${extraClasses || ''}`}>
             <CardBody extraClasses="p-2 justify-center items-center">

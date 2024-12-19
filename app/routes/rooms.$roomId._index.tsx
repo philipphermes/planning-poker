@@ -1,11 +1,14 @@
-import {data, Form, Link, redirect, useFetcher, useLoaderData, useOutletContext} from '@remix-run/react';
-import {ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
-import {findRoomById} from "~/db/queries/roomQueries";
+import {Form, Link, redirect, useFetcher, useOutletContext} from '@remix-run/react';
+import {ActionFunctionArgs} from "@remix-run/node";
 import {toast} from "~/.server/toast/toast";
 import {UserSearch} from "~/components/user/UserSearch";
-import {deleteRoomAction, saveRoomAction, saveRoomCardsAction} from "~/.server/room/roomAction";
+import {
+    deleteRoomAction,
+    generateRoomCardsAction,
+    saveRoomAction,
+    saveRoomCardsAction
+} from "~/.server/room/roomAction";
 import {getCurrentUser} from "~/.server/auth/user";
-import {findCardsByRoomId} from "~/db/queries/cardsQueries";
 import {CardGridWrapper} from "~/components/card/CardGridWrapper";
 import {CardInput} from "~/components/card/CardInput";
 import {Button} from "~/components/form/Button";
@@ -14,17 +17,7 @@ import {PencilIcon} from "@heroicons/react/24/outline";
 import {useState} from "react";
 import {isOwnerOfRoom} from "~/utils/room";
 import {Card} from "~/components/card/Card";
-
-export async function loader({params}: LoaderFunctionArgs) {
-    if (!params.roomId) return redirect('/rooms/list');
-
-    const room = await findRoomById(params.roomId)
-    if (!room) return redirect('/rooms/list');
-
-    const cards = await findCardsByRoomId(params.roomId);
-
-    return data({room, cards});
-}
+import {RoomRoomIdContext} from "~/routes/rooms.$roomId";
 
 export async function action({request, params}: ActionFunctionArgs) {
     await getCurrentUser(request)
@@ -36,16 +29,16 @@ export async function action({request, params}: ActionFunctionArgs) {
     if (formData.has('delete')) return await deleteRoomAction(params.roomId, request)
     if (formData.has('save')) return await saveRoomAction(params.roomId, request, formData)
     if (formData.has('updateCards')) return await saveRoomCardsAction(params.roomId, request, formData)
+    if (formData.has('generateCards')) return await generateRoomCardsAction(params.roomId, request, formData)
 
     return await toast.getDataWithToasts(request, {message: 'Invalid action', status: 'error'}, null)
 }
 
 export default function RoomsRoomId() {
-    const {room, cards} = useLoaderData<typeof loader>()
-    const user = useOutletContext<Awaited<ReturnType<typeof getCurrentUser>>>()
+    const {user, room, cards} = useOutletContext<RoomRoomIdContext>()
 
     const removeUserFetcher = useFetcher();
-    const [roomName, setRoomName] = useState(room.name);
+    const [roomName, setRoomName] = useState(room?.name);
 
     function removeUserFromRoom(userId: string) {
         removeUserFetcher.submit(
@@ -61,11 +54,15 @@ export default function RoomsRoomId() {
             <div className="w-full p-4 pt-20 md:pt-4 bg-base-300 md:max-w-2xl md:rounded-box">
 
                 <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-4xl uppercase">{room.name}</h1>
-                    <Link to="play" className="btn btn-primary">Open</Link>
+                    <h1 className="text-4xl uppercase">{room?.name}</h1>
+                    <div className="flex gap-2">
+                        <Link to="#" className="btn btn-disabled w-20">Log</Link>
+                        <Link to="play" className="btn btn-primary w-20">Open</Link>
+                    </div>
                 </div>
 
                 {isOwnerOfRoom(room, user) && <Form method="POST" className="w-full flex justify-between gap-2">
+                    <Button text="Delete" name="delete" type="submit" className="w-fit btn-ghost btn-outline w-20"/>
                     <InputWithIcon
                         type="text"
                         name="name"
@@ -74,18 +71,29 @@ export default function RoomsRoomId() {
                         value={roomName}
                         onChange={e => setRoomName(e.target.value)}
                     />
-                    <Button text="Save" name="save" type="submit" className="w-fit btn-secondary btn-outline"/>
-                    <Button text="Delete" name="delete" type="submit" className="w-fit btn-ghost btn-outline"/>
+                    <Button text="Save" name="save" type="submit" className="w-fit btn-secondary btn-outline w-20"/>
+
                 </Form>}
 
                 <div className="divider">Cards</div>
 
                 <CardGridWrapper isForm={isOwner} extraClasses="gap-4 grid-cols-4 md:grid-cols-6 my-4">
-                    {isOwner && cards.map(card => <CardInput key={card.id} name={`cards[${card.id}]`} value={card.time} extraClasses="bg-base-100"/>)}
-                    {!isOwner && cards.map(card => <Card key={card.id} value={card.time} extraClasses="bg-base-100"/>)}
+                    {isOwner && cards.map(card => <CardInput key={card.id} name={`cards[${card.id}]`} value={card.value} extraClasses="bg-base-100"/>)}
+                    {!isOwner && cards.map(card => <Card key={card.id} value={card.value} extraClasses="bg-base-100"/>)}
 
                     {isOwner && <CardInput key="new" name="cards[new]" extraClasses="bg-base-100"/>}
-                    {isOwner && <Button text="Save" type="submit" name="updateCards" className="btn-accent col-span-4 md:col-span-6"/>}
+
+                    {isOwner && <div className="col-span-4 md:col-span-6 flex gap-2">
+                        <select className="select select-bordered w-full" name="generateType">
+                            <option disabled selected>Select a type</option>
+                            <option value="fibonacci">Fibonacci (0, 1, 2, 3, 5, 8, 13, 21, 34)</option>
+                            <option value="t-shirts">T-Shirt Sizes (XS, S, M, L, XL, XXL)</option>
+                            <option value="powers-of-two">Powers of 2 (1, 2, 4, 8, 16, 32)</option>
+                            <option value="sequential">Sequential (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)</option>
+                        </select>
+                        <Button text="Generate" type="submit" name="generateCards" className="btn-accent btn-outline col-span-4 md:col-span-6"/>
+                        <Button text="Save Cards" type="submit" name="updateCards" className="btn-accent col-span-4 md:col-span-6"/>
+                    </div>}
                 </CardGridWrapper>
 
                 <div className="divider">Users</div>

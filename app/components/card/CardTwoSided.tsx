@@ -1,7 +1,7 @@
 import {CardBody, CardWrapper} from "~/components/card/Card";
 import {Avatar} from "~/components/avatar/Avatar";
 
-export function CardTwoSided({value, email, visible, extraClasses}: {value: number, email: string, visible: boolean, extraClasses?: string}  ) {
+export function CardTwoSided({value, email, visible, extraClasses}: {value: string, email: string, visible: boolean, extraClasses?: string}  ) {
     return (
         <div className="group [perspective:1000px] drop-shadow-xl">
             <div

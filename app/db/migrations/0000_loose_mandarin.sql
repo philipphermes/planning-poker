@@ -1,8 +1,16 @@
+CREATE TABLE `cards` (
+	`id` text PRIMARY KEY NOT NULL,
+	`value` text NOT NULL,
+	`room_id` text NOT NULL,
+	`created_at` integer,
+	FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
 CREATE TABLE `estimations` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` text NOT NULL,
 	`round_id` text NOT NULL,
-	`time` integer,
+	`value` text,
 	`created_at` integer,
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`round_id`) REFERENCES `rounds`(`id`) ON UPDATE no action ON DELETE no action
@@ -11,13 +19,13 @@ CREATE TABLE `estimations` (
 CREATE TABLE `rooms` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
-	`visible` integer,
 	`created_at` integer
 );
 --> statement-breakpoint
 CREATE TABLE `rounds` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
+	`visible` integer NOT NULL,
 	`room_id` text NOT NULL,
 	`created_at` integer,
 	FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON UPDATE no action ON DELETE no action

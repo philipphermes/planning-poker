@@ -20,7 +20,7 @@ export async function createEstimation(estimation: Estimations) {
 export async function updateEstimation(estimation: Estimations): Promise<number> {
     const result = await db
         .update(estimations)
-        .set({time: estimation.time})
+        .set({value: estimation.value})
         .where(eq(estimations.id, estimation.id))
 
     return result.changes

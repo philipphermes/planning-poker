@@ -1,5 +1,5 @@
 import { z } from "zod";
 
 export const estimationSchema = z.object({
-    estimate: z.string().regex(/^\d+$/),
+    estimate: z.string(),
 })

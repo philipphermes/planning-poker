@@ -3,7 +3,7 @@ import {Link} from "@remix-run/react";
 
 export function Navbar() {
     return (
-        <div className="navbar fixed z-10 bg-base-100">
+        <div className="navbar sticky z-10 bg-base-100">
             <div className="navbar-start">
                 <label htmlFor="my-drawer" className="btn btn-ghost drawer-button">
                     <Bars3Icon className="h-6"/>

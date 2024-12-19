@@ -3,8 +3,10 @@ import {toast} from "~/.server/toast/toast";
 import {getAndValidateFormData, getAndValidateParsedData, parseFormDataToNestedMap} from "~/utils/formData";
 import {roomSchema} from "~/validators/roomSchema";
 import {cardsSchema} from "~/validators/cardSchema";
-import {createCard, deleteCard, updateCard} from "~/db/queries/cardsQueries";
+import {createCard, deleteCard, deleteCards, updateCard} from "~/db/queries/cardsQueries";
 import {v4 as uuidV4} from "uuid";
+import {cardTypeSchema} from "~/validators/cardTypeSchema";
+import {generateCardPreset} from "~/utils/cardGenerator";
 
 export async function deleteRoomAction(roomId: string, request: Request) {
     const changes = await deleteRoom(roomId)
@@ -30,10 +32,24 @@ export async function saveRoomCardsAction(roomId: string, request: Request, form
     if (result.init) return result
 
     result.cards.forEach(async (value: string, id: string) => {
-        if (id === 'new' && value !== '') await createCard({id: uuidV4(), time: Number.parseInt(value), roomId: roomId})
-        else if (value !== '') await updateCard({id: id, time: Number.parseInt(value), roomId: roomId})
+        if (id === 'new' && value !== '') await createCard({id: uuidV4(), value: value, roomId: roomId})
+        else if (value !== '') await updateCard({id: id, value: value, roomId: roomId})
         else if (id !== 'new') await deleteCard(id)
     })
 
     return await toast.getDataWithToasts(request, {message: 'Updated cards successfully!', status: 'success'}, null)
+}
+
+export async function generateRoomCardsAction(roomId: string, request: Request, formData: FormData) {
+    const data = parseFormDataToNestedMap(formData);
+    const result = await getAndValidateParsedData(data, request, cardTypeSchema)
+    if (result.init) return result
+
+    await deleteCards(roomId)
+
+    const cards = generateCardPreset(result.generateType)
+
+    cards.map(async card => await createCard({id: uuidV4(), value: card, roomId: roomId}))
+
+    return await toast.getDataWithToasts(request, {message: 'Generated cards successfully!', status: 'success'}, null)
 }

@@ -6,5 +6,5 @@ export type SSEMessage = {
 
 export type SSEEstimation = {
     user: string;
-    estimation: number | null;
+    estimation: string | null;
 }

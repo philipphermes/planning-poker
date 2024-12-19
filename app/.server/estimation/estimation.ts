@@ -20,7 +20,7 @@ export async function addEstimationAction(request: Request, formData: FormData, 
     const estimation = round.estimations.filter(estimation => estimation?.user?.id === user.id)
     
     if (estimation[0]) {
-        estimation[0].time = result.estimate
+        estimation[0].value = result.estimate
         const changes = await updateEstimation(estimation[0])
 
         if (changes > 0)  await broadcastToRoom(params.roomId)
@@ -33,7 +33,7 @@ export async function addEstimationAction(request: Request, formData: FormData, 
 
     const newEstimation = await createEstimation({
         id: uuidV4(),
-        time: result.estimate,
+        value: result.estimate,
         userId: user.id,
         roundId: round.id,
     });

@@ -1,6 +1,6 @@
 import {db} from "../db.server";
 import {desc, eq} from "drizzle-orm";
-import {rounds} from "../schema/schema";
+import {estimations, rounds} from "../schema/schema";
 import {v4 as uuidV4} from "uuid";
 import {Rounds} from "~/types/Rounds";
 
@@ -37,6 +37,18 @@ export async function findNewestRoundByRoomIdWithEstimations(roomId: string) {
                 }
             },
             room: true,
+        },
+        where: eq(rounds.roomId, roomId),
+        orderBy: [desc(rounds.createdAt)],
+    });
+}
+
+export async function findNewestRoundByRoomIdWithUserEstimation(roomId: string, userId: string) {
+    return await db.query.rounds.findFirst({
+        with: {
+            estimations: {
+                where: eq(estimations.userId, userId)
+            },
         },
         where: eq(rounds.roomId, roomId),
         orderBy: [desc(rounds.createdAt)],

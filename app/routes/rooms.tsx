@@ -4,6 +4,8 @@ import {getCurrentUser} from "~/.server/auth/user";
 import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
 import {Drawer} from "~/components/navigation/Drawer";
 
+export type RoomsContext = Awaited<ReturnType<typeof getCurrentUser>>;
+
 export const meta: MetaFunction = () => {
     return [
         {title: "New Remix App"},

@@ -1,26 +1,59 @@
 # Planning Poker
 ![CI](https://github.com/philipphermes/planning-poker/actions/workflows/ci.yml/badge.svg)
 
-## Development
+## Setup
 
-Run the dev server:
+#### Install dependencies
 ```sh
-yarn dev
+yarn install
 ```
 
-## Drizzle
+#### Create `.env` file / Copy over `.env.dist`
+```
+DATABASE_URL="local.db"
+SECRET="s3cr3t"
+```
 
-Generate Migration:
+#### Generate migration
 ```sh
 npx drizzle-kit generate
 ```
 
-Migrate:
+#### Migrate
 ```sh
 npx drizzle-kit migrate
 ```
 
-Studio:
+## Development
+
+#### Run the dev server
+```sh
+yarn dev
+```
+
+#### Drizzle Studio
 ```sh
 yarn drizzle-kit studio --port=3000
+```
+
+## Testing
+
+#### Lint
+```sh
+yarn lint
+```
+
+#### Type check
+```sh
+yarn typecheck
+```
+
+#### Vitest
+```sh
+yarn vitest run
+```
+
+#### Playwright
+```sh
+npx playwright test
 ```

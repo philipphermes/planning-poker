@@ -10,7 +10,7 @@ export function Drawer({usersToRooms, children}: {usersToRooms: Awaited<ReturnTy
             {/* Content */}
             <div className="drawer-content min-h-dvh">
                 <Navbar />
-                <div className="h-full w-full md:max-w-5xl mx-auto">
+                <div className="h-full md:-mt-16 w-full md:max-w-5xl lg:max-w-7xl mx-auto md:p-4">
                     {children}
                 </div>
             </div>

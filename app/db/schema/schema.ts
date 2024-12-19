@@ -17,7 +17,7 @@ export const rooms = sqliteTable('rooms', {
 
 export const cards = sqliteTable('cards', {
     id: text().primaryKey(),
-    time: integer().notNull(),
+    value: text().notNull(),
     roomId: text('room_id').notNull().references(() => rooms.id),
     createdAt: integer('created_at'),
 })
@@ -42,7 +42,7 @@ export const estimations = sqliteTable('estimations', {
     id: text().primaryKey(),
     userId: text('user_id').notNull().references(() => users.id),
     roundId: text('round_id').notNull().references(() => rounds.id),
-    time: integer(),
+    value: text(),
     createdAt: integer('created_at'),
 })
 
