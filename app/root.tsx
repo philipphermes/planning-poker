@@ -26,7 +26,7 @@ export async function loader({request}: LoaderFunctionArgs) {
 
 export default function App() {
     return (
-        <html lang="en" className="scrollbar-thumb-orange-50 scrollbar-corner-pink-500">
+        <html lang="en" className="bg-base-100">
             <head>
                 <meta charSet="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>

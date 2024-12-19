@@ -2,7 +2,7 @@ import {ReactNode} from "react";
 
 export function CardWrapper({ children, extraClasses }: { children: ReactNode; extraClasses?: string }) {
     return (
-        <div className={`card bg-base-300 ${extraClasses || ''}`}>
+        <div className={`card ${extraClasses || ''}`}>
             {children}
         </div>
     );
@@ -20,5 +20,15 @@ export function CardSkeleton({extraClasses}: { extraClasses?: string }) {
     return (
         <div className={`card skeleton ${extraClasses || ''}`}>
         </div>
+    )
+}
+
+export function Card({value, extraClasses}: {value?: number, extraClasses?: string}) {
+    return (
+        <CardWrapper extraClasses={`aspect-square w-full ${extraClasses || ''}`}>
+            <CardBody extraClasses="p-2 justify-center items-center">
+                <span className="text-2xl text-center">{value}</span>
+            </CardBody>
+        </CardWrapper>
     )
 }

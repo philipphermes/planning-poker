@@ -1,8 +1,8 @@
 import {CardBody, CardWrapper} from "~/components/card/Card";
 
-export function CardInput({name, value}: {name: string, value?: number}) {
+export function CardInput({name, value, extraClasses}: {name: string, value?: number, extraClasses?: string}) {
     return (
-        <CardWrapper extraClasses="aspect-square w-full">
+        <CardWrapper extraClasses={`aspect-square w-full ${extraClasses || ''}`}>
             <CardBody extraClasses="p-2 justify-center items-center">
                 <input
                     type="text"

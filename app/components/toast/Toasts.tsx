@@ -57,7 +57,7 @@ function Toast({message, config, offset}: ToastsProp) {
     return (
         <div role="alert" className={
             `alert shadow-lg overflow-hidden w-96 transform transition-all duration-300 ease-out alert-${message.status}`
-            + (progress > 0 ? " translate-y-0 opacity-100" : " translate-y-10 opacity-0")
+            + (progress > 0 ? " translate-y-0 opacity-100" : " translate-y-10 opacity-0 h-0 w-0")
         }>
             {ToastIcons[message.status]}
             <div className="w-full">

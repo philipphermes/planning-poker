@@ -48,8 +48,7 @@ export function UserSearch({roomId}: { roomId?: string }) {
                 : (<div className="flex w-full flex-col border-opacity-50 gap-4">
                     {query && users.map((searchUser) => (
                         <div key={searchUser.id}>
-                            <div
-                                className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center justify-items-end gap-4">
+                            <div className="card bg-base-100 rounded-box p-4 grid grid-cols-2 place-items-center justify-items-end gap-4">
                                 <h3 className="text-lg w-full">{searchUser.email}</h3>
                                 <button type="button" onClick={() => addUserToRoom(searchUser.id)}
                                         className="btn btn-outline btn-primary">Add

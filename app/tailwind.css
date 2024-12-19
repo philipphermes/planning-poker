@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Overwrites daisyUIs drawer (scrollbar-gutter: stable;) */
+html:has(.drawer-toggle:checked) {
+    overflow-y: hidden;
+    scrollbar-gutter: auto;
+}

@@ -1,21 +1,20 @@
-import {Form, Link, useLoaderData} from '@remix-run/react';
-import {ActionFunctionArgs, data, LoaderFunctionArgs} from "@remix-run/node";
+import {Form} from '@remix-run/react';
+import {ActionFunctionArgs, MetaFunction} from "@remix-run/node";
+import {InputWithLabel} from "~/components/form/Input";
+import {Button} from "~/components/form/Button";
+import {getCurrentUser} from "~/.server/auth/user";
 import {getAndValidateFormData} from "~/utils/formData";
 import {roomSchema} from "~/validators/roomSchema";
 import {createRoom} from "~/db/queries/roomQueries";
 import {v4 as uuidV4} from "uuid";
 import {toast} from "~/.server/toast/toast";
-import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
-import {getCurrentUser} from "~/.server/auth/user";
-import {InputWithLabel} from "~/components/form/Input";
-import {Button} from "~/components/form/Button";
 
-export async function loader({request}: LoaderFunctionArgs) {
-    const user = await getCurrentUser(request);
-    const usersToRooms = await findUsersToRoomsByUserId(user.id)
-
-    return data({user, usersToRooms});
-}
+export const meta: MetaFunction = () => {
+    return [
+        {title: "New Remix App"},
+        {name: "description", content: "Welcome to Remix!"},
+    ];
+};
 
 export async function action({request}: ActionFunctionArgs) {
     const user = await getCurrentUser(request);
@@ -25,48 +24,29 @@ export async function action({request}: ActionFunctionArgs) {
 
     const room = await createRoom({id: uuidV4(), name: result.name}, user.id)
 
-    return await toast.getDataWithToasts(request, {
+    await toast.throwRedirectWithToasts(request, {
         message: room.id ? 'Room was created successfully!' : 'Failed to create new room!',
         status: room.id ? 'success' : 'error',
-    }, null)
+    }, '/rooms/' + room.id);
 }
 
-export default function Rooms_index() {
-    const {usersToRooms} = useLoaderData<typeof loader>()
-
+export default function Rooms() {
     return (
-        <div>
-            <div className="flex w-full max-h-[40dvh] flex-col border-opacity-50 overflow-y-auto gap-4 rounded-box">
-                {usersToRooms.map(userToRoom => (
-                    <div key={userToRoom.room.id}>
-                        <div className="card bg-base-300 rounded-box p-4 grid grid-cols-2 place-items-center gap-4">
-                            <h3 className="col-span-2 text-lg">{userToRoom.room.name}</h3>
-                            {
-                                userToRoom.role === 'owner'
-                                && <Link to={`/rooms/${userToRoom.room.id}/edit`} prefetch="intent"
-                                         className="btn btn-outline w-full btn-secondary">Edit</Link>
-                            }
-                            <Link to={`/play/${userToRoom.room.id}`} prefetch="intent"
-                                  className="btn w-full btn-primary">Open</Link>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            <div className="divider"></div>
-
-            <div className="card bg-base-300 rounded-box p-4">
+        <div className="w-full min-h-full flex justify-center items-center">
+            <div className="w-full max-w-2xl card bg-base-300 rounded-box p-4">
                 <Form method="post" className="space-y-6">
                     <InputWithLabel
                         type="text"
                         name="name"
                         placeholder="Type here"
-                        label="Room name"
+                        label="Create new Room"
                         className="input-bordered"
                     />
-                    <Button type="submit" text="Create new room" className="btn-outline btn-accent w-full"/>
+                    <Button type="submit" text="Create Room" className="btn-outline btn-primary w-full"/>
+                    <div className="divider">OR</div>
+                    <label htmlFor="my-drawer" className="btn btn-outline drawer-button w-full">Show Rooms</label>
                 </Form>
             </div>
         </div>
-    )
+    );
 }

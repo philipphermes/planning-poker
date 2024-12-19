@@ -1,6 +1,8 @@
-import {Link, Outlet, useOutletContext} from '@remix-run/react';
-import {MetaFunction} from "@remix-run/node";
-import Navigation, {NavigationConfig} from "~/components/Navigation";
+import {Outlet, useLoaderData} from '@remix-run/react';
+import {data, LoaderFunctionArgs, MetaFunction} from "@remix-run/node";
+import {getCurrentUser} from "~/.server/auth/user";
+import {findUsersToRoomsByUserId} from "~/db/queries/userToRoomQueries";
+import {Drawer} from "~/components/navigation/Drawer";
 
 export const meta: MetaFunction = () => {
     return [
@@ -9,19 +11,21 @@ export const meta: MetaFunction = () => {
     ];
 };
 
+export async function loader({request}: LoaderFunctionArgs) {
+    const user = await getCurrentUser(request);
+    const usersToRooms = await findUsersToRoomsByUserId(user.id)
+
+    return data({user, usersToRooms});
+}
+
 export default function Rooms() {
-    const config = useOutletContext<NavigationConfig>()
+    const {user, usersToRooms} = useLoaderData<typeof loader>()
 
     return (
-        <main className="min-h-dvh">
-            <Navigation title={config.title} links={config.links} />
-            <div className="max-w-2xl mx-10 md:mx-auto mt-20">
-                <Link to='/rooms' prefetch='intent'>
-                    <h1 className="text-4xl p-4">Rooms</h1>
-                </Link>
-                <div className="divider"></div>
-                <Outlet/>
-            </div>
+        <main className="min-h-dvh w-full">
+            <Drawer usersToRooms={usersToRooms}>
+                <Outlet context={user}/>
+            </Drawer>
         </main>
     );
 }
