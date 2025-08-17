@@ -1,6 +1,7 @@
 # Planning Poker
 
 ![CI](https://github.com/philipphermes/planning-poker/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/philipphermes/planning-poker/graph/badge.svg?token=0ZFACR5SCX)](https://codecov.io/gh/philipphermes/planning-poker)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ![Planning Poker](public/images/logo.png)
