@@ -1,6 +1,7 @@
 # Planning Poker
 
 ![CI](https://github.com/philipphermes/planning-poker/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/philipphermes/planning-poker/graph/badge.svg?token=0ZFACR5SCX)](https://codecov.io/gh/philipphermes/planning-poker)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ![Planning Poker](public/images/logo.png)
@@ -28,7 +29,7 @@ cp .env.dist .env
 | NEXTAUTH_SESSION_MAX_AGE    | Session & JWT max age in seconds                     | False    | 3600/1h               |
 | NEXTAUTH_SESSION_UPDATE_AGE | Session update age in seconds                        | False    | 1800/30m              |
 | NEXTAUTH_EMAIL_MAX_AGE      | Magic Link email max age in seconds                  | False    | 1800/30m              |
-| NEXTAUTH_ALLOWED_DOMAINS    | Allowed domains for emails seperated by ","          | False    | gmail.com,example.com |
+| NEXTAUTH_ALLOWED_DOMAINS    | Allowed domains for emails seperated by ","          | False    | test.com,example.com  |
 | EMAIL_SERVER_USER           | Email Server username                                | False    | username              |
 | EMAIL_SERVER_PASSWORD       | Email Server password                                | False    | password              |
 | EMAIL_SERVER_HOST           | Host of the Email Server                             | True     | smtp.example.com      |
