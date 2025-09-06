@@ -33,14 +33,6 @@ export class RoomEntityManager extends AbstractEntityManager {
         });
     }
 
-    async deleteByOwnerId(ownerId: string) {
-        return this.safeExecute('deleteByOwnerId', async () => {
-            return this.db.transaction(async (tx) => {
-                await tx.delete(rooms).where(eq(rooms.ownerId, ownerId));
-            });
-        });
-    }
-
     async deleteByIdAndOwnerIdTransaction(id: string, ownerId: string, tx: Transaction) {
         await tx.delete(rooms).where(and(
             eq(rooms.id, id),

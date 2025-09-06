@@ -52,11 +52,6 @@ export class SubmitEstimateSocketHandler extends AbstractSocketHandler<SubmitEst
                 return;
             }
 
-            const hasRoomAccess = await this.roomService.hasUserAccess(user.id, round.roomId);
-            if (!hasRoomAccess) {
-                return;
-            }
-
             const estimate = await this.estimateService.submit(validatedData)
             io.to(socket.id).emit('estimate', estimate);
 

@@ -6,7 +6,6 @@ import {haveCardSet} from "../../../../helpers/card-set.helper";
 import {haveUser} from "../../../../helpers/user.helper";
 import {Server, Socket} from "socket.io";
 import {cleanupDb} from "../../../../helpers/db.helper";
-import {getDB} from "../../../../../src/lib/server/db";
 import {ConnectionSocketHandler} from "../../../../../src/features/socket/server/handlers/connection.socket-handler";
 import {getUserService} from "../../../../../src/features/user/server";
 import {getRoomParticipantService} from "../../../../../src/features/room-participant/server";
@@ -34,11 +33,11 @@ describe('connection handler', () => {
 
     describe('on join', () => {
         it('should join provided room and emit data', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
-            await haveRound({roomId: room.id, name: 'test round 1', status: 'active'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
+            await haveRound({roomId: room.id, name: 'test round 1', status: 'active'});
 
             const joinMock = vi.fn();
             const toEmitMock = vi.fn();
@@ -55,17 +54,13 @@ describe('connection handler', () => {
                 to: toMock,
             } as unknown as Server;
 
-            // Attach handler
             socketHandler.handle(socket, io);
 
-            // Extract the "join" listener
             const joinHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'join')?.[1];
             expect(joinHandler).toBeInstanceOf(Function);
 
-            // Trigger the join handler with the test room ID
             await joinHandler?.(room.id);
 
-            // Assertions
             expect(joinMock).toHaveBeenCalledWith(room.id);
 
             expect(toMock).toHaveBeenCalledWith(room.id);
@@ -78,11 +73,11 @@ describe('connection handler', () => {
         });
 
         it('should join provided room and emit data except round when not active', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
-            await haveRound({roomId: room.id, name: 'test round 1', status: 'completed'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
+            await haveRound({roomId: room.id, name: 'test round 1', status: 'completed'});
 
             const joinMock = vi.fn();
             const toEmitMock = vi.fn();
@@ -99,17 +94,13 @@ describe('connection handler', () => {
                 to: toMock,
             } as unknown as Server;
 
-            // Attach handler
             socketHandler.handle(socket, io);
 
-            // Extract the "join" listener
             const joinHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'join')?.[1];
             expect(joinHandler).toBeInstanceOf(Function);
 
-            // Trigger the join handler with the test room ID
             await joinHandler?.(room.id);
 
-            // Assertions
             expect(joinMock).toHaveBeenCalledWith(room.id);
 
             expect(toMock).toHaveBeenCalledWith(room.id);
@@ -141,27 +132,22 @@ describe('connection handler', () => {
                 to: toMock,
             } as unknown as Server;
 
-            // Attach handler
             socketHandler.handle(socket, io);
 
-            // Extract the "join" listener
             const joinHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'join')?.[1];
             expect(joinHandler).toBeInstanceOf(Function);
 
-            // Trigger the join handler with the test room ID
             await joinHandler?.('test');
 
-            // Assertions
             expect(joinMock).not.toHaveBeenCalled()
             expect(disconnectMock).toHaveBeenCalledWith(true)
         });
 
         it('should not join room when user has no access to room', async () => {
-            const user1 = await haveUser({email: 'user1@email.com'}, getDB());
-            const user2 = await haveUser({email: 'user2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user1.id}, getDB());
-            const room = await haveRoom({ownerId: user1.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            // Don't add user2 as a participant
+            const user1 = await haveUser({email: 'user1@email.com'});
+            const user2 = await haveUser({email: 'user2@email.com'});
+            const cardSet = await haveCardSet({userId: user1.id});
+            const room = await haveRoom({ownerId: user1.id, name: 'test room', cardSetId: cardSet.id});
 
             const joinMock = vi.fn();
             const emitMock = vi.fn();
@@ -180,23 +166,17 @@ describe('connection handler', () => {
                 to: toMock,
             } as unknown as Server;
 
-            // Attach handler
             socketHandler.handle(socket, io);
 
-            // Extract the "join" listener
             const joinHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'join')?.[1];
             expect(joinHandler).toBeInstanceOf(Function);
 
-            // Trigger the join handler with the test room ID
             await joinHandler?.(room.id);
 
-            // Assertions
             expect(joinMock).not.toHaveBeenCalled()
         });
 
         it('should not join room when room ID is invalid', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-
             const joinMock = vi.fn();
             const emitMock = vi.fn();
             const toEmitMock = vi.fn();
@@ -207,24 +187,46 @@ describe('connection handler', () => {
                 join: joinMock,
                 emit: emitMock,
                 id: crypto.randomUUID(),
-                data: {user: {email: user.email}}
             } as unknown as Socket;
 
             const io = {
                 to: toMock,
             } as unknown as Server;
 
-            // Attach handler
             socketHandler.handle(socket, io);
 
-            // Extract the "join" listener
             const joinHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'join')?.[1];
             expect(joinHandler).toBeInstanceOf(Function);
 
-            // Trigger the join handler with non-existent but valid UUID room ID
             await joinHandler?.(crypto.randomUUID());
 
-            // Assertions
+            expect(joinMock).not.toHaveBeenCalled()
+        });
+
+        it('should not join room when room ID is not provided', async () => {
+            const joinMock = vi.fn();
+            const emitMock = vi.fn();
+            const toEmitMock = vi.fn();
+            const toMock = vi.fn(() => ({emit: toEmitMock}));
+
+            const socket = {
+                on: vi.fn(),
+                join: joinMock,
+                emit: emitMock,
+                id: crypto.randomUUID(),
+            } as unknown as Socket;
+
+            const io = {
+                to: toMock,
+            } as unknown as Server;
+
+            socketHandler.handle(socket, io);
+
+            const joinHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'join')?.[1];
+            expect(joinHandler).toBeInstanceOf(Function);
+
+            await joinHandler?.();
+
             expect(joinMock).not.toHaveBeenCalled()
         });
     })
