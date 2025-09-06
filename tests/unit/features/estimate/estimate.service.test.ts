@@ -7,7 +7,6 @@ import {haveEstimate} from "../../../helpers/estimate.helper";
 import {cleanupDb} from "../../../helpers/db.helper";
 import {IEstimateService} from "../../../../src/features/estimate/server/estimate.service.interface";
 import {getEstimateService} from "../../../../src/features/estimate/server";
-import {getDB} from "../../../../src/lib/server/db";
 
 describe('EstimateService', () => {
     let service: IEstimateService
@@ -22,10 +21,10 @@ describe('EstimateService', () => {
 
     describe('submitEstimate', async () => {
         it('should create new estimate when none exists', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
 
             const estimate = await service.submit({
                 userId: user.id,
@@ -37,11 +36,11 @@ describe('EstimateService', () => {
         })
 
         it('should update existing estimate when one exists', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
-            const estimate = await haveEstimate({roundId: round.id, userId: user.id, value: '5'}, getDB())
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
+            const estimate = await haveEstimate({roundId: round.id, userId: user.id, value: '5'})
 
             estimate.value = '10';
 
@@ -53,13 +52,13 @@ describe('EstimateService', () => {
 
     describe('getEstimates', () => {
         it('should return estimates and value when completed', async () => {
-            const user_1 = await haveUser({email: 'test1@email.com'}, getDB());
-            const user_2 = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user_1.id}, getDB());
-            const room = await haveRoom({ownerId: user_1.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'completed'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user_1.id, value: '5'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user_2.id, value: '5'}, getDB())
+            const user_1 = await haveUser({email: 'test1@email.com'});
+            const user_2 = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user_1.id});
+            const room = await haveRoom({ownerId: user_1.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'completed'})
+            await haveEstimate({roundId: round.id, userId: user_1.id, value: '5'})
+            await haveEstimate({roundId: round.id, userId: user_2.id, value: '5'})
 
             const result = await service.getManyByRoundId(round)
 
@@ -71,13 +70,13 @@ describe('EstimateService', () => {
         })
 
         it('should return estimates and null value when active', async () => {
-            const user_1 = await haveUser({email: 'test1@email.com'}, getDB());
-            const user_2 = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user_1.id}, getDB());
-            const room = await haveRoom({ownerId: user_1.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user_1.id, value: '5'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user_2.id, value: '5'}, getDB())
+            const user_1 = await haveUser({email: 'test1@email.com'});
+            const user_2 = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user_1.id});
+            const room = await haveRoom({ownerId: user_1.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
+            await haveEstimate({roundId: round.id, userId: user_1.id, value: '5'})
+            await haveEstimate({roundId: round.id, userId: user_2.id, value: '5'})
 
             const result = await service.getManyByRoundId(round)
 
@@ -97,11 +96,11 @@ describe('EstimateService', () => {
 
     describe('getEstimate', () => {
         it('should return estimate', async () => {
-            const user = await haveUser({email: 'test1@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
-            const estimate = await haveEstimate({roundId: round.id, userId: user.id, value: '5'}, getDB())
+            const user = await haveUser({email: 'test1@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
+            const estimate = await haveEstimate({roundId: round.id, userId: user.id, value: '5'})
 
             const result = await service.getOneByUserIdAndRoundId(user.id, round.id)
 

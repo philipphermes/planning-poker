@@ -9,7 +9,6 @@ import {haveRoomParticipants} from "../../../helpers/room-participants.helper";
 import {cleanupDb} from "../../../helpers/db.helper";
 import {getUserService} from "../../../../src/features/user/server";
 import {IUserService} from "../../../../src/features/user/server/user.service.interface";
-import {getDB} from "../../../../src/lib/server/db";
 
 describe('UserService', () => {
     let service: IUserService;
@@ -24,7 +23,7 @@ describe('UserService', () => {
 
     describe('getUserByEmail', () => {
         it('should get user by email', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
 
             const userByMail = await service.getOneByEmail(user.email);
 
@@ -40,7 +39,7 @@ describe('UserService', () => {
 
     describe('getUserBySocket', () => {
         it('should get user by socket', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
             const socket = {
                 data: {user}
             } as Socket;
@@ -79,9 +78,9 @@ describe('UserService', () => {
 
     describe('getAllUsersExcept', () => {
         it('should get all users except the provided id', async () => {
-            const user = await haveUser({email: 'test1@email.com', name: 'shouldNotGetUser'}, getDB());
-            await haveUser({email: 'test2@email.com', name: 'shouldGetUser'}, getDB());
-            await haveUser({email: 'test3@email.com', name: 'shouldGetUser'}, getDB());
+            const user = await haveUser({email: 'test1@email.com', name: 'shouldNotGetUser'});
+            await haveUser({email: 'test2@email.com', name: 'shouldGetUser'});
+            await haveUser({email: 'test3@email.com', name: 'shouldGetUser'});
 
             const users = await service.getManyExcept(user.id);
 
@@ -95,7 +94,7 @@ describe('UserService', () => {
 
     describe('updateUser', () => {
         it('should update the user', async () => {
-            const user = await haveUser({email: 'test1@email.com', name: 'create'}, getDB());
+            const user = await haveUser({email: 'test1@email.com', name: 'create'});
             user.name = 'test update';
 
             const updatedUser = await service.update(user);
@@ -106,22 +105,22 @@ describe('UserService', () => {
 
     describe('deleteUser', () => {
         it('should delete the user with all related data', async () => {
-            const user_1 = await haveUser({email: 'test1@email.com'}, getDB());
-            const user_2 = await haveUser({email: 'test2@email.com'}, getDB());
+            const user_1 = await haveUser({email: 'test1@email.com'});
+            const user_2 = await haveUser({email: 'test2@email.com'});
 
-            const cardSet_1 = await haveCardSet({userId: user_1.id}, getDB());
-            const cardSet_2 = await haveCardSet({userId: user_2.id}, getDB());
+            const cardSet_1 = await haveCardSet({userId: user_1.id});
+            const cardSet_2 = await haveCardSet({userId: user_2.id});
 
-            const room_1 = await haveRoom({ownerId: user_1.id, name: 'test', cardSetId: cardSet_1.id}, getDB());
-            const room_2 = await haveRoom({ownerId: user_2.id, name: 'test 2', cardSetId: cardSet_2.id}, getDB());
+            const room_1 = await haveRoom({ownerId: user_1.id, name: 'test', cardSetId: cardSet_1.id});
+            const room_2 = await haveRoom({ownerId: user_2.id, name: 'test 2', cardSetId: cardSet_2.id});
 
-            const round_1 = await haveRound({roomId: room_1.id, name: 'test round', status: 'active'}, getDB())
-            const round_2 = await haveRound({roomId: room_2.id, name: 'test round 2', status: 'active'}, getDB())
+            const round_1 = await haveRound({roomId: room_1.id, name: 'test round', status: 'active'})
+            const round_2 = await haveRound({roomId: room_2.id, name: 'test round 2', status: 'active'})
 
-            await haveRoomParticipants({roomId: room_2.id, userId: user_1.id}, getDB());
+            await haveRoomParticipants({roomId: room_2.id, userId: user_1.id});
 
-            await haveEstimate({roundId: round_1.id, userId: user_1.id, value: '5'}, getDB())
-            await haveEstimate({roundId: round_2.id, userId: user_1.id, value: '5'}, getDB())
+            await haveEstimate({roundId: round_1.id, userId: user_1.id, value: '5'})
+            await haveEstimate({roundId: round_2.id, userId: user_1.id, value: '5'})
 
             await service.deleteByUserId(user_1.id);
 

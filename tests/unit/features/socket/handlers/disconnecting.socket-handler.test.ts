@@ -11,7 +11,6 @@ import {getRoomParticipantService} from "../../../../../src/features/room-partic
 import {
     DisconnectingSocketHandler
 } from "../../../../../src/features/socket/server/handlers/disconnecting.socket-handler";
-import {getDB} from "../../../../../src/lib/server/db";
 
 describe('disconnecting handler', () => {
     let socketHandler: SocketHandlerInterface;
@@ -29,10 +28,10 @@ describe('disconnecting handler', () => {
 
     describe('on disconnecting', () => {
         it('should disconnect from room', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -90,10 +89,7 @@ describe('disconnecting handler', () => {
         });
 
         it('should disconnect and not emit anything if room Id is not valid', async () => {
-            const logSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-            });
-
-            const user = await haveUser({email: 'test@email.com'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -117,8 +113,6 @@ describe('disconnecting handler', () => {
 
             expect(toMock).not.toHaveBeenCalled();
             expect(toEmitMock).not.toHaveBeenCalled();
-
-            logSpy.mockRestore();
         });
     })
 });

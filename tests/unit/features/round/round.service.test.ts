@@ -7,7 +7,6 @@ import {haveRound} from "../../../helpers/round.helper";
 import {cleanupDb} from "../../../helpers/db.helper";
 import {IRoundService} from "../../../../src/features/round/server/round.service.interface";
 import {getRoundService} from "../../../../src/features/round/server";
-import {getDB} from "../../../../src/lib/server/db";
 
 describe('RoundService', () => {
     let service: IRoundService;
@@ -22,9 +21,9 @@ describe('RoundService', () => {
 
     describe('createRound', () => {
         it('should create round', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
 
             const round = await service.create({
                 roomId: room.id,
@@ -38,10 +37,10 @@ describe('RoundService', () => {
 
     describe('updateRound', () => {
         it('should update round', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'});
 
             const roundUpdated = await service.update(round)
 
@@ -57,12 +56,12 @@ describe('RoundService', () => {
 
     describe('getCurrentRound', () => {
         it('should get current round', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
-            await haveRound({roomId: room.id, name: 'test round 1', status: 'inactive'}, getDB());
-            const round_2 = await haveRound({roomId: room.id, name: 'test round 2', status: 'active'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
+            await haveRound({roomId: room.id, name: 'test round 1', status: 'inactive'});
+            const round_2 = await haveRound({roomId: room.id, name: 'test round 2', status: 'active'});
 
             const currentRound = await service.getCurrentByRoomIdAndUserId(room.id, user.id)
 
@@ -78,12 +77,12 @@ describe('RoundService', () => {
 
     describe('getRoundById', () => {
         it('should get round by id', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
-            await haveRound({roomId: room.id, name: 'test round 1', status: 'inactive'}, getDB());
-            const round_2 = await haveRound({roomId: room.id, name: 'test round 2', status: 'active'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
+            await haveRound({roomId: room.id, name: 'test round 1', status: 'inactive'});
+            const round_2 = await haveRound({roomId: room.id, name: 'test round 2', status: 'active'});
 
             const currentRound = await service.getOneByIdAndUserId(round_2.id, user.id)
 
@@ -99,10 +98,10 @@ describe('RoundService', () => {
 
     describe('getRoundByOwnerId', () => {
         it('should get round by id and owner', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round 1', status: 'inactive'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round 1', status: 'inactive'});
 
             const roundByOwner = await service.getOneIdAndOwnerId({
                 id: round.id,

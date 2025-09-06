@@ -14,7 +14,6 @@ import {getEstimateService} from "../../../../../src/features/estimate/server";
 import {
     SubmitEstimateSocketHandler
 } from "../../../../../src/features/socket/server/handlers/submit-estimate.socket-handler";
-import {getDB} from "../../../../../src/lib/server/db";
 import {SubmitEstimateFormInput} from "../../../../../src/features/estimate/shared/estimate.validations";
 
 describe('estimate handler', () => {
@@ -35,11 +34,11 @@ describe('estimate handler', () => {
 
     describe('on submit estimate', () => {
         it('should submit estimate and emit data', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round 1', status: 'active'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
+            const round = await haveRound({roomId: room.id, name: 'test round 1', status: 'active'});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -111,10 +110,7 @@ describe('estimate handler', () => {
         });
 
         it('should not submit estimate when data is invalid', async () => {
-            const logSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-            });
-
-            const user = await haveUser({email: 'test@email.com'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -146,15 +142,10 @@ describe('estimate handler', () => {
 
             expect(toMock).not.toHaveBeenCalledWith('test');
             expect(toEmitMock).not.toHaveBeenCalledWith('estimates', expect.any(Array));
-
-            logSpy.mockRestore();
         });
 
         it('should not submit estimate when room was not found', async () => {
-            const logSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-            });
-
-            const user = await haveUser({email: 'test@email.com'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -186,8 +177,33 @@ describe('estimate handler', () => {
 
             expect(toMock).not.toHaveBeenCalledWith('test');
             expect(toEmitMock).not.toHaveBeenCalledWith('estimates', expect.any(Array));
+        });
 
-            logSpy.mockRestore();
+        it('should not submit estimate when data not provided', async () => {
+            const toEmitMock = vi.fn();
+            const toMock = vi.fn(() => ({emit: toEmitMock}));
+
+            const socket = {
+                on: vi.fn(),
+                id: crypto.randomUUID(),
+            } as unknown as Socket;
+
+            const io = {
+                to: toMock,
+            } as unknown as Server;
+
+            socketHandler.handle(socket, io);
+
+            const estimateHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'submit-estimate')?.[1];
+            expect(estimateHandler).toBeInstanceOf(Function);
+
+            await estimateHandler?.();
+
+            expect(toMock).not.toHaveBeenCalledWith(socket.id);
+            expect(toEmitMock).not.toHaveBeenCalledWith('estimate', expect.any(Object));
+
+            expect(toMock).not.toHaveBeenCalledWith('test');
+            expect(toEmitMock).not.toHaveBeenCalledWith('estimates', expect.any(Array));
         });
     })
 })

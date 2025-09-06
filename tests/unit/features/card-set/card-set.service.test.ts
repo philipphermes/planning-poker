@@ -5,7 +5,6 @@ import {haveRoom} from "../../../helpers/room.helper";
 import {cleanupDb} from "../../../helpers/db.helper";
 import {ICardSetService} from "../../../../src/features/card-set/server/card-set.service.interface";
 import {getCardSetService} from "../../../../src/features/card-set/server";
-import {getDB} from "../../../../src/lib/server/db";
 
 describe('CardSetService', () => {
     let service: ICardSetService
@@ -20,9 +19,9 @@ describe('CardSetService', () => {
 
     describe('getUserCardSets', () => {
         it('should return user card sets', async () => {
-            const user = await haveUser({email: 'test123@email.com'}, getDB());
-            await haveCardSet({userId: user.id}, getDB())
-            await haveCardSet({userId: user.id}, getDB())
+            const user = await haveUser({email: 'test123@email.com'});
+            await haveCardSet({userId: user.id})
+            await haveCardSet({userId: user.id})
 
             const result = await service.getManyByOwnerId(user.id)
 
@@ -38,8 +37,8 @@ describe('CardSetService', () => {
 
     describe('getCardSetById', () => {
         it('should return card set by id and owner', async () => {
-            const user = await haveUser({email: 'test123@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB())
+            const user = await haveUser({email: 'test123@email.com'});
+            const cardSet = await haveCardSet({userId: user.id})
 
             const result = await service.getOneByIdAndOwnerId(cardSet.id, user.id)
 
@@ -59,7 +58,7 @@ describe('CardSetService', () => {
 
     describe('createCardSet', () => {
         it('should create a new card set', async () => {
-            const user = await haveUser({email: 'test123@email.com'}, getDB());
+            const user = await haveUser({email: 'test123@email.com'});
             const input = {
                 name: 'New Card Set',
                 cards: ['1', '2', '3', '5', '8'],
@@ -74,8 +73,8 @@ describe('CardSetService', () => {
 
     describe('updateCardSet', () => {
         it('should update an existing card set', async () => {
-            const user = await haveUser({email: 'test123@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB())
+            const user = await haveUser({email: 'test123@email.com'});
+            const cardSet = await haveCardSet({userId: user.id})
 
             cardSet.name = 'updated card set'
 
@@ -91,8 +90,8 @@ describe('CardSetService', () => {
 
     describe('deleteCardSet', () => {
         it('should delete card set when not used by rooms', async () => {
-            const user = await haveUser({email: 'test123@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB())
+            const user = await haveUser({email: 'test123@email.com'});
+            const cardSet = await haveCardSet({userId: user.id})
 
             const input = {
                 id: cardSet.id,
@@ -106,9 +105,9 @@ describe('CardSetService', () => {
         })
 
         it('should throw ConflictError with correct message', async () => {
-            const user = await haveUser({email: 'test123@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB())
-            await haveRoom({ownerId: user.id, name: 'test-room', cardSetId: cardSet.id}, getDB())
+            const user = await haveUser({email: 'test123@email.com'});
+            const cardSet = await haveCardSet({userId: user.id})
+            await haveRoom({ownerId: user.id, name: 'test-room', cardSetId: cardSet.id})
 
             const input = {
                 id: cardSet.id,

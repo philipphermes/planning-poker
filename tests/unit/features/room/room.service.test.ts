@@ -8,7 +8,6 @@ import {haveEstimate} from "../../../helpers/estimate.helper";
 import {cleanupDb} from "../../../helpers/db.helper";
 import {IRoomService} from "../../../../src/features/room/server/room.service.interface";
 import {getRoomService} from "../../../../src/features/room/server";
-import {getDB} from "../../../../src/lib/server/db";
 
 describe('RoomService', () => {
     let service: IRoomService
@@ -23,15 +22,15 @@ describe('RoomService', () => {
 
     describe('getRoomsByOwner', () => {
         it('returns rooms by owner with owner, cardSet and participants', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const participant = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const participant = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
-            const room_1 = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room_1.id, userId: participant.id}, getDB());
+            const room_1 = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room_1.id, userId: participant.id});
 
-            const room_2 = await haveRoom({ownerId: user.id, name: 'test 2', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room_2.id, userId: participant.id}, getDB());
+            const room_2 = await haveRoom({ownerId: user.id, name: 'test 2', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room_2.id, userId: participant.id});
 
             const result = await service.getManyByOwnerId(user.id)
 
@@ -47,15 +46,15 @@ describe('RoomService', () => {
 
     describe('getRoomsByUser', () => {
         it('returns rooms by user with owner, cardSet and participants', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const participant = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const participant = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
-            const room_1 = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room_1.id, userId: participant.id}, getDB());
+            const room_1 = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room_1.id, userId: participant.id});
 
-            const room_2 = await haveRoom({ownerId: user.id, name: 'test 2', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room_2.id, userId: participant.id}, getDB());
+            const room_2 = await haveRoom({ownerId: user.id, name: 'test 2', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room_2.id, userId: participant.id});
 
             const result = await service.getManyByUserId(participant.id)
 
@@ -71,12 +70,12 @@ describe('RoomService', () => {
 
     describe('getRoomByUser', () => {
         it('returns room by user with owner, cardSet and participants', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const participant = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const participant = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
-            const room = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: participant.id}, getDB());
+            const room = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: participant.id});
 
             const result = await service.getOneByIdAndUserId(room.id, participant.id)
 
@@ -84,12 +83,12 @@ describe('RoomService', () => {
         })
 
         it('returns room by owner with owner, cardSet and participants', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const participant = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const participant = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
-            const room = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: participant.id}, getDB());
+            const room = await haveRoom({ownerId: user.id, name: 'test 1', cardSetId: cardSet.id});
+            await haveRoomParticipants({roomId: room.id, userId: participant.id});
 
             const result = await service.getOneByIdAndUserId(room.id, user.id)
 
@@ -105,9 +104,9 @@ describe('RoomService', () => {
 
     describe('createRoom', () => {
         it('should create a new room', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const participant = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const participant = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
             const result = await service.create({
                 ownerId: user.id,
@@ -121,8 +120,8 @@ describe('RoomService', () => {
         })
 
         it('should create room without participants only owner', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
             const result = await service.create({
                 ownerId: user.id,
@@ -138,10 +137,10 @@ describe('RoomService', () => {
 
     describe('updateRoom', () => {
         it('should update room', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const participant = await haveUser({email: 'test2@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test new', cardSetId: cardSet.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const participant = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test new', cardSetId: cardSet.id});
 
             const result = await service.update({
                 id: room.id,
@@ -157,9 +156,9 @@ describe('RoomService', () => {
         })
 
         it('should update room without participants only owner', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test new', cardSetId: cardSet.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test new', cardSetId: cardSet.id});
 
             const result = await service.update({
                 id: room.id,
@@ -177,11 +176,11 @@ describe('RoomService', () => {
 
     describe('deleteRoom', () => {
         it('should delete room and all related data', async () => {
-            const user = await haveUser({email: 'test1@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user.id, value: '5'}, getDB())
+            const user = await haveUser({email: 'test1@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
+            await haveEstimate({roundId: round.id, userId: user.id, value: '5'})
 
             await service.delete({
                 id: room.id,
@@ -194,13 +193,13 @@ describe('RoomService', () => {
         })
 
         it('should not delete room when room is not assigned to owner', async () => {
-            const user = await haveUser({email: 'test1@email.com'}, getDB());
-            const user2 = await haveUser({email: 'test2@email.com'}, getDB());
+            const user = await haveUser({email: 'test1@email.com'});
+            const user2 = await haveUser({email: 'test2@email.com'});
 
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user.id, value: '5'}, getDB())
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
+            await haveEstimate({roundId: round.id, userId: user.id, value: '5'})
 
             try {
                 await service.delete({
@@ -215,18 +214,18 @@ describe('RoomService', () => {
 
     describe('getRoomByOwnerForExport', () => {
         it('returns room by owner with rounds, estimations and users', async () => {
-            const user = await haveUser({email: 'test1@email.com'}, getDB());
-            const user2 = await haveUser({email: 'test2@email.com'}, getDB());
+            const user = await haveUser({email: 'test1@email.com'});
+            const user2 = await haveUser({email: 'test2@email.com'});
 
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
-            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'}, getDB())
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
+            const round = await haveRound({roomId: room.id, name: 'test round', status: 'active'})
 
-            await haveRoomParticipants({roomId: room.id, userId: user.id}, getDB());
-            await haveRoomParticipants({roomId: room.id, userId: user2.id}, getDB());
+            await haveRoomParticipants({roomId: room.id, userId: user.id});
+            await haveRoomParticipants({roomId: room.id, userId: user2.id});
 
-            await haveEstimate({roundId: round.id, userId: user.id, value: '5'}, getDB())
-            await haveEstimate({roundId: round.id, userId: user2.id, value: '5'}, getDB())
+            await haveEstimate({roundId: round.id, userId: user.id, value: '5'})
+            await haveEstimate({roundId: round.id, userId: user2.id, value: '5'})
 
             const result = await service.getOneByIdAndOwnerIdForExport(room.id, user.id);
 
@@ -242,9 +241,9 @@ describe('RoomService', () => {
 
     describe('roomsHaveCardSet', () => {
         it('should return true when card set is related to rooms', async () => {
-            const user = await haveUser({email: 'test1@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id}, getDB());
+            const user = await haveUser({email: 'test1@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            await haveRoom({ownerId: user.id, name: 'test', cardSetId: cardSet.id});
 
             const result = await service.isCardSetInRoom(cardSet.id)
 
@@ -252,8 +251,8 @@ describe('RoomService', () => {
         })
 
         it('should return false when card set is not related to rooms', async () => {
-            const user = await haveUser({email: 'test1@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
+            const user = await haveUser({email: 'test1@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
 
             const result = await service.isCardSetInRoom(cardSet.id)
 

@@ -2,7 +2,7 @@ import {describe, it, expect} from 'vitest'
 import {
     AppError,
     NotFoundError,
-    ConflictError
+    ConflictError, ValidationError
 } from '../../../../src/lib/shared/errors'
 
 describe('Custom Error Classes', () => {
@@ -79,12 +79,27 @@ describe('Custom Error Classes', () => {
         })
     })
 
+    describe('ValidationError ', () => {
+        it('should create validation error with correct properties', () => {
+            // Act
+            const error = new ValidationError('missing data in object')
+
+            // Assert
+            expect(error.message).toBe('missing data in object')
+            expect(error.statusCode).toBe(400)
+            expect(error.code).toBe('VALIDATION_ERROR')
+            expect(error.name).toBe('ValidationError')
+            expect(error).toBeInstanceOf(AppError)
+        })
+    })
+
     describe('Error inheritance', () => {
         it('should maintain proper inheritance chain for all error types', () => {
             // Arrange
             const errors = [
                 new NotFoundError('test'),
                 new ConflictError('test'),
+                new ValidationError('test'),
             ]
 
             // Act & Assert

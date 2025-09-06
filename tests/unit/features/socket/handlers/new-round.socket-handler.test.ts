@@ -9,7 +9,6 @@ import {getUserService} from "../../../../../src/features/user/server";
 import {getRoomService} from "../../../../../src/features/room/server";
 import {getRoundService} from "../../../../../src/features/round/server";
 import {NewRoundSocketHandler} from "../../../../../src/features/socket/server/handlers/new-round.socket-handler";
-import {getDB} from "../../../../../src/lib/server/db";
 import {RoundFormInput} from "../../../../../src/features/round/shared/round.validations";
 
 describe('new round handler', () => {
@@ -29,9 +28,9 @@ describe('new round handler', () => {
 
     describe('on new round', () => {
         it('should start new round and emit data', async () => {
-            const user = await haveUser({email: 'test@email.com'}, getDB());
-            const cardSet = await haveCardSet({userId: user.id}, getDB());
-            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
+            const cardSet = await haveCardSet({userId: user.id});
+            const room = await haveRoom({ownerId: user.id, name: 'test room', cardSetId: cardSet.id});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -103,10 +102,7 @@ describe('new round handler', () => {
         });
 
         it('should not start new round when data is invalid', async () => {
-            const logSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-            });
-
-            const user = await haveUser({email: 'test@email.com'}, getDB());
+            const user = await haveUser({email: 'test@email.com'});
 
             const toEmitMock = vi.fn();
             const toMock = vi.fn(() => ({emit: toEmitMock}));
@@ -138,8 +134,70 @@ describe('new round handler', () => {
             expect(toEmitMock).not.toHaveBeenCalledWith('round', expect.any(Object));
             expect(toEmitMock).not.toHaveBeenCalledWith('estimates', []);
             expect(toEmitMock).not.toHaveBeenCalledWith('estimate', null);
+        });
 
-            logSpy.mockRestore();
+        it('should not start new round when data is not provided', async () => {
+            const toEmitMock = vi.fn();
+            const toMock = vi.fn(() => ({emit: toEmitMock}));
+
+            const socket = {
+                on: vi.fn(),
+                id: crypto.randomUUID(),
+            } as unknown as Socket;
+
+            const io = {
+                to: toMock,
+            } as unknown as Server;
+
+            socketHandler.handle(socket, io);
+
+            const roundHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'new-round')?.[1];
+            expect(roundHandler).toBeInstanceOf(Function);
+
+            await roundHandler?.();
+
+            expect(toMock).not.toHaveBeenCalledWith('test');
+            expect(toEmitMock).not.toHaveBeenCalledWith('round', expect.any(Object));
+            expect(toEmitMock).not.toHaveBeenCalledWith('estimates', []);
+            expect(toEmitMock).not.toHaveBeenCalledWith('estimate', null);
+        });
+
+        it('should not start new round when user is not owner', async () => {
+            const user1 = await haveUser({email: 'test@email.com'});
+            const user2 = await haveUser({email: 'test2@email.com'});
+            const cardSet = await haveCardSet({userId: user1.id});
+            const room = await haveRoom({ownerId: user1.id, name: 'test room', cardSetId: cardSet.id});
+
+            const toEmitMock = vi.fn();
+            const toMock = vi.fn(() => ({emit: toEmitMock}));
+
+            const socket = {
+                on: vi.fn(),
+                id: crypto.randomUUID(),
+                data: {user: {email: user2.email}}
+            } as unknown as Socket;
+
+            const io = {
+                to: toMock,
+            } as unknown as Server;
+
+            socketHandler.handle(socket, io);
+
+            const roundHandler = (socket.on as vi.Mock).mock.calls.find(call => call[0] === 'new-round')?.[1];
+            expect(roundHandler).toBeInstanceOf(Function);
+
+            const data: RoundFormInput = {
+                id: undefined,
+                roomId: room.id,
+                name: 'test round'
+            }
+
+            await roundHandler?.(data);
+
+            expect(toMock).not.toHaveBeenCalledWith('test');
+            expect(toEmitMock).not.toHaveBeenCalledWith('round', expect.any(Object));
+            expect(toEmitMock).not.toHaveBeenCalledWith('estimates', []);
+            expect(toEmitMock).not.toHaveBeenCalledWith('estimate', null);
         });
     })
 })
