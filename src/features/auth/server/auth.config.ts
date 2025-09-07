@@ -1,7 +1,7 @@
 import {AuthOptions} from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import {DrizzleAdapter} from "@auth/drizzle-adapter";
-import {jwtCallback, signInCallback} from "@/features/auth/server/auth.callbacks";
+import {jwtCallback, sendVerificationRequest, signInCallback} from "@/features/auth/server/auth.callbacks";
 import {getDB} from "@/lib/server/db";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -12,7 +12,7 @@ const updateAge = Number.parseInt(process.env.NEXTAUTH_SESSION_UPDATE_AGE ?? "18
 const emailMaxAge = Number.parseInt(process.env.NEXTAUTH_EMAIL_MAX_AGE ?? "3600")  // 1h default
 
 const emailServerHost = process.env.EMAIL_SERVER_HOST!;
-const emailServerPort = process.env.EMAIL_SERVER_PORT!;
+const emailServerPort = Number.parseInt(process.env.EMAIL_SERVER_PORT!);
 const emailFrom = process.env.EMAIL_FROM!;
 const emailServerUser = process.env.EMAIL_SERVER_USER;
 const emailServerPassword = process.env.EMAIL_SERVER_PASSWORD;
@@ -40,8 +40,13 @@ export const authOptions: AuthOptions = {
             server: emailServer,
             from: emailFrom,
             maxAge: emailMaxAge,
+            sendVerificationRequest: (params) => sendVerificationRequest(params),
         }),
     ],
+    theme: {
+        buttonText: '#fafafa',
+        brandColor: '#343434',
+    },
     session: {
         strategy: 'jwt',
         maxAge: maxAge,

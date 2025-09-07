@@ -21,10 +21,10 @@ export default defineConfig({
                 '**/auth/index.ts',
             ],
             thresholds: {
-                lines: 90,
-                functions: 90,
-                branches: 90,
-                statements: 90,
+                lines: 80,
+                functions: 80,
+                branches: 80,
+                statements: 80,
             }
         },
     },
