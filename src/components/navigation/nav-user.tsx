@@ -43,7 +43,7 @@ export function NavUser({user}: { user?: UserDto }) {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
                         >
                             <AvatarWithoutTooltip user={user ?? undefined}/>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -76,7 +76,7 @@ export function NavUser({user}: { user?: UserDto }) {
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator/>
-                        <DropdownMenuItem onClick={handleSignOut}>
+                        <DropdownMenuItem onClick={handleSignOut} className='cursor-pointer'>
                             <LogOut/>
                             Log out
                         </DropdownMenuItem>

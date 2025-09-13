@@ -26,12 +26,12 @@ export function RoundEstimates() {
         <div className='flex flex-wrap gap-4'>
             {estimates.map(estimate => (
                 <div
-                    className="relative bg-primary aspect-square w-24 flex justify-center items-center rounded-xl"
+                    className="relative bg-primary h-24 min-w-24 p-4 flex justify-center items-center rounded-md"
                     key={estimate.userId}>
                     <span className='text-5xl text-primary-foreground'>{estimate.value}</span>
 
                     <Tooltip>
-                        <TooltipTrigger asChild>
+                        <TooltipTrigger asChild className='cursor-pointer'>
                             <Avatar className='absolute top-1 right-1 h-8 w-8 rounded-lg'>
                                 <AvatarImage
                                     src={estimate.user?.image ?? undefined}

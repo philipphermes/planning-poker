@@ -72,7 +72,7 @@ export function CardSetForm({cardSet}: { cardSet?: CardSetDto }) {
                                     <FormControl>
                                         <Input {...field} placeholder={`Card ${index + 1}`}/>
                                     </FormControl>
-                                    <Button type="button" variant="destructive" onClick={() => remove(index)}>
+                                    <Button type="button" variant="destructive" className='cursor-pointer' onClick={() => remove(index)}>
                                         <Minus/>
                                     </Button>
                                 </FormItem>
@@ -80,12 +80,12 @@ export function CardSetForm({cardSet}: { cardSet?: CardSetDto }) {
                         />
                     ))}
 
-                    <Button variant='outline' type="button" onClick={() => append({value: ''})}>
+                    <Button variant='outline' type="button" className='cursor-pointer' onClick={() => append({value: ''})}>
                         <Plus/>
                     </Button>
                 </div>
 
-                <Button type="submit">Save</Button>
+                <Button type="submit" className='cursor-pointer'>Save</Button>
             </form>
         </Form>
     </div>)

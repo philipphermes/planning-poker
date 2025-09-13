@@ -23,13 +23,13 @@ export function AccountDelete() {
         }
     };
 
-    return (<div>
+    return (<div className='flex flex-col gap-4'>
         <h2 className="text-2xl text-destructive">Delete Account</h2>
         <p className="text-sm text-muted-foreground">
             Deleting your account is permanent after the grace period. All your data will be removed.
         </p>
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger asChild className='cursor-pointer'>
                 <Button variant="destructive">Delete Account</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -41,8 +41,8 @@ export function AccountDelete() {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteAccount}>Continue</AlertDialogAction>
+                    <AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>
+                    <AlertDialogAction className='cursor-pointer' onClick={handleDeleteAccount}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -22,7 +22,7 @@ export function RoomDelete({id}: { id: string }) {
     }
 
     return (<AlertDialog>
-        <AlertDialogTrigger asChild>
+        <AlertDialogTrigger asChild className='cursor-pointer'>
             <Trash className='text-destructive'/>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -34,8 +34,8 @@ export function RoomDelete({id}: { id: string }) {
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+                <AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>
+                <AlertDialogAction className='cursor-pointer' onClick={handleDelete}>Continue</AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>
     </AlertDialog>)

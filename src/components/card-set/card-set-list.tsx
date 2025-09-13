@@ -22,7 +22,7 @@ export async function CardSetList({cardSets}: CardSetListProps) {
                     <div className='flex gap-2 flex-wrap'>
                         {cardSet.cards.map(card => (
                             <div key={card}
-                                 className="bg-primary p-2 aspect-square h-10 flex justify-center items-center rounded-xl">
+                                 className="bg-primary p-2 h-12 min-w-12 flex justify-center items-center rounded-md font-semibold">
                                 <span className='text-lg text-primary-foreground'>{card}</span>
                             </div>
                         ))}

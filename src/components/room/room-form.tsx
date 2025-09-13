@@ -76,12 +76,12 @@ export function RoomForm({userCardSets, userList, roomWithUsers}: {
                             <FormLabel>Card Set</FormLabel>
                             <FormControl>
                                 <Select onValueChange={field.onChange} value={field.value}>
-                                    <SelectTrigger>
+                                    <SelectTrigger className='cursor-pointer'>
                                         <SelectValue placeholder="Select a card set"/>
                                     </SelectTrigger>
                                     <SelectContent>
                                         {userCardSets.map(cardSet => (
-                                            <SelectItem key={cardSet.id} value={cardSet.id}>{cardSet.name}</SelectItem>
+                                            <SelectItem className='cursor-pointer' key={cardSet.id} value={cardSet.id}>{cardSet.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -104,7 +104,7 @@ export function RoomForm({userCardSets, userList, roomWithUsers}: {
                             render={({field}) => (
                                 <FormItem className="flex items-center gap-2">
                                     <Popover>
-                                        <PopoverTrigger asChild>
+                                        <PopoverTrigger asChild className='cursor-pointer'>
                                             <FormControl>
                                                 <Button
                                                     variant="outline"
@@ -159,6 +159,7 @@ export function RoomForm({userCardSets, userList, roomWithUsers}: {
                                     <Button
                                         type="button"
                                         variant="destructive"
+                                        className='cursor-pointer'
                                         onClick={() => {
                                             const current = [...form.getValues("userIds")];
                                             current.splice(index, 1);
@@ -173,7 +174,7 @@ export function RoomForm({userCardSets, userList, roomWithUsers}: {
                         />
                     ))}
 
-                    <Button variant='outline' type="button" onClick={() => {
+                    <Button variant='outline' className='cursor-pointer' type="button" onClick={() => {
                         const current = form.getValues("userIds") || [];
                         form.setValue("userIds", [...current, ""], {shouldValidate: false});
                     }}>

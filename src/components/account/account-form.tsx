@@ -88,7 +88,7 @@ export function AccountForm({user}: UserFormProps) {
                 )}
             />
 
-            <Button type="submit">Update Profile</Button>
+            <Button type="submit" className='cursor-pointer'>Update Profile</Button>
         </form>
     </Form>)
 }
