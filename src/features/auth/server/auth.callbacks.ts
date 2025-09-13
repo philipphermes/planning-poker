@@ -18,8 +18,8 @@ export const jwtCallback = async ({token, trigger, session}: {
     session?: DefaultUser
 }) => {
     if (trigger === 'update') {
-        if (session?.name) token.name = session.name;
-        if (session?.image) token.picture = session.image;
+        token.name = session?.name;
+        token.picture = session?.image;
     }
 
     return token;

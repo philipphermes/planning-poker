@@ -16,7 +16,7 @@ export const userDeleteScheme = z.object({
 
 export const userUpdateFromSchema = z.object({
     name: z.string().min(3, "Name required").max(100, "Name to long").transform(sanitize),
-    image: z.url("Image musste be a valid url").optional(),
+    image: z.url("Image musste be a valid url").or(z.literal("")),
 })
 
 export type UserUpdateInput = z.infer<typeof userUpdateScheme>;

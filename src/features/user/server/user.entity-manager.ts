@@ -12,7 +12,7 @@ export class UserEntityManager extends AbstractEntityManager {
                     .update(users)
                     .set({
                         name: user.name,
-                        image: user.image,
+                        image: user.image ?? null,
                     })
                     .where(eq(users.id, user.id))
                     .returning();
