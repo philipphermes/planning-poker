@@ -17,8 +17,9 @@ export async function updateUserAction(data: UserUpdateFormInput) {
         );
 
         const validated = userUpdateScheme.parse({
+            ...data,
             id: user.id,
-            ...data
+            image: data.image === '' ? undefined : data.image,
         });
 
         const updatedUser = await userService.update(validated);
