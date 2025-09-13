@@ -49,7 +49,7 @@ export function RoundCardSet({round, room}: { round?: RoundDto, room: RoomDto })
                     variant={estimate === card ? 'outline' : 'default'}
                     onClick={() => onButtonClick(card)}
                     key={card}
-                    className='hover:cursor-pointer w-12 h-12 text-lg'>
+                    className='hover:cursor-pointer h-12 min-w-12 text-lg'>
                     {card}
                 </Button>
             ))}
