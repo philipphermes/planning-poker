@@ -17,6 +17,7 @@ import {CardSetDto} from "@/features/card-set/shared/card-set.types";
 import {UserDto} from "@/features/user/shared/user.types";
 import {RoomDto} from "@/features/room/shared/room.types";
 import {persistRoomAction} from "@/features/room/server/room.actions";
+import Link from "next/link";
 
 export function RoomForm({userCardSets, userList, roomWithUsers}: {
     userCardSets: CardSetDto[],
@@ -87,7 +88,8 @@ export function RoomForm({userCardSets, userList, roomWithUsers}: {
                                 </Select>
                             </FormControl>
                             <FormDescription>
-                                Choose a card set for your room.
+                                Choose a card set for your room. <br/>
+                                No card sets? Create one <Link href='/card-set' className='underline cursor-pointer'>here</Link>!
                             </FormDescription>
                             <FormMessage/>
                         </FormItem>
@@ -182,7 +184,7 @@ export function RoomForm({userCardSets, userList, roomWithUsers}: {
                     </Button>
                 </div>
 
-                <Button type="submit">Save</Button>
+                <Button type="submit" className='cursor-pointer'>Save</Button>
             </form>
         </Form>
     </div>)
