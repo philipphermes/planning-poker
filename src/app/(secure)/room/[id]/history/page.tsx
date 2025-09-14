@@ -23,12 +23,12 @@ export default async function RoomHistoryPage({params}: { params: Promise<{ id: 
     }
 
     return (<div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="bg-muted min-h-[100vh] rounded-xl md:min-h-min p-4 flex justify-between items-center gap-4">
+        <div className="bg-muted rounded-xl min-h-min p-4 flex justify-between items-center gap-4">
             <h1 className='text-4xl'>{room.name}</h1>
             <Link download={true} href={`/api/rooms/${room.id}/export`}><Download/></Link>
         </div>
 
-        {room.rounds?.map(round => (<div key={round.id} className='bg-muted/50 min-h-[100vh] rounded-xl md:min-h-min p-4'>
+        {room.rounds?.map(round => (<div key={round.id} className='bg-muted/50 rounded-xl min-h-min p-4'>
             <h2 className='text-2xl'>{round.name}</h2>
             <RoomEstimates round={round}></RoomEstimates>
         </div>))}

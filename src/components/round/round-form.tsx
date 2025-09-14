@@ -40,7 +40,7 @@ export function RoundForm({round, room, user}: { round?: RoundDto, room: RoomDto
         }
     }
 
-    return (<div className="bg-muted/50 min-h-[100vh] rounded-xl md:min-h-min p-4">
+    return (<div className="bg-muted/50 rounded-xl min-h-min p-4">
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField

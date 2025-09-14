@@ -16,6 +16,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+    SidebarGroup,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -36,7 +37,7 @@ export function NavUser({user}: { user?: UserDto }) {
         router.push("/auth/login");
     };
 
-    return (
+    return (<SidebarGroup>
         <SidebarMenu>
             <SidebarMenuItem>
                 <DropdownMenu>
@@ -84,5 +85,5 @@ export function NavUser({user}: { user?: UserDto }) {
                 </DropdownMenu>
             </SidebarMenuItem>
         </SidebarMenu>
-    )
+    </SidebarGroup>)
 }
