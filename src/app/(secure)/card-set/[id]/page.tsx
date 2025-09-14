@@ -1,10 +1,14 @@
-'use server';
-
 import {CardSetForm} from "@/components/card-set/card-set-form";
 import {redirect} from "next/navigation";
 import {CardSetList} from "@/components/card-set/card-set-list";
 import {getUserService} from "@/features/user/server";
 import {getCardSetService} from "@/features/card-set/server";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Card Set",
+    description: "Manage a card set.",
+};
 
 export default async function CardPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

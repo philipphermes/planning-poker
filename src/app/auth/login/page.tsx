@@ -1,8 +1,12 @@
-'use server'
-
 import {LoginForm} from "@/components/auth/login-form";
 import {getUserService} from "@/features/user/server";
 import {redirect} from "next/navigation";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Login",
+    description: "Login to your account.",
+};
 
 export default async function LoginPage() {
     const userService = getUserService();

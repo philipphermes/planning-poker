@@ -1,10 +1,14 @@
-'use server';
-
 import { redirect } from "next/navigation";
 import {Round} from "@/components/round/round";
 import {SocketProvider} from "@/components/socket/socket-provider";
 import {getRoomService} from "@/features/room/server";
 import {getUserService} from "@/features/user/server";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Play",
+    description: "Play a round of planning poker.",
+};
 
 export default async function HomePage({params}: {params: Promise<{id: string}>}) {
     const {id} = await params;

@@ -1,9 +1,13 @@
-'use server';
-
 import {RoomList} from "@/components/room/room-list";
 import {redirect} from "next/navigation";
 import {getRoomService} from "@/features/room/server";
 import {getUserService} from "@/features/user/server";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Join Room",
+    description: "Join a planning poker room.",
+};
 
 export default async function HomePage() {
     const userService = getUserService();

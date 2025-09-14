@@ -1,11 +1,15 @@
-'use server';
-
 import {RoomForm} from "@/components/room/room-form";
 import {RoomList} from "@/components/room/room-list";
 import {redirect} from "next/navigation";
 import {getRoomService} from "@/features/room/server";
 import {getCardSetService} from "@/features/card-set/server";
 import {getUserService} from "@/features/user/server";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Room",
+    description: "Manage a planning poker room.",
+};
 
 export default async function HomePage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;

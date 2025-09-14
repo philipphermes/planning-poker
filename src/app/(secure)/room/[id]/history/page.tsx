@@ -1,11 +1,15 @@
-'use server';
-
 import {redirect} from "next/navigation";
 import {getRoomService} from "@/features/room/server";
 import {getUserService} from "@/features/user/server";
 import {RoomEstimates} from "@/components/room/room-estimates";
 import Link from "next/link";
 import {Download} from "lucide-react";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Room History",
+    description: "View the history of a planning poker room.",
+};
 
 export default async function RoomHistoryPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
