@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {RoomDelete} from "@/components/room/room-delete";
-import {Download, Edit, Rocket} from "lucide-react";
+import {Edit, Eye, Rocket} from "lucide-react";
 import {RoomDto} from "@/features/room/shared/room.types";
 import {UserDto} from "@/features/user/shared/user.types";
 
@@ -17,7 +17,7 @@ export async function RoomList({userRooms, user}: { userRooms: RoomDto[], user: 
                     <div className='flex items-center gap-4'>
                         <Link href={`/room/${room.id}/play`} className='text-blue-600'><Rocket/></Link>
                         {room.ownerId === user.id && <Link href={`/room/${room.id}`}><Edit/></Link>}
-                        {room.ownerId === user.id && <Link download={true} href={`/api/rooms/${room.id}/export`}><Download/></Link>}
+                        {room.ownerId === user.id && <Link href={`/room/${room.id}/history`}><Eye/></Link>}
                         {room.ownerId === user.id && <RoomDelete id={room.id}/>}
                     </div>
                 </div>
