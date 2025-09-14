@@ -24,7 +24,7 @@ export default async function HomePage({params}: {params: Promise<{id: string}>}
     }
 
     return (<div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="bg-muted/50 min-h-[100vh] rounded-xl md:min-h-min p-4">
+        <div className="bg-muted/50 rounded-xl min-h-min p-4">
             <h1 className='text-4xl'>{userRoom.name}</h1>
         </div>
 

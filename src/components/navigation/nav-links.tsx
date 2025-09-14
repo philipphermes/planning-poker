@@ -1,16 +1,15 @@
-"use client"
+'use client'
 
 import {type LucideIcon} from "lucide-react"
 import {
-    SidebarGroup,
-    SidebarGroupLabel,
+    SidebarGroup, SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link";
 
-export function NavMain({items}: {
+export function NavLinks({items}: {
     items: {
         title: string
         icon?: LucideIcon
@@ -19,12 +18,12 @@ export function NavMain({items}: {
 }) {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupLabel>Helpful Links</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
-                            <Link href={item.url}>
+                            <Link href={item.url} rel='noopener noreferrer' target='_blank' prefetch={false}>
                                 {item.icon && <item.icon/>}
                                 <span>{item.title}</span>
                             </Link>

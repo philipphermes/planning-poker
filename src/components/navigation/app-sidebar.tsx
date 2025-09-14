@@ -1,10 +1,6 @@
 'use client'
 
-import {
-    House,
-    Settings2,
-} from "lucide-react"
-
+import {Bug, Dices, Edit, Rocket, Scale} from "lucide-react"
 import {NavMain} from "@/components/navigation/nav-main"
 import {NavUser} from "@/components/navigation/nav-user"
 import {NavLogo} from "@/components/navigation/nav-logo"
@@ -18,35 +14,38 @@ import {
 import {useSession} from "next-auth/react";
 import {ComponentProps} from "react";
 import {UserDto} from "@/features/user/shared/user.types";
+import {NavLinks} from "@/components/navigation/nav-links";
 
 const data = {
     navMain: [
         {
-            title: "Rooms",
-            icon: House,
-            isActive: true,
-            items: [
-                {
-                    title: "Join",
-                    url: "/room/join",
-                },
-                {
-                    title: "Manage",
-                    url: "/room",
-                },
-            ],
+            title: "Join",
+            icon: Rocket,
+            url: "/room/join",
         },
         {
-            title: "Settings",
-            icon: Settings2,
-            items: [
-                {
-                    title: "Card Sets",
-                    url: "/card-set",
-                },
-            ],
+            title: "Manage",
+            icon: Edit,
+            url: "/room",
+        },
+        {
+            title: "Card Sets",
+            icon: Dices,
+            url: "/card-set",
         },
     ],
+    navLinks: [
+        {
+            title: "Report Issue",
+            icon: Bug,
+            url: "https://github.com/philipphermes/planning-poker/issues",
+        },
+        {
+            title: "Licence",
+            icon: Scale,
+            url: "https://github.com/philipphermes/planning-poker/blob/main/LICENSE.md",
+        }
+    ]
 }
 
 export function AppSidebar({...props}: ComponentProps<typeof Sidebar>) {
@@ -68,6 +67,7 @@ export function AppSidebar({...props}: ComponentProps<typeof Sidebar>) {
                 <NavMain items={data.navMain}/>
             </SidebarContent>
             <SidebarFooter>
+                <NavLinks items={data.navLinks}/>
                 <NavUser user={user}/>
             </SidebarFooter>
             <SidebarRail/>
