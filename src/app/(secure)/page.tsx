@@ -1,4 +1,10 @@
 import Link from "next/link";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Dashboard",
+    description: "Your planning poker dashboard.",
+};
 
 export default async function HomePage() {
     return (<div className="flex flex-1 flex-col gap-4 p-4">

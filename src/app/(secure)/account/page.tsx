@@ -1,10 +1,14 @@
-'use server';
-
 import {Separator} from "@/components/ui/separator";
 import {AccountDelete} from "@/components/account/account-delete";
 import {AccountForm} from "@/components/account/account-form";
 import {getUserService} from "@/features/user/server";
 import {redirect} from "next/navigation";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Account",
+    description: "Manage your account settings.",
+};
 
 export default async function AccountPage() {
     const userService = getUserService();

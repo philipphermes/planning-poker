@@ -1,6 +1,12 @@
 import * as React from "react";
 import {buttonVariants} from "@/components/ui/button";
 import Link from "next/link";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+    title: "Login Error",
+    description: "There was an error during login.",
+};
 
 interface ErrorPageProps {
     searchParams: Promise<{ error?: string }>;
