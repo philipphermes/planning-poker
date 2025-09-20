@@ -6,6 +6,7 @@ import {ThemeProvider} from "next-themes";
 import SessionProvider from "@/components/auth/session-provider";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXTAUTH_URL!),
   title: "Planning Poker",
   description: "A collaborative tool for agile teams to estimate effort for user stories or tasks.",
   applicationName: "Planning Poker",
