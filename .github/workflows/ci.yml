@@ -4,9 +4,11 @@ permissions:
 
 on:
   push:
-    branches: [ main, main_renovate ]
+    branches:
+      - main
   pull_request:
-    branches: [ main, main_renovate ]
+    branches:
+      - '**'
 
 jobs:
   lint:
