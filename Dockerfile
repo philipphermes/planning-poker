@@ -18,7 +18,7 @@
   COPY --from=builder /app/package*.json ./
   COPY --from=builder /app/.next ./.next
   COPY --from=builder /app/public ./public
-  COPY --from=builder /app/node_modules ./node_modules # Copies all node_modules from builder
+  #COPY --from=builder /app/node_modules ./node_modules # Copies all node_modules from builder
 
   # Create a non-root user and switch to it
   RUN addgroup -S node || true
