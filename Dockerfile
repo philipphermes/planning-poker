@@ -20,7 +20,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 
 # Create a non-root user and switch to it
-RUN addgroup -S node && adduser -S node -G node
+RUN addgroup -S node || true
+RUN adduser -S node -G node -D -h /home/node || true
 USER node
 
 EXPOSE 3000
