@@ -6,6 +6,7 @@
   RUN npm install --production=false # Installs all dependencies (dev and prod)
 
   COPY . .
+  RUN mkdir -p /app/db
   RUN npm run build
   #RUN npm prune --production # Keep this commented out here, as drizzle-kit needs dev dependencies
 
