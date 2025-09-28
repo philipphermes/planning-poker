@@ -31,4 +31,4 @@
   # 1. Run Drizzle migrations
   # 2. If successful, prune dev dependencies (removes them from node_modules at runtime)
   # 3. If successful, start the application
-  CMD ["sh", "-c", "npx drizzle-kit push --config=drizzle.config.ts && npm prune --production && npm start"]
+  CMD ["sh", "-c", "npx drizzle-kit push && npm prune --production && npm start"]
