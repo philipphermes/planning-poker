@@ -1,35 +1,53 @@
- # Build stage
-  FROM node:18-alpine AS builder
-  WORKDIR /app
+# ---------- Base Builder Stage ----------
+FROM node:18-alpine AS builder
+WORKDIR /app
 
-  COPY package*.json ./
-  RUN npm install --production=false # Installs all dependencies (dev and prod)
+# Install all deps (prod + dev, since drizzle-kit is dev)
+COPY package*.json ./
+RUN npm install --production=false
 
-  COPY . .
-  COPY ../drizzle.config.ts .
-  RUN mkdir -p /app/db
-  RUN npm run build
-  #RUN npm prune --production # Keep this commented out here, as drizzle-kit needs dev dependencies
+# Copy app source
+COPY . .
 
-  # Production stage
-  FROM node:18-alpine AS runner
-  WORKDIR /app
+# Make sure drizzle.config.ts is copied (must be inside build context!)
+COPY drizzle.config.ts ./drizzle.config.ts
 
-  ENV NODE_ENV=production
-  COPY --from=builder /app/package*.json ./
-  COPY --from=builder /app/.next ./.next
-  COPY --from=builder /app/public ./public
-  #COPY --from=builder /app/node_modules ./node_modules # Copies all node_modules from builder
+# Build Next.js
+RUN npm run build
 
-  # Create a non-root user and switch to it
-  RUN addgroup -S node || true
-  RUN adduser -S node -G node -D -h /home/node || true
-  USER node
 
-  EXPOSE 3000
+# ---------- Migration Stage ----------
+FROM builder AS migrator
 
-  # --- START: Modified CMD instruction ---
-  # 1. Run Drizzle migrations
-  # 2. If successful, prune dev dependencies (removes them from node_modules at runtime)
-  # 3. If successful, start the application
-  CMD ["sh", "-c", "npx drizzle-kit push && npm prune --production && npm start"]
+# Run migrations using drizzle-kit
+# (We keep dev deps here so npx drizzle-kit works)
+RUN npx drizzle-kit push
+
+
+# ---------- Production Runtime ----------
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy package.json for correct deps resolution
+COPY --from=builder /app/package*.json ./
+
+# Install only production deps
+RUN npm install --production && npm cache clean --force
+
+# Copy build output and public assets
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+# Copy drizzle config (not strictly needed at runtime, but safe)
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+
+# Create a non-root user
+RUN addgroup -S node && adduser -S node -G node -h /home/node
+USER node
+
+EXPOSE 3000
+
+# Start app
+CMD ["npm", "start"]
