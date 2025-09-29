@@ -2,13 +2,14 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Install all dependencies (dev + prod, because drizzle-kit is a dev dep)
-COPY package*.json ./
+# Install all dependencies (dev + prod, since drizzle-kit is dev)
+COPY src/package*.json ./
 RUN npm install --production=false
 
 # Copy app source
-COPY . .
-COPY drizzle.config.ts ./drizzle.config.ts
+COPY src/ ./
+# Copy drizzle config explicitly (though already in src/)
+COPY src/drizzle.config.ts ./drizzle.config.ts
 
 # Build Next.js
 RUN npm run build
