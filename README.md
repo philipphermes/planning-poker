@@ -60,6 +60,9 @@ This will build the client and the custom server.
 We used esbuild to build the custom typescript server to commonjs.
 A custom server was needed since we are using websocket for the estimation part.
 
+> [!CAUTION]
+> Change NODE_ENV to production
+
 ```bash
 npm run build
 ```
@@ -70,8 +73,11 @@ npm run build
 npm run start
 ```
 
-> [!CAUTION]
-> Change NODE_ENV to production
+### Run migrations
+
+```bash
+npm run migrate:prod
+```
 
 ## Testing
 
