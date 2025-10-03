@@ -1,6 +1,6 @@
 {
   "name": "planning-poker",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A collaborative tool for agile teams to estimate effort for user stories or tasks.",
   "author": {
     "name": "Philipp Hermes"
@@ -11,6 +11,7 @@
     "dev": "tsx server.ts",
     "build": "next build && node esbuild.config.mjs",
     "start": "node server.cjs",
+    "migrate:prod": "node migrate.cjs",
     "lint": "next lint",
     "test": "vitest",
     "test:ui": "vitest --ui",
