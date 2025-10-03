@@ -5,6 +5,8 @@ import {CardSetForm} from "@/components/card-set/card-set-form";
 import {CardSetList} from "@/components/card-set/card-set-list";
 import {Metadata} from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Card Sets",
     description: "Manage your card sets.",

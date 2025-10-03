@@ -12,7 +12,7 @@ import {LibSQLDatabase} from "drizzle-orm/libsql";
 import * as schema from "@/lib/server/db/schema";
 import {safeExecute} from "@/lib/server/db";
 import {getServerSession} from "next-auth";
-import {authOptions} from "@/features/auth/server/auth.config";
+import {getAuthConfig} from "@/features/auth/server/auth.config";
 
 export class UserService implements IUserService {
     private db: LibSQLDatabase<typeof schema>
@@ -96,7 +96,7 @@ export class UserService implements IUserService {
     }
 
     async getCurrentUser() {
-        const session = await getServerSession(authOptions);
+        const session = await getServerSession(getAuthConfig());
 
         if (!session?.user?.email) {
             return null;
