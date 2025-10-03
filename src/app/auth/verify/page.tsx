@@ -2,6 +2,8 @@ import {redirect} from "next/navigation";
 import {getUserService} from "@/features/user/server";
 import {Metadata} from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Verify Login",
     description: "Verify your login.",

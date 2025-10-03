@@ -3,6 +3,8 @@ import {getUserService} from "@/features/user/server";
 import {redirect} from "next/navigation";
 import {Metadata} from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Login",
     description: "Login to your account.",
