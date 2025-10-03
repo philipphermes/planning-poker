@@ -17,6 +17,7 @@ WORKDIR /app
 
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/server.cjs ./
+COPY --from=builder /app/migrate.cjs ./
 COPY --from=builder /app/drizzle.config.ts ./
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/.next ./.next
