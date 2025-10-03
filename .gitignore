@@ -44,4 +44,5 @@ next-env.d.ts
 *.db
 
 server.*js*
+migrate.*js*
 *.log
