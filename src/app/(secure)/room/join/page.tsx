@@ -4,6 +4,8 @@ import {getRoomService} from "@/features/room/server";
 import {getUserService} from "@/features/user/server";
 import {Metadata} from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
     title: "Join Room",
     description: "Join a planning poker room.",
