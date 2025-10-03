@@ -30,7 +30,7 @@ if (emailServerUser && emailServerPassword) {
     }
 }
 
-export const authOptions: AuthOptions = {
+export const getAuthConfig = (): AuthOptions => ({
     adapter: DrizzleAdapter(getDB()),
     secret: secret,
     debug: !isProduction,
@@ -63,5 +63,5 @@ export const authOptions: AuthOptions = {
     callbacks: {
         signIn: (data) => signInCallback(data),
         jwt: (data) => jwtCallback(data),
-    }
-}
+    },
+})
