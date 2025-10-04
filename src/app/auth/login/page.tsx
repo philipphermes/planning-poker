@@ -20,7 +20,7 @@ export default async function LoginPage() {
     const allowedDomains = process.env.NEXTAUTH_ALLOWED_DOMAINS !== '' ? process.env.NEXTAUTH_ALLOWED_DOMAINS?.split(',') ?? [] : [];
 
     return (
-        <div className="mx-auto max-w-md p-6 my-auto h-screen flex flex-col justify-center">
+        <div className="mx-auto max-w-md p-6 my-auto h-dvh flex flex-col justify-center">
             <LoginForm allowedDomains={allowedDomains}/>
         </div>
     )

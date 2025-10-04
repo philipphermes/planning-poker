@@ -7,8 +7,8 @@ export function RoundOverview({room, round}: { room: RoomDto, round?: RoundDto }
         return null;
     }
 
-    return (<div className="bg-muted/50 min-h-[100vh] rounded-xl md:min-h-min p-4 space-y-4">
-        <h2 className='text-xl'>{round.name}</h2>
+    return (<div className="bg-muted/50 rounded-xl min-h-min p-4">
+        <h2 className='text-xl mb-4'>{round.name}</h2>
         <RoundCardSet room={room} round={round}/>
     </div>)
 }
