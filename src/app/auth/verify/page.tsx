@@ -17,7 +17,7 @@ export default async function VerifyPage() {
     }
 
     return (
-        <div className="mx-auto max-w-md p-6 my-auto h-screen flex flex-col justify-center text-center">
+        <div className="mx-auto max-w-md p-6 my-auto h-dvh flex flex-col justify-center text-center">
             <p>Check your email for a magic login link.</p>
         </div>
     )

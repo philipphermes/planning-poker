@@ -72,12 +72,14 @@ export function NavUser({user}: { user?: UserDto }) {
                         <DropdownMenuSeparator/>
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <BadgeCheck/>
-                                <Link href='/account'>Account</Link>
+                                <Link href='/account' className='flex gap-2 items-center w-full'>
+                                    <BadgeCheck/>
+                                    Account
+                                </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator/>
-                        <DropdownMenuItem onClick={handleSignOut} className='cursor-pointer'>
+                        <DropdownMenuItem onClick={handleSignOut} className='flex gap-2 items-center w-full cursor-pointer'>
                             <LogOut/>
                             Log out
                         </DropdownMenuItem>
