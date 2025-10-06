@@ -79,7 +79,7 @@
     "drizzle-kit": "^0.31.5",
     "esbuild": "^0.25.10",
     "eslint": "^9",
-    "eslint-config-next": "15.5.3",
+    "eslint-config-next": "15.5.4",
     "jsdom": "^26.1.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
