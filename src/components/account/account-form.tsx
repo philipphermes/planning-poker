@@ -71,23 +71,6 @@ export function AccountForm({user}: UserFormProps) {
                 )}
             />
 
-            <FormField
-                control={form.control}
-                name="image"
-                render={({field}) => (
-                    <FormItem>
-                        <FormLabel>Image</FormLabel>
-                        <FormControl>
-                            <Input placeholder="image.png" {...field} />
-                        </FormControl>
-                        <FormDescription>
-                            Your account picture
-                        </FormDescription>
-                        <FormMessage/>
-                    </FormItem>
-                )}
-            />
-
             <Button type="submit" className='cursor-pointer'>Update Profile</Button>
         </form>
     </Form>)

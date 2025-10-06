@@ -4,6 +4,7 @@ import {AccountForm} from "@/components/account/account-form";
 import {getUserService} from "@/features/user/server";
 import {redirect} from "next/navigation";
 import {Metadata} from "next";
+import {AccountImage} from "@/components/account/account-image";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,8 @@ export default async function AccountPage() {
                     <h2 className='text-2xl my-2'>Edit Account</h2>
                     <Separator/>
                     <AccountForm user={user}/>
+                    <Separator className="my-4"/>
+                    <AccountImage user={user}/>
                     <Separator className="my-4"/>
                     <AccountDelete/>
                 </div>
