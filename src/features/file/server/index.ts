@@ -9,10 +9,13 @@ export function getFileService(): IFileService {
         return fileService;
     }
 
-    const uploadDir = path.resolve(`public/${process.env.UPLOAD_DIR!}`);
+    const rootPath = process.env.UPLOAD_DIR!;
+    const uploadDir = path.resolve(rootPath);
+    const publicDir = rootPath.replace("public/", "");
 
     fileService = new FileService(
         uploadDir,
+        publicDir,
     );
 
     return fileService;

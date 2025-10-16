@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
         return createErrorResponse('Unauthorized', 401);
     }
 
-    fileService.deleteFile(user);
+    fileService.deleteUserImage(user);
 
     const file = await fileService.uploadFile(req, user.id);
     if (!file) {
@@ -39,7 +39,7 @@ export const DELETE = async () => {
         return createErrorResponse('Unauthorized', 401);
     }
 
-    fileService.deleteFile(user);
+    fileService.deleteUserImage(user);
 
     await userService.update({
         id: user.id,

@@ -6,12 +6,10 @@ import {IFileService} from "@/features/file/server/file.service.interface";
 import {UserDto} from "@/features/user/shared/user.types";
 
 export class FileService implements IFileService {
-    private uploadDir: string;
-
     constructor(
-        uploadDir: string,
+        private uploadDir: string,
+        private publicPath: string,
     ) {
-        this.uploadDir = uploadDir;
     }
 
     public async uploadFile(req: NextRequest, fileName: string): Promise<string | null> {
@@ -27,8 +25,9 @@ export class FileService implements IFileService {
 
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
+        const uint8Array = new Uint8Array(buffer);
 
-        const detected = await fileTypeFromBuffer(buffer);
+        const detected = await fileTypeFromBuffer(uint8Array);
         const ext = detected?.ext || path.extname(file.name).replace(".", "") || "bin";
 
         if (!fileName.endsWith(`.${ext}`)) {
@@ -38,15 +37,21 @@ export class FileService implements IFileService {
         const filePath = path.resolve(this.uploadDir, fileName);
         fs.writeFileSync(filePath, buffer);
 
-        return `/${process.env.UPLOAD_DIR!}/${fileName}`;
+        return `/${this.publicPath}/${fileName}`;
     }
 
-    public deleteFile(user: UserDto) {
-        if (!user.image) {
+    public deleteUserImage(user: UserDto) {
+        let image = user.image;
+        if (!image) {
             return;
         }
 
-        const file = path.resolve(`public/${user.image}`);
+
+        if (this.uploadDir.includes('public/')) {
+            image = `public/${image}`;
+        }
+
+        const file = path.resolve(image);
 
         if (fs.existsSync(file)) {
             fs.unlinkSync(file);
