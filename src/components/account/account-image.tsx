@@ -15,7 +15,7 @@ type UserFormProps = {
 export function AccountImage({user}: UserFormProps) {
     const {update} = useSession();
     const [files, setFiles] = useState<File[]>([]);
-    const [filePreview, setFilePreview] = useState<string | undefined>();
+    const [filePreview, setFilePreview] = useState<string | null>(user.image);
 
     const handleDrop = async (files: File[]) => {
         if (files.length > 0) {
@@ -73,7 +73,7 @@ export function AccountImage({user}: UserFormProps) {
             toast.error(responseData.message);
         }
 
-        setFilePreview(undefined);
+        setFilePreview(null);
     };
 
     return (<div className='flex flex-col gap-2'>
