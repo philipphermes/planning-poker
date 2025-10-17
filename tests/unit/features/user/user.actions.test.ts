@@ -45,18 +45,14 @@ describe('User Actions', () => {
 
     describe('updateUserAction', () => {
         it('should update user', async () => {
-            const userData = {
+            const result = await updateUserAction({
                 name: 'Test User Update',
-                image: 'http://127.0.0.1/image.png'
-            };
-
-            const result = await updateUserAction(userData);
+            });
 
             expect(result.success).toBe(true);
             expect(result.message).toBe('Successfully updated account.');
             expect(result.data).toBeDefined();
-            expect(result.data?.name).toBe(userData.name);
-            expect(result.data?.image).toBe(userData.image);
+            expect(result.data?.name).toBe('Test User Update');
         });
 
         it('should return error when user is not authenticated', async () => {
@@ -65,7 +61,6 @@ describe('User Actions', () => {
             const result = await updateUserAction({
                 id: testUser.id,
                 name: 'Test User Update',
-                image: 'http://127.0.0.1/image.png'
             });
 
             expect(result.success).toBe(false);
@@ -76,7 +71,6 @@ describe('User Actions', () => {
             const result = await updateUserAction({
                 id: testUser.id,
                 name: '',
-                image: 'http://127.0.0.1/image.png'
             });
 
             expect(result.success).toBe(false);

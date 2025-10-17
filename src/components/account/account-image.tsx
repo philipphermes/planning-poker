@@ -76,12 +76,17 @@ export function AccountImage({user}: UserFormProps) {
         setFilePreview(null);
     };
 
+    const handleError = () => {
+        toast.error('Failed to upload image. Only one file is allowed and it has to be a jpeg or png!');
+    }
+
     return (<div className='flex flex-col gap-2'>
         <Dropzone
-            accept={{ 'image/*': ['.jpg', '.jpeg'] }}
+            accept={{'image/png,': ['png'], 'image/jpeg': ['jpeg', 'jpg']}}
             onDrop={handleDrop}
-            onError={console.error}
+            onError={handleError}
             className='w-full h-36 cursor-pointer'
+            maxFiles={1}
             src={files}
         >
             <DropzoneEmptyState />

@@ -23,11 +23,9 @@ export function AccountForm({user}: UserFormProps) {
         resolver: zodResolver(userUpdateFromSchema),
         defaultValues: {
             name: '',
-            image: '',
         },
         values: {
             name: user.name ?? '',
-            image: user.image ?? '',
         }
     })
 

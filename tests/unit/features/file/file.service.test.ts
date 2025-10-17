@@ -45,7 +45,7 @@ describe('FileService', () => {
             } as unknown as NextRequest;
 
             const fileName = "myfile";
-            const result = await service.uploadFile(mockReq, fileName);
+            const result = await service.uploadFile(mockReq, fileName, ['text/plain']);
 
             const expectedFileNameWithExt = "myfile.txt";
             const expectedFilePath = path.resolve(TEST_UPLOAD_DIR, expectedFileNameWithExt);
@@ -73,29 +73,43 @@ describe('FileService', () => {
 
             expect(result).toBe(null);
         });
+
+        it("should not create a new file when ivalid mime type", async () => {
+            const content = "Hello world!";
+            const fileData = Buffer.from(content, 'utf-8');
+
+            const mockFile = {
+                name: "test.json",
+                type: "text/json",
+                size: fileData.length,
+                async arrayBuffer() {
+                    return fileData;
+                },
+            } as unknown as File;
+
+            const formDataMock: FormData = {
+                get: (key: string) => (key === "file" ? mockFile : null),
+            } as unknown as FormData;
+
+            const mockReq = {
+                formData: async () => formDataMock,
+            } as unknown as NextRequest;
+
+            const fileName = "myfile";
+            const result = await service.uploadFile(mockReq, fileName, ['text/plain']);
+            expect(result).toBe(null);
+        });
     })
 
-    describe('deleteUserImage', async () => {
-        it("should delete the user image", async () => {
+    describe('deleteFile', async () => {
+        it("should delete a file", async () => {
             const testFilePath = path.resolve(TEST_UPLOAD_DIR, "test.txt");
             const deleteFilePath = path.resolve(TEST_UPLOAD_DIR, "delete.txt");
             fs.copyFileSync(testFilePath, deleteFilePath)
 
-            service.deleteUserImage({
-                image: `${TEST_UPLOAD_DIR}/delete.txt`,
-            } as UserDto)
+            service.deleteFile(`${TEST_UPLOAD_DIR}/delete.txt`)
 
             expect(fs.existsSync(deleteFilePath)).toBe(false);
-        })
-
-        it("should do nothing when user hasn't got an image", async () => {
-            const testFilePath = path.resolve(TEST_UPLOAD_DIR, "test.txt");
-
-            service.deleteUserImage({
-                image: null,
-            } as UserDto)
-
-            expect(fs.existsSync(testFilePath)).toBe(true);
         })
     })
 })

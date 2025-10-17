@@ -20,7 +20,7 @@ export async function updateUserAction(data: UserUpdateFormInput) {
         const validated = userUpdateScheme.parse({
             ...data,
             id: user.id,
-            image: data.image === '' ? undefined : data.image,
+            image: user.image,
         });
 
         const updatedUser = await userService.update(validated);
@@ -51,7 +51,7 @@ export async function deleteUserAction() {
         );
 
         await userService.deleteByUserId(user.id)
-        fileService.deleteUserImage(user)
+        fileService.deleteFile(user.image)
 
         return createActionResponse(
             'Successfully deleted account.',

@@ -1,8 +1,7 @@
 import {NextRequest} from "next/server";
-import {UserDto} from "@/features/user/shared/user.types";
 
 export interface IFileService {
-    uploadFile(req: NextRequest, fileName: string): Promise<string | null>;
+    uploadFile(req: NextRequest, fileName: string, mimeTypeWhitelist: string[]): Promise<string | null>;
 
-    deleteUserImage(user: UserDto): void;
+    deleteFile(publicPath: string|null): void;
 }

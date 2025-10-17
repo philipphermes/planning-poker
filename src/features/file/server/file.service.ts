@@ -12,7 +12,7 @@ export class FileService implements IFileService {
     ) {
     }
 
-    public async uploadFile(req: NextRequest, fileName: string): Promise<string | null> {
+    public async uploadFile(req: NextRequest, fileName: string, mimeTypeWhitelist: string[]): Promise<string | null> {
         const formData = await req.formData();
         const file = formData.get("file") as File | null;
         if (!file) {
@@ -28,6 +28,11 @@ export class FileService implements IFileService {
         const uint8Array = new Uint8Array(buffer);
 
         const detected = await fileTypeFromBuffer(uint8Array);
+        const detectedMime = detected?.mime ?? file.type;
+        if (!detectedMime || !mimeTypeWhitelist.includes(detectedMime)) {
+            return null;
+        }
+
         const ext = detected?.ext || path.extname(file.name).replace(".", "") || "bin";
 
         if (!fileName.endsWith(`.${ext}`)) {
@@ -40,18 +45,16 @@ export class FileService implements IFileService {
         return `/${this.publicPath}/${fileName}`;
     }
 
-    public deleteUserImage(user: UserDto) {
-        let image = user.image;
-        if (!image) {
+    public deleteFile(publicPath: string|null) {
+        if (!publicPath) {
             return;
         }
 
-
-        if (this.uploadDir.includes('public/')) {
-            image = `public/${image}`;
+        if (this.uploadDir.includes('public')) {
+            publicPath = `public/${publicPath}`;
         }
 
-        const file = path.resolve(image);
+        const file = path.resolve(publicPath);
 
         if (fs.existsSync(file)) {
             fs.unlinkSync(file);
