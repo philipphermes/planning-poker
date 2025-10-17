@@ -92,14 +92,27 @@ describe('UserService', () => {
         })
     })
 
-    describe('updateUser', () => {
+    describe('updateUserName', () => {
         it('should update the user', async () => {
             const user = await haveUser({email: 'test1@email.com', name: 'create'});
             user.name = 'test update';
 
-            const updatedUser = await service.update(user);
+            const updatedUser = await service.updateName(user);
 
             expect(updatedUser.name).toEqual('test update');
+        })
+    })
+
+    describe('updateUserImage', () => {
+        it('should update the user', async () => {
+            const user = await haveUser({email: 'test1@email.com'});
+
+            const updatedUser = await service.updateImage({
+                id: user.id,
+                image: '/uploads/user.png',
+            });
+
+            expect(updatedUser.image).toEqual('/uploads/user.png');
         })
     })
 

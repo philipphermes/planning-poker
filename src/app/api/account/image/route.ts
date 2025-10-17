@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import {getUserService} from "@/features/user/server";
-import {createActionResponse, createErrorResponse, createSuccessResponse} from "@/lib/server/utils";
+import {createErrorResponse, createSuccessResponse} from "@/lib/server/utils";
 import {getFileService} from "@/features/file/server";
-import {userUpdateScheme} from "@/features/user/shared/user.validations";
+import {userUpdateImageSchema} from "@/features/user/shared/user.validations";
 import {logger} from "@/lib/server/logger";
 
 export const POST = async (req: NextRequest) => {
@@ -25,17 +25,17 @@ export const POST = async (req: NextRequest) => {
             return createErrorResponse('Failed to upload image. Please try again.', 400);
         }
 
-        const validated = userUpdateScheme.parse({
+        const validated = userUpdateImageSchema.parse({
             id: user.id,
-            name: user.name,
             image: file,
         });
-        await userService.update(validated);
+        await userService.updateImage(validated);
 
-        return createSuccessResponse('Upload successfully', {
+        return createSuccessResponse('Uploaded successfully', {
             image: file,
         });
     } catch (error) {
+        console.log(error);
         logger.error(error instanceof Error ? error.message : 'Failed to upload image.');
         return createErrorResponse('Failed to upload image. Please try again.', 400);
     }
@@ -52,10 +52,8 @@ export const DELETE = async () => {
         }
 
         fileService.deleteFile(user.image);
-
-        await userService.update({
+        await userService.updateImage({
             id: user.id,
-            name: user.name ?? '',
             image: null,
         });
 

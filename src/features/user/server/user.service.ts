@@ -6,7 +6,7 @@ import {IEstimateService} from "@/features/estimate/server/estimate.service.inte
 import {IRoomParticipantService} from "@/features/room-participant/server/room-participant.service.interface";
 import {IRoomService} from "@/features/room/server/room.service.interface";
 import {ICardSetService} from "@/features/card-set/server/card-set.service.interface";
-import {UserUpdateInput} from "@/features/user/shared/user.validations";
+import {UserUpdateImageInput, UserUpdateNameInput} from "@/features/user/shared/user.validations";
 import {UserDto} from "@/features/user/shared/user.types";
 import {LibSQLDatabase} from "drizzle-orm/libsql";
 import * as schema from "@/lib/server/db/schema";
@@ -41,8 +41,12 @@ export class UserService implements IUserService {
         this.cardSetService = cardSetService;
     }
 
-    async update(user: UserUpdateInput): Promise<UserDto> {
-        return await this.userEntityManager.update(user);
+    async updateName(user: UserUpdateNameInput): Promise<UserDto> {
+        return await this.userEntityManager.updateName(user);
+    }
+
+    async updateImage(user: UserUpdateImageInput): Promise<UserDto> {
+        return await this.userEntityManager.updateImage(user);
     }
 
     async deleteByUserId(userId: string): Promise<void> {

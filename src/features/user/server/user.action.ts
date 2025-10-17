@@ -1,7 +1,7 @@
 'use server';
 
 import {getUserService} from "@/features/user/server/index";
-import {UserUpdateFormInput, userUpdateScheme} from "@/features/user/shared/user.validations";
+import {UserUpdateFormInput, userUpdateNameSchema} from "@/features/user/shared/user.validations";
 import {createActionResponse} from "@/lib/server/utils";
 import {logger} from "@/lib/server/logger";
 import {UserDto} from "@/features/user/shared/user.types";
@@ -17,13 +17,13 @@ export async function updateUserAction(data: UserUpdateFormInput) {
             false,
         );
 
-        const validated = userUpdateScheme.parse({
+        const validated = userUpdateNameSchema.parse({
             ...data,
             id: user.id,
             image: user.image,
         });
 
-        const updatedUser = await userService.update(validated);
+        const updatedUser = await userService.updateName(validated);
 
         return createActionResponse<UserDto>(
             'Successfully updated account.',
