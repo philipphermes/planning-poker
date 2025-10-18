@@ -1,10 +1,11 @@
 'use server';
 
 import {getUserService} from "@/features/user/server/index";
-import {UserUpdateFormInput, userUpdateScheme} from "@/features/user/shared/user.validations";
+import {UserUpdateFormInput, userUpdateNameSchema} from "@/features/user/shared/user.validations";
 import {createActionResponse} from "@/lib/server/utils";
 import {logger} from "@/lib/server/logger";
 import {UserDto} from "@/features/user/shared/user.types";
+import {getFileService} from "@/features/file/server";
 
 export async function updateUserAction(data: UserUpdateFormInput) {
     const userService = getUserService();
@@ -16,13 +17,13 @@ export async function updateUserAction(data: UserUpdateFormInput) {
             false,
         );
 
-        const validated = userUpdateScheme.parse({
+        const validated = userUpdateNameSchema.parse({
             ...data,
             id: user.id,
-            image: data.image === '' ? undefined : data.image,
+            image: user.image,
         });
 
-        const updatedUser = await userService.update(validated);
+        const updatedUser = await userService.updateName(validated);
 
         return createActionResponse<UserDto>(
             'Successfully updated account.',
@@ -40,6 +41,7 @@ export async function updateUserAction(data: UserUpdateFormInput) {
 
 export async function deleteUserAction() {
     const userService = getUserService();
+    const fileService = getFileService();
 
     try {
         const user = await userService.getCurrentUser();
@@ -49,6 +51,7 @@ export async function deleteUserAction() {
         );
 
         await userService.deleteByUserId(user.id)
+        fileService.deleteFile(user.image)
 
         return createActionResponse(
             'Successfully deleted account.',

@@ -50,7 +50,7 @@ export function LoginForm({allowedDomains}: { allowedDomains: string[] }) {
                     </FormItem>
                 )}
             />
-            <Button type="submit">Send Code</Button>
+            <Button type="submit" className="cursor-pointer">Send Code</Button>
         </form>
     </Form>)
 }

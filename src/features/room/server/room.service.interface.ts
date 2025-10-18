@@ -9,6 +9,8 @@ export interface IRoomService {
 
     getOneByIdAndUserId(roomId: string, userId: string): Promise<RoomDto | null>;
 
+    getOneByIdAndOwnerId(roomId: string, ownerId: string): Promise<RoomDto | null>;
+
     create(input: CreateRoomInput): Promise<RoomDto>;
 
     update(input: UpdateRoomInput): Promise<RoomDto>;

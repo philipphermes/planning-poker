@@ -20,13 +20,17 @@ export function handleApiError(error: unknown): NextResponse {
 
 export function createSuccessResponse<T>(message: string, data: T, status: number = 200): NextResponse {
     return NextResponse.json({
+        success: true,
         message: message,
         data: data
     }, {status});
 }
 
 export function createErrorResponse(message: string, status: number = 400): NextResponse {
-    return NextResponse.json({error: message}, {status});
+    return NextResponse.json({
+        success: false,
+        error: message
+    }, {status});
 }
 
 export function createActionResponse<T = unknown>(

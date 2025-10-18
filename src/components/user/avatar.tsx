@@ -14,8 +14,11 @@ export type AvatarProps = {
 
 export function AvatarWithoutTooltip({user, status = 'active', className}: AvatarProps) {
     return (<Avatar className={`h-8 w-8 rounded-lg ${className}`}>
-        <AvatarImage className={status === 'active' ? '' : 'grayscale'} src={user?.image ?? undefined}
-                     alt={user?.name ?? user?.email}/>
+        <AvatarImage
+            className={status === 'active' ? '' : 'grayscale'}
+            src={user?.image ?? undefined}
+            alt={user?.name ?? user?.email}
+        />
         <AvatarFallback className="rounded-lg"><User2/></AvatarFallback>
     </Avatar>)
 }

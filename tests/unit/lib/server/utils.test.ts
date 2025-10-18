@@ -52,6 +52,7 @@ describe('API Utils', () => {
             expect(NextResponse.json).toHaveBeenCalledWith(
                 {
                     error: 'Invalid request data',
+                    success: false
                 },
                 {status: 400}
             )
@@ -74,6 +75,7 @@ describe('API Utils', () => {
             expect(NextResponse.json).toHaveBeenCalledWith(
                 {
                     error: 'Invalid request data',
+                    success: false
                 },
                 {status: 400}
             )
@@ -86,7 +88,7 @@ describe('API Utils', () => {
 
             expect(logger.error).toHaveBeenCalledWith('API error - UserRepository not found')
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: 'UserRepository not found'},
+                {error: 'UserRepository not found', success: false},
                 {status: 404}
             )
         })
@@ -98,7 +100,7 @@ describe('API Utils', () => {
 
             expect(logger.error).toHaveBeenCalledWith('Unexpected API error occurred')
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: 'Internal server error'},
+                {error: 'Internal server error', success: false},
                 {status: 500}
             )
         })
@@ -110,7 +112,7 @@ describe('API Utils', () => {
 
             expect(logger.error).toHaveBeenCalledWith('Unexpected API error occurred')
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: 'Internal server error'},
+                {error: 'Internal server error', success: false},
                 {status: 500}
             )
         })
@@ -122,7 +124,7 @@ describe('API Utils', () => {
             expect(logger.error).toHaveBeenCalledTimes(2)
             expect(logger.error).toHaveBeenCalledWith('Unexpected API error occurred')
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: 'Internal server error'},
+                {error: 'Internal server error', success: false},
                 {status: 500}
             )
         })
@@ -135,7 +137,7 @@ describe('API Utils', () => {
             const result = createErrorResponse(message)
 
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: message},
+                {error: message, success: false},
                 {status: 400}
             )
         })
@@ -146,7 +148,7 @@ describe('API Utils', () => {
             const result = createErrorResponse(message, 401)
 
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: message},
+                {error: message, success: false},
                 {status: 401}
             )
         })
@@ -155,7 +157,7 @@ describe('API Utils', () => {
             const result = createErrorResponse('')
 
             expect(NextResponse.json).toHaveBeenCalledWith(
-                {error: ''},
+                {error: '', success: false},
                 {status: 400}
             )
         })
@@ -169,7 +171,8 @@ describe('API Utils', () => {
 
             expect(NextResponse.json).toHaveBeenCalledWith({
                 message: 'message',
-                data: data
+                data: data,
+                success: true,
             }, {status: 200})
         })
 
@@ -180,7 +183,8 @@ describe('API Utils', () => {
 
             expect(NextResponse.json).toHaveBeenCalledWith({
                 message: 'message',
-                data: data
+                data: data,
+                success: true,
             }, {status: 201})
         })
 
@@ -189,7 +193,8 @@ describe('API Utils', () => {
 
             expect(NextResponse.json).toHaveBeenCalledWith({
                 message: 'message',
-                data: null
+                data: null,
+                success: true,
             }, {status: 200})
         })
 
@@ -200,7 +205,8 @@ describe('API Utils', () => {
 
             expect(NextResponse.json).toHaveBeenCalledWith({
                 message: 'message',
-                data: data
+                data: data,
+                success: true,
             }, {status: 200})
         })
     })
