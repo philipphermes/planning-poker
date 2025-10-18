@@ -155,7 +155,39 @@ export class RoomService implements IRoomService {
 
     async getOneByIdAndUserId(roomId: string, userId: string): Promise<RoomDto | null> {
         const room = await this.roomRepository.findOneByIdAndUserId(roomId, userId);
+        if (!room) {
+            return null;
+        }
 
+        return {
+            id: room.id,
+            name: room.name,
+            ownerId: room.ownerId,
+            cardSetId: room.cardSetId,
+            owner: {
+                id: room.owner.id,
+                email: room.owner.email,
+                name: room.owner.name,
+                image: room.owner.image,
+            },
+            cardSet: {
+                id: room.cardSet.id,
+                name: room.cardSet.name,
+                cards: room.cardSet.cards,
+            },
+            participants: room.roomParticipants.map(participant => {
+                return {
+                    id: participant.user.id,
+                    email: participant.user.email,
+                    name: participant.user.name,
+                    image: participant.user.image,
+                }
+            })
+        }
+    }
+
+    async getOneByIdAndOwnerId(roomId: string, ownerId: string): Promise<RoomDto | null> {
+        const room = await this.roomRepository.findOneByIdAndOwnerId(roomId, ownerId);
         if (!room) {
             return null;
         }

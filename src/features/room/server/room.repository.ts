@@ -71,6 +71,15 @@ export class RoomRepository extends AbstractRepository {
                     eq(rooms.id, roomId),
                     eq(rooms.ownerId, ownerId),
                 ),
+                with: {
+                    owner: true,
+                    cardSet: true,
+                    roomParticipants: {
+                        with: {
+                            user: true,
+                        },
+                    },
+                },
             });
         });
     }
