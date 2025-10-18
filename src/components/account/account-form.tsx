@@ -23,11 +23,9 @@ export function AccountForm({user}: UserFormProps) {
         resolver: zodResolver(userUpdateFromSchema),
         defaultValues: {
             name: '',
-            image: '',
         },
         values: {
             name: user.name ?? '',
-            image: user.image ?? '',
         }
     })
 
@@ -65,23 +63,6 @@ export function AccountForm({user}: UserFormProps) {
                         </FormControl>
                         <FormDescription>
                             Your display name
-                        </FormDescription>
-                        <FormMessage/>
-                    </FormItem>
-                )}
-            />
-
-            <FormField
-                control={form.control}
-                name="image"
-                render={({field}) => (
-                    <FormItem>
-                        <FormLabel>Image</FormLabel>
-                        <FormControl>
-                            <Input placeholder="image.png" {...field} />
-                        </FormControl>
-                        <FormDescription>
-                            Your account picture
                         </FormDescription>
                         <FormMessage/>
                     </FormItem>

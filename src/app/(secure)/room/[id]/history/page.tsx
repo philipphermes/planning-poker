@@ -23,7 +23,7 @@ export default async function RoomHistoryPage({params}: { params: Promise<{ id: 
 
     const room = await roomService.getOneByIdAndOwnerIdForExport(id, user.id)
     if (!room) {
-        redirect('/room')
+        redirect('/room/join')
     }
 
     return (<div className="flex flex-1 flex-col gap-4 p-4">
