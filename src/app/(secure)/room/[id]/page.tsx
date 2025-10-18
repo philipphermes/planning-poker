@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     description: "Manage a planning poker room.",
 };
 
-export default async function HomePage({params}: { params: Promise<{ id: string }> }) {
+export default async function RoomEditPage({params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
     const userService = getUserService();
     const roomService = getRoomService();
@@ -22,7 +22,11 @@ export default async function HomePage({params}: { params: Promise<{ id: string 
         redirect('/')
     }
 
-    const room = await roomService.getOneByIdAndUserId(id, user.id)
+    const room = await roomService.getOneByIdAndOwnerId(id, user.id)
+    if (!room) {
+        redirect('/room/join')
+    }
+
     const userCardSets = await cardSetService.getManyByOwnerId(user.id);
     const usersList = await userService.getManyExcept(user.id);
     const userRooms = await roomService.getManyByOwnerId(user.id);
