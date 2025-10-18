@@ -12,7 +12,7 @@
     "build": "next build && node esbuild.config.mjs",
     "start": "node server.cjs",
     "migrate:prod": "node migrate.cjs",
-    "lint": "next lint",
+    "lint": "eslint",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
@@ -68,7 +68,6 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.3.0",
