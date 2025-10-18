@@ -3,7 +3,6 @@ import path from "path";
 import { NextRequest } from "next/server";
 import { fileTypeFromBuffer } from "file-type";
 import {IFileService} from "@/features/file/server/file.service.interface";
-import {UserDto} from "@/features/user/shared/user.types";
 
 export class FileService implements IFileService {
     constructor(
