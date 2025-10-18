@@ -1,19 +1,18 @@
 import {describe, it, expect} from 'vitest'
 import {
-    userUpdateScheme,
-    userDeleteScheme,
+    userUpdateNameSchema,
+    userDeleteScheme, userUpdateImageSchema,
 } from '../../../../src/features/user/shared/user.validations'
 
 describe('UserRepository Validation Schemas', () => {
-    describe('userUpdateScheme', () => {
+    describe('userUpdateNameScheme', () => {
         it('should validate valid user update schema data', () => {
             const validData = {
                 id: crypto.randomUUID(),
                 name: 'User',
-                image: 'http://test/img.png',
             }
 
-            const result = userUpdateScheme.safeParse(validData)
+            const result = userUpdateNameSchema.safeParse(validData)
 
             expect(result.success).toBe(true)
             if (result.success) {
@@ -25,10 +24,9 @@ describe('UserRepository Validation Schemas', () => {
             const invalidData = {
                 id: 'invalid-id',
                 name: 'User',
-                image: 'http://test/img.png',
             }
 
-            const result = userUpdateScheme.safeParse(invalidData)
+            const result = userUpdateNameSchema.safeParse(invalidData)
 
             expect(result.success).toBe(false)
             if (!result.success) {
@@ -40,10 +38,9 @@ describe('UserRepository Validation Schemas', () => {
             const invalidData = {
                 id: crypto.randomUUID(),
                 name: 'a',
-                image: 'http://test/img.png',
             }
 
-            const result = userUpdateScheme.safeParse(invalidData)
+            const result = userUpdateNameSchema.safeParse(invalidData)
 
             expect(result.success).toBe(false)
             if (!result.success) {
@@ -55,10 +52,9 @@ describe('UserRepository Validation Schemas', () => {
             const invalidData = {
                 id: crypto.randomUUID(),
                 name: 'a'.repeat(101),
-                image: 'http://test/img.png',
             }
 
-            const result = userUpdateScheme.safeParse(invalidData)
+            const result = userUpdateNameSchema.safeParse(invalidData)
 
             expect(result.success).toBe(false)
             if (!result.success) {
@@ -69,11 +65,51 @@ describe('UserRepository Validation Schemas', () => {
         it('should reject missing required fields', () => {
             const invalidData = {}
 
-            const result = userUpdateScheme.safeParse(invalidData)
+            const result = userUpdateNameSchema.safeParse(invalidData)
 
             expect(result.success).toBe(false)
             if (!result.success) {
                 expect(result.error.issues).toHaveLength(2)
+            }
+        })
+    })
+    describe('userUpdateImageScheme', () => {
+        it('should validate valid user update schema data', () => {
+            const validData = {
+                id: crypto.randomUUID(),
+                image: '/uploads/user.png',
+            }
+
+            const result = userUpdateImageSchema.safeParse(validData)
+
+            expect(result.success).toBe(true)
+            if (result.success) {
+                expect(result.data).toEqual(validData)
+            }
+        })
+
+        it('should reject invalid UUID for ID', () => {
+            const invalidData = {
+                id: 'invalid-id',
+                image: '/uploads/user.png',
+            }
+
+            const result = userUpdateImageSchema.safeParse(invalidData)
+
+            expect(result.success).toBe(false)
+            if (!result.success) {
+                expect(result.error.issues[0].message).toBe('Invalid user ID')
+            }
+        })
+
+        it('should reject missing required fields', () => {
+            const invalidData = {}
+
+            const result = userUpdateImageSchema.safeParse(invalidData)
+
+            expect(result.success).toBe(false)
+            if (!result.success) {
+                expect(result.error.issues).toHaveLength(1)
             }
         })
     })

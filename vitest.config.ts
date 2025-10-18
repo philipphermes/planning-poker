@@ -16,9 +16,9 @@ export default defineConfig({
             exclude: [
                 '**/types/**',
                 '**/middleware.ts',
-                '**/auth/config.ts',
-                '**/auth/current-user.repository.ts',
-                '**/auth/index.ts',
+                '**/auth/**/auth.config.ts',
+                '**/auth/**/index.ts',
+                '**/app/**',
             ],
             thresholds: {
                 lines: 80,
