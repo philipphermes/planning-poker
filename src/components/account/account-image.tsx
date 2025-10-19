@@ -44,7 +44,7 @@ export function AccountImage({user}: UserFormProps) {
                     await update({name: user.name, image: responseData.data?.image});
                     toast.success(responseData.message);
                 } else {
-                    toast.error(responseData.message);
+                    toast.error(responseData.error);
                 }
 
                 const reader = new FileReader();
@@ -70,7 +70,7 @@ export function AccountImage({user}: UserFormProps) {
         if (responseData.success) {
             toast.success(responseData.message);
         } else {
-            toast.error(responseData.message);
+            toast.error(responseData.error);
         }
 
         setFilePreview(null);
@@ -82,7 +82,7 @@ export function AccountImage({user}: UserFormProps) {
 
     return (<div className='flex flex-col gap-2'>
         <Dropzone
-            accept={{'image/png,': ['png'], 'image/jpeg': ['jpeg', 'jpg']}}
+            accept={{'image/png': [], 'image/jpeg': []}}
             onDrop={handleDrop}
             onError={handleError}
             className='w-full h-36 cursor-pointer'
