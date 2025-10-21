@@ -5,6 +5,7 @@ import {jwtCallback, sendVerificationRequest, signInCallback} from "@/features/a
 import {getDB} from "@/lib/server/db";
 
 const isProduction = process.env.NODE_ENV === "production";
+const useSecureCookies = process.env.NEXTAUTH_SECURE_COOKIES ?  process.env.NEXTAUTH_SECURE_COOKIES === "true" : isProduction;
 
 const secret = process.env.NEXTAUTH_SECRET!;
 const maxAge = Number.parseInt(process.env.NEXTAUTH_MAX_AGE ?? "3600"); // 1h default
@@ -34,7 +35,7 @@ export const getAuthConfig = (): AuthOptions => ({
     adapter: DrizzleAdapter(getDB()),
     secret: secret,
     debug: !isProduction,
-    useSecureCookies: isProduction,
+    useSecureCookies: useSecureCookies,
     providers: [
         EmailProvider({
             server: emailServer,
