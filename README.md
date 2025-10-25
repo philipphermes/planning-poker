@@ -37,7 +37,7 @@ cp .env.dist .env
 | NODE_ENV                    | The projects environment (development or production) | True     | development           |
 | HOSTNAME                    | Hostname                                             | False    | localhost             |
 | PORT                        | Port                                                 | False    | 3000                  |
-| UPLOAD_DIR                  | Directory for uploads                                | True     | public/uploads        |
+| UPLOAD_DIR                  | Directory for uploads                                | True     | uploads               |
 
 ### Create sqlite DB
 
