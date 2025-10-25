@@ -4,6 +4,8 @@ import {isValidEmail} from "@/features/auth/shared/auth.validate-email";
 import { createTransport } from "nodemailer"
 import {SendVerificationRequestParams} from "next-auth/providers/email";
 
+const domain = process.env.NEXTAUTH_URL!;
+
 export const signInCallback = async ({user}: { user: User }) => {
     if (!user.email) {
         return false;
@@ -26,14 +28,19 @@ export const jwtCallback = async ({token, trigger, session}: {
 }
 
 export const sendVerificationRequest = async (params: SendVerificationRequestParams) => {
-    const { identifier, url, provider, theme } = params
+    const { identifier, url, expires, provider, theme } = params
+
+    const date = new Date();
+    const requestTime = formatDateTime(date);
+    const expiredIn = formatExpireTime(date, expires);
+
     const transport = createTransport(provider.server)
     const result = await transport.sendMail({
         to: identifier,
         from: provider.from,
-        subject: 'Sign in to Planning Poker',
-        text: text({ url }),
-        html: html({ url, theme }),
+        subject: `Sign in to Planning Poker - ${requestTime}`,
+        text: text({ url, requestTime, expiredIn, email: provider.from }),
+        html: html({ url, theme, requestTime, expiredIn, email: provider.from }),
     })
     const failed = result.rejected.concat(result.pending).filter(Boolean)
     if (failed.length) {
@@ -41,8 +48,8 @@ export const sendVerificationRequest = async (params: SendVerificationRequestPar
     }
 }
 
-function html(params: { url: string, theme: Theme }) {
-    const { url, theme } = params
+function html(params: { url: string, theme: Theme, requestTime: string, expiredIn: string, email: string }) {
+    const { url, theme, requestTime, expiredIn, email } = params
 
     const brandColor = theme.brandColor ?? "#343434";
 
@@ -61,32 +68,36 @@ function html(params: { url: string, theme: Theme }) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="background: ${color.background} margin: 0; padding: 16px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
+<body style="background: ${color.background}; margin: 0; padding: 16px; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 0; padding: 0;">
     <tr>
         <td align="center" style="padding: 0;">
-            <!-- Main content table -->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0"
                    style="background: ${color.main}; width: 100%; max-width: 600px; margin: 0 auto; border-radius: 10px; padding: 20px; box-sizing: border-box;">
-
-                <!-- Title Row -->
                 <tr>
                     <td style="padding: 10px 0; font-size: 22px; font-family: Helvetica, Arial, sans-serif; text-align: center; color: ${color.text}; line-height: 1.3;">
                         Sign in to <strong>Planning Poker</strong>
                     </td>
                 </tr>
 
-                <!-- Button Row -->
+                <tr>
+                    <td style="padding: 10px 0; font-size: 14px; font-family: Helvetica, Arial, sans-serif; text-align: center; color: ${color.text}; line-height: 20px;">
+                        A login request was made on <strong>${requestTime}</strong>.
+                    </td>
+                </tr>
+
                 <tr>
                     <td align="center" style="padding: 20px 0;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                             <tr>
                                 <td align="center" style="border-radius: 10px; background-color: ${color.primary};">
                                    <a
-                                       style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${color.primaryText}; text-decoration: none; border-radius: 10px; padding: 12px 24px; display: inline-block; font-weight: bold; text-align: center; line-height: 1;"
                                        href="${url}"
                                        target="_blank"
                                        rel="noopener noreferrer"
+                                       aria-label="Sign in to Planning Poker"
+                                       style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${color.primaryText}; text-decoration: none; border-radius: 10px; padding: 12px 24px; display: inline-block; font-weight: bold; text-align: center; line-height: 1; mso-padding-alt:0;"
+                                       class="button"
                                    >Sign in</a>
                                 </td>
                             </tr>
@@ -94,11 +105,21 @@ function html(params: { url: string, theme: Theme }) {
                     </td>
                 </tr>
 
-                <!-- Footer Row -->
                 <tr>
-                    <td align="center"
-                        style="padding: 0 0 10px 0; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+                    <td style="padding: 5px 0; font-size: 14px; font-family: Helvetica, Arial, sans-serif; text-align: center; color: ${color.text}; line-height: 20px;">
+                        This link will expire in <strong>${expiredIn}</strong>.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding: 10px 0; font-size: 14px; line-height: 20px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
                         If you did not request this email you can safely ignore it.
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="center" style="padding: 5px 0; font-size: 12px; line-height: 16px; font-family: Helvetica, Arial, sans-serif; color: #666;">
+                        For questions please write us at: <a href="mailto:${email}" style="color:#666; text-decoration: underline;">${email}</a>
                     </td>
                 </tr>
             </table>
@@ -110,6 +131,42 @@ function html(params: { url: string, theme: Theme }) {
 `
 }
 
-function text({ url }: { url: string }) {
-    return `Sign in to Planning Poker\n${url}\n\n`
+function text({ url, requestTime, expiredIn, email }: { url: string, requestTime: string, expiredIn: string, email: string }) {
+    return `
+Sign in to Planning Poker
+
+A login request was made on: ${requestTime}
+
+Use the link below to sign in. This link will expire in ${expiredIn}.
+
+${url}
+
+If you did not request this email, you can safely ignore it.
+
+For questions please write us at: ${email}
+
+Thank you,
+Planning Poker
+${domain}
+`
+}
+
+function formatDateTime(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+function formatExpireTime(currentDate: Date, date: Date): string {
+    const diff = date.getTime() - currentDate.getTime();
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+    return `${days} days, ${hours} hours, ${minutes} minutes`;
 }
