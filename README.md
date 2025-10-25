@@ -20,25 +20,24 @@ cp .env.dist .env
 
 #### Environment Variables
 
-| Name                        | Description                                                          | Required | Default               |
-|-----------------------------|----------------------------------------------------------------------|----------|-----------------------|
-| NEXTAUTH_SECRET             | The Secret for Auth                                                  | True     | secret123!            |
-| NEXTAUTH_URL                | The url used for callbacks                                           | True     | http://localhost:3000 |
-| NEXTAUTH_SESSION_MAX_AGE    | Session & JWT max age in seconds                                     | False    | 3600/1h               |
-| NEXTAUTH_SESSION_UPDATE_AGE | Session update age in seconds                                        | False    | 1800/30m              |
-| NEXTAUTH_EMAIL_MAX_AGE      | Magic Link email max age in seconds                                  | False    | 1800/30m              |
-| NEXTAUTH_ALLOWED_DOMAINS    | Allowed domains for emails seperated by ","                          | False    | test.com,example.com  |
-| EMAIL_SERVER_USER           | Email Server username                                                | False    | username              |
-| EMAIL_SERVER_PASSWORD       | Email Server password                                                | False    | password              |
-| EMAIL_SERVER_HOST           | Host of the Email Server                                             | True     | smtp.example.com      |
-| EMAIL_SERVER_PORT           | Port of the Email Server                                             | True     | 587                   |
-| EMAIL_FROM                  | The Sender of emails                                                 | True     | noreply@example.com   |
-| DB_URL                      | The path to the sqlite db file                                       | True     | file:local.db         |
-| NODE_ENV                    | The projects environment (development or production)                 | True     | development           |
-| HOSTNAME                    | Hostname                                                             | False    | localhost             |
-| PORT                        | Port                                                                 | False    | 3000                  |
-| UPLOAD_DIR                  | Directory for uploads                                                | True     | public/uploads        |
-| NEXTAUTH_SECURE_COOKIES     | If it should use secure cookies, if not set checks if its production | False    |                       |
+| Name                        | Description                                          | Required | Default               |
+|-----------------------------|------------------------------------------------------|----------|-----------------------|
+| NEXTAUTH_SECRET             | The Secret for Auth                                  | True     | secret123!            |
+| NEXTAUTH_URL                | The url used for callbacks                           | True     | http://localhost:3000 |
+| NEXTAUTH_SESSION_MAX_AGE    | Session & JWT max age in seconds                     | False    | 3600/1h               |
+| NEXTAUTH_SESSION_UPDATE_AGE | Session update age in seconds                        | False    | 1800/30m              |
+| NEXTAUTH_EMAIL_MAX_AGE      | Magic Link email max age in seconds                  | False    | 1800/30m              |
+| NEXTAUTH_ALLOWED_DOMAINS    | Allowed domains for emails seperated by ","          | False    | test.com,example.com  |
+| EMAIL_SERVER_USER           | Email Server username                                | False    | username              |
+| EMAIL_SERVER_PASSWORD       | Email Server password                                | False    | password              |
+| EMAIL_SERVER_HOST           | Host of the Email Server                             | True     | smtp.example.com      |
+| EMAIL_SERVER_PORT           | Port of the Email Server                             | True     | 587                   |
+| EMAIL_FROM                  | The Sender of emails                                 | True     | noreply@example.com   |
+| DB_URL                      | The path to the sqlite db file                       | True     | file:local.db         |
+| NODE_ENV                    | The projects environment (development or production) | True     | development           |
+| HOSTNAME                    | Hostname                                             | False    | localhost             |
+| PORT                        | Port                                                 | False    | 3000                  |
+| UPLOAD_DIR                  | Directory for uploads                                | True     | uploads               |
 
 ### Create sqlite DB
 
