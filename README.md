@@ -53,6 +53,17 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Docker files
+- docker-compose.dev.yml
+  - Only mail catcher
+  - `docker compose -f docker-compose.dev.yml up -d`
+- docker-compose.prod-like.yml
+  - Prod like setup with reachable ports for local dev and mail catcher
+  - `docker compose -f docker-compose.prod-like.yml up -d --build`
+- docker-compose.yml
+  - For Prod
+  - `docker compose up -d --build`
+
 ## Deployment
 
 ### Run build

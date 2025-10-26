@@ -1,5 +1,5 @@
 services:
-  planning-poker:
+  planning-poker-prod-like:
     build:
       context: ./
       dockerfile: Dockerfile
@@ -7,18 +7,17 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      - VIRTUAL_HOST=${NEXTAUTH_URL}
-      - LETSENCRYPT_HOST=${NEXTAUTH_URL}
-      - VIRTUAL_PORT=${PORT}
-      - LETSENCRYPT_EMAIL=${EMAIL_FROM}
-    expose:
-      - ${PORT}
+    ports:
+      - "${PORT}:3000"
     volumes:
       - "./${UPLOAD_DIR}:/app/${UPLOAD_DIR}"
       - "./data:/app/data"
       - "./db:/app/db"
 
-networks:
-  proxy-net:
-    external: true
+  mailcatcher:
+    container_name: planning-poker-mail-catcher
+    image: sj26/mailcatcher
+    ports:
+      - "1080:1080" # Web UI
+      - "1025:1025" # SMTP
+    restart: unless-stopped
