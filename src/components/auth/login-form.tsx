@@ -9,8 +9,12 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {isValidEmail} from "@/features/auth/shared/auth.validate-email";
 import * as React from "react";
+import {useSearchParams} from "next/navigation";
 
 export function LoginForm({allowedDomains}: { allowedDomains: string[] }) {
+    const params = useSearchParams();
+    const callbackUrl = params.get("callbackUrl") ?? "/";
+
     const formSchema = z.object({
         email: z
             .email({message: 'Please provide a valid email address'})
@@ -28,7 +32,7 @@ export function LoginForm({allowedDomains}: { allowedDomains: string[] }) {
         const email = data.email;
         await signIn("email", {
             email,
-            callbackUrl: "/",
+            callbackUrl,
         })
     }
 
