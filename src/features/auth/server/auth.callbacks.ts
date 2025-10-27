@@ -38,7 +38,7 @@ export const sendVerificationRequest = async (params: SendVerificationRequestPar
     const result = await transport.sendMail({
         to: identifier,
         from: provider.from,
-        subject: `Sign in to Planning Poker - ${requestTime}`,
+        subject: `Continue to Planning Poker`,
         text: text({ url, requestTime, expiredIn, email: provider.from }),
         html: html({ url, theme, requestTime, expiredIn, email: provider.from }),
     })
@@ -76,13 +76,25 @@ function html(params: { url: string, theme: Theme, requestTime: string, expiredI
                    style="background: ${color.main}; width: 100%; max-width: 600px; margin: 0 auto; border-radius: 10px; padding: 20px; box-sizing: border-box;">
                 <tr>
                     <td style="padding: 10px 0; font-size: 22px; font-family: Helvetica, Arial, sans-serif; text-align: center; color: ${color.text}; line-height: 1.3;">
-                        Sign in to <strong>Planning Poker</strong>
+                        Continue to <strong>Planning Poker</strong>
                     </td>
                 </tr>
 
                 <tr>
                     <td style="padding: 10px 0; font-size: 14px; font-family: Helvetica, Arial, sans-serif; text-align: center; color: ${color.text}; line-height: 20px;">
                         A login request was made on <strong>${requestTime}</strong>.
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="center" style="padding: 10px 0; font-size: 14px; line-height: 20px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+                        You’re receiving this because you requested a login to Planning Poker.
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="center" style="padding: 10px 0; font-size: 14px; line-height: 20px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+                        If you did not request this email you can safely ignore it.
                     </td>
                 </tr>
 
@@ -110,16 +122,10 @@ function html(params: { url: string, theme: Theme, requestTime: string, expiredI
                         This link will expire in <strong>${expiredIn}</strong>.
                     </td>
                 </tr>
-
-                <tr>
-                    <td align="center" style="padding: 10px 0; font-size: 14px; line-height: 20px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
-                        If you did not request this email you can safely ignore it.
-                    </td>
-                </tr>
                 
                 <tr>
                     <td align="center" style="padding: 5px 0; font-size: 12px; line-height: 16px; font-family: Helvetica, Arial, sans-serif; color: #666;">
-                        For questions please write us at: <a href="mailto:${email}" style="color:#666; text-decoration: underline;">${email}</a>
+                        © 2025 Planning Poker · <a href="mailto:${email}" style="color:#666; text-decoration: underline;">${email}</a>
                     </td>
                 </tr>
             </table>
@@ -133,21 +139,22 @@ function html(params: { url: string, theme: Theme, requestTime: string, expiredI
 
 function text({ url, requestTime, expiredIn, email }: { url: string, requestTime: string, expiredIn: string, email: string }) {
     return `
-Sign in to Planning Poker
+Continue to Planning Poker
 
 A login request was made on: ${requestTime}
 
-Use the link below to sign in. This link will expire in ${expiredIn}.
+You’re receiving this because you requested a login to Planning Poker.
+
+If you did not request this email you can safely ignore it.
+
+Use the link below to login. This link will expire in ${expiredIn}.
 
 ${url}
 
-If you did not request this email, you can safely ignore it.
-
-For questions please write us at: ${email}
-
 Thank you,
 Planning Poker
-${domain}
+
+© 2025 Planning Poker · ${email}
 `
 }
 
