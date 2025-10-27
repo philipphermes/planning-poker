@@ -4,8 +4,6 @@ import {isValidEmail} from "@/features/auth/shared/auth.validate-email";
 import { createTransport } from "nodemailer"
 import {SendVerificationRequestParams} from "next-auth/providers/email";
 
-const domain = process.env.NEXTAUTH_URL!;
-
 export const signInCallback = async ({user}: { user: User }) => {
     if (!user.email) {
         return false;
