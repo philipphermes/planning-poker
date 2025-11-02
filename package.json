@@ -1,6 +1,6 @@
 {
   "name": "planning-poker",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A collaborative tool for agile teams to estimate effort for user stories or tasks.",
   "author": {
     "name": "Philipp Hermes"
