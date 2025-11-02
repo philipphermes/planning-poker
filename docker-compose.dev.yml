@@ -1,0 +1,8 @@
+services:
+  mailcatcher:
+    container_name: planning-poker-mail-catcher
+    image: sj26/mailcatcher
+    ports:
+      - "1080:1080" # Web UI
+      - "1025:1025" # SMTP
+    restart: unless-stopped
