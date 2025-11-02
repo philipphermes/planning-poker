@@ -18,7 +18,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ path: st
         return new NextResponse(stream as any, {
             headers: {
                 'Content-Type': mime,
-                'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
+                'Cache-Control': 'public, max-age=300, stale-while-revalidate=30',
             },
         });
     } catch (error) {
