@@ -44,16 +44,18 @@ export class FileService implements IFileService {
         return `/${this.publicPath}/${fileName}`;
     }
 
-    public deleteFile(publicPath: string|null) {
-        if (!publicPath) {
+    public deleteFile(filePath: string|null) {
+        if (!filePath) {
             return;
         }
 
-        if (this.uploadDir.includes('public')) {
-            publicPath = `public/${publicPath}`;
+        const fileName = filePath.split('\\').pop()?.split('/').pop();
+        if (!fileName) {
+            return;
         }
 
-        const file = path.resolve(publicPath);
+        const file = path.resolve(this.uploadDir, fileName);
+        console.log(file)
 
         if (fs.existsSync(file)) {
             fs.unlinkSync(file);
