@@ -41,7 +41,7 @@ export function LoginForm({allowedDomains}: { allowedDomains: string[] }) {
                     <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input placeholder="user@example.com" {...field} />
+                            <Input placeholder="user@example.com" autoComplete='email webauthn' {...field} />
                         </FormControl>
                         <FormDescription>
                             This email is used to create an account

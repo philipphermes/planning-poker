@@ -33,6 +33,7 @@ cp .env.dist .env
 | EMAIL_SERVER_HOST           | Host of the Email Server                             | True     | smtp.example.com      |
 | EMAIL_SERVER_PORT           | Port of the Email Server                             | True     | 587                   |
 | EMAIL_FROM                  | The Sender of emails                                 | True     | noreply@example.com   |
+| EMAIL_FROM_SENDER_NAME      | The Senders name                                     | False    | Example               |
 | DB_URL                      | The path to the sqlite db file                       | True     | file:local.db         |
 | NODE_ENV                    | The projects environment (development or production) | True     | development           |
 | HOSTNAME                    | Hostname                                             | False    | localhost             |
