@@ -12,7 +12,7 @@ const emailMaxAge = Number.parseInt(process.env.NEXTAUTH_EMAIL_MAX_AGE ?? "3600"
 
 const emailServerHost = process.env.EMAIL_SERVER_HOST!;
 const emailServerPort = Number.parseInt(process.env.EMAIL_SERVER_PORT!);
-const emailFrom = process.env.EMAIL_SERVER_FROM!;
+const emailFrom = process.env.EMAIL_FROM!;
 const emailServerUser = process.env.EMAIL_SERVER_USER;
 const emailServerPassword = process.env.EMAIL_SERVER_PASSWORD;
 
