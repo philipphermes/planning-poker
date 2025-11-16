@@ -4,7 +4,7 @@ import {isValidEmail} from "@/features/auth/shared/auth.validate-email";
 import { createTransport } from "nodemailer"
 import {SendVerificationRequestParams} from "next-auth/providers/email";
 
-const email = process.env.EMAIL_FROM!;
+const emailFromSenderName = process.env.EMAIL_FROM_SENDER_NAME;
 
 export const signInCallback = async ({user}: { user: User }) => {
     if (!user.email) {
@@ -37,7 +37,10 @@ export const sendVerificationRequest = async (params: SendVerificationRequestPar
     const transport = createTransport(provider.server)
     const result = await transport.sendMail({
         to: identifier,
-        from: provider.from,
+        from: emailFromSenderName ? {
+            name: emailFromSenderName,
+            address: provider.from
+        } : provider.from,
         subject: `Continue to Planning Poker`,
         text: text({ url, requestTime, expiredIn, email: provider.from }),
         html: html({ url, theme, requestTime, expiredIn, email: provider.from }),
@@ -49,7 +52,7 @@ export const sendVerificationRequest = async (params: SendVerificationRequestPar
 }
 
 function html(params: { url: string, theme: Theme, requestTime: string, expiredIn: string, email: string }) {
-    const { url, theme, requestTime, expiredIn } = params
+    const { url, theme, requestTime, expiredIn, email } = params
 
     const brandColor = theme.brandColor ?? "#343434";
 
